@@ -17,6 +17,7 @@
     "php": ">=7.2.5"
   },
   "require-dev": {
+    "psr/log": "3.x-dev"
   },
   "conflict": {
   },
