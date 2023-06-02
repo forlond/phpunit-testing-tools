@@ -1,0 +1,41 @@
+{
+  "name": "forlond/php-testing-tools",
+  "type": "library",
+  "description": "PHP testing tools",
+  "keywords": [
+    "testing"
+  ],
+  "homepage": "https://github.com/forlond",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Carlos Domínguez",
+      "email": "ixarlie@gmail.com"
+    }
+  ],
+  "require": {
+    "php": ">=7.2.5"
+  },
+  "require-dev": {
+  },
+  "conflict": {
+  },
+  "autoload": {
+    "psr-4": {
+      "Forlond\\Test\\Tools\\": "src/"
+    },
+    "exclude-from-classmap": [
+      "**/Tests/"
+    ]
+  },
+  "autoload-dev": {
+    "files": [
+    ]
+  },
+  "repositories": [
+  ],
+  "minimum-stability": "dev",
+  "extra": {
+    "branch-version": "0.x"
+  }
+}
