@@ -14,27 +14,26 @@
     }
   ],
   "require": {
-    "php": ">=7.2.5"
+    "php": ">=8.1"
   },
   "require-dev": {
-    "psr/log": "3.x-dev"
+    "psr/log": "3.x-dev",
+    "phpunit/phpunit": "^9.5 | ^10"
   },
   "conflict": {
   },
   "autoload": {
     "psr-4": {
-      "Forlond\\Test\\Tools\\": "src/"
-    },
-    "exclude-from-classmap": [
-      "**/Tests/"
-    ]
+      "Forlond\\TestTools\\": "src/"
+    }
   },
   "autoload-dev": {
+    "psr-4": {
+      "Forlond\\TestTools\\Tests\\": "tests/"
+    },
     "files": [
     ]
   },
-  "repositories": [
-  ],
   "minimum-stability": "dev",
   "extra": {
     "branch-version": "0.x"
