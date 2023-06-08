@@ -54,7 +54,7 @@ final class TestLogger extends AbstractLogger
      * Compare the indicated expects against the registered log messages.
      * Use the strict option to assert the amount of log messages.
      */
-    public function assert(bool $strict = false): void
+    public function assert(bool $strict = true): void
     {
         if ($strict) {
             Assert::assertCount(count($this->expects), $this->logs);
