@@ -21,10 +21,10 @@ final class TraversableContainsCallback extends TraversableContains
      */
     protected function matches(mixed $other): bool
     {
-        foreach ($other as $element) {
-            $result = ($this->callback)($this->value(), $element);
+        foreach ($other as $index => $element) {
+            $result = ($this->callback)($this->value(), $element, $index);
             if (!is_bool($result)) {
-                throw new \RuntimeException('Closure must return a bool value');
+                throw new \RuntimeException('Closure must return a bool value.');
             }
             if ($result) {
                 return true;

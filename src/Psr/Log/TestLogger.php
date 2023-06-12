@@ -57,23 +57,32 @@ final class TestLogger extends AbstractLogger
     public function assert(bool $strict = true): void
     {
         if ($strict) {
-            Assert::assertCount(count($this->expects), $this->logs);
+            Assert::assertCount(count($this->expects), $this->logs, __CLASS__);
         }
 
+        $logs = $this->logs;
         foreach ($this->expects as $expect) {
             Assert::assertThat(
-                $this->logs,
+                $logs,
                 new TraversableContainsCallback(
                     $expect,
-                    function(array $expect, array $log): bool {
+                    function(array $expect, array $log, int $index) use (&$logs): bool {
                         ['level' => $logLevel, 'message' => $logMessage, 'context' => $logContext] = $log;
                         ['level' => $level, 'message' => $message, 'context' => $context] = $expect;
 
-                        return $logLevel === $level &&
+                        $result = $logLevel === $level &&
                             $message->evaluate($logMessage, 'message', true) &&
                             (!$context || $context->evaluate($logContext, 'context', true));
+
+                        // When the expected matches, then removes the log from the main list.
+                        if ($result) {
+                            unset($logs[$index]);
+                        }
+
+                        return $result;
                     }
-                )
+                ),
+                __CLASS__
             );
         }
     }

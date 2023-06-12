@@ -9,6 +9,8 @@ use JMS\Serializer\GraphNavigator\SerializationGraphNavigator;
 use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\Metadata\Driver\AttributeDriver;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
+use JMS\Serializer\Serializer;
+use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\Visitor\Factory\JsonDeserializationVisitorFactory;
 use JMS\Serializer\Visitor\Factory\JsonSerializationVisitorFactory;
 use JMS\Serializer\Visitor\Factory\XmlDeserializationVisitorFactory;
@@ -22,17 +24,34 @@ use PHPUnit\Framework\TestCase;
  */
 abstract class AbstractSerializerTestCase extends TestCase
 {
+    protected function createSerializer(?callable $configure): Serializer
+    {
+        $builder = new SerializerBuilder();
+
+        if ($configure) {
+            $configure($builder);
+        } else {
+            $builder
+                ->addDefaultHandlers()
+                ->addDefaultListeners()
+                ->addDefaultSerializationVisitors()
+                ->addDefaultDeserializationVisitors()
+            ;
+        }
+
+        return $builder->build();
+    }
+
     protected function createSerializationContext(?callable $configure): TestSerializationContext
     {
         $configurator = new TestSerializerConfigurator();
         $context      = new TestSerializationContext();
-
-        $configure && $configure($configurator, $context);
-
         $configurator
             ->setVisitorFactory('json', new JsonSerializationVisitorFactory())
             ->setVisitorFactory('xml', new XmlSerializationVisitorFactory())
         ;
+
+        $configure && $configure($configurator, $context);
 
         $this->initializeContext($configurator, $context);
 
@@ -43,13 +62,12 @@ abstract class AbstractSerializerTestCase extends TestCase
     {
         $configurator = new TestSerializerConfigurator();
         $context      = new TestDeserializationContext();
-
-        $configure && $configure($configurator, $context);
-
         $configurator
             ->setVisitorFactory('json', new JsonDeserializationVisitorFactory())
             ->setVisitorFactory('xml', new XmlDeserializationVisitorFactory())
         ;
+
+        $configure && $configure($configurator, $context);
 
         $this->initializeContext($configurator, $context);
 
