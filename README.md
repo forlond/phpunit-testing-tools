@@ -1,16 +1,14 @@
-# PHP Testing Tools
+# PHPUnit Testing Tools
 
 A set of utilities to facilitate the creation of unit tests for other libraries in PHPUnit.
+
+Requires a PHP version `^8.1` and a PHPUnit version `^9.5 || ^10`
 
 ## Installation
 
 ```
 composer require --dev forlond/php-testing-tools
 ```
-
-## PHPUnit
-
-The supported version for PHPUnit is either 9.5 and up or 10 and up.
 
 ## Integrations
 

@@ -1,12 +1,13 @@
 {
-  "name": "forlond/php-testing-tools",
+  "name": "forlond/phpunit-testing-tools",
   "type": "library",
   "description": "A set of utilities for PHPUnit testing",
   "keywords": [
+    "PhpUnit",
     "testing",
     "tools"
   ],
-  "homepage": "https://github.com/forlond/php-testing-tools",
+  "homepage": "https://github.com/forlond/phpunit-testing-tools",
   "license": "MIT",
   "authors": [
     {
