@@ -24,7 +24,7 @@ Allows to create a new `Serializer` instance. The instance can be configured by 
 If no closure is passed, then the serializer is built with the default settings.
 
 ```php
-final class MyTest extends AbstractSerializerTestCase
+final class MyTestEvent extends AbstractSerializerTestCase
 {
     public function testFooBar(): void
     {
@@ -48,7 +48,7 @@ Allows to create a new `SerializationContext` or `DeserializationContext` instan
 its initialization by passing a closure.
 
 ```php
-final class MyTest extends AbstractSerializerTestCase
+final class MyTestEvent extends AbstractSerializerTestCase
 {
     public function testFoo(): void
     {
@@ -95,7 +95,7 @@ The `TestSerializerConfigurator` can be configured with different visitor factor
 visitor factories are already registered before you can do some other changes in the closure.
 
 ```php
-final class MyTest extends AbstractSerializerTestCase
+final class MyTestEvent extends AbstractSerializerTestCase
 {
     public function testFooBar(): void
     {
@@ -115,7 +115,7 @@ final class MyTest extends AbstractSerializerTestCase
 Also, your custom visitor implementations can be added:
 
 ```php
-final class MyTest extends AbstractSerializerTestCase
+final class MyTestEvent extends AbstractSerializerTestCase
 {
     public function testFooBar(): void
     {
@@ -135,7 +135,7 @@ Finally, you can replicate some navigation state with the `pushInitialVisiting` 
 depends on the context _depth_, _metadata_, etc.
 
 ```php
-final class MyTest extends AbstractSerializerTestCase
+final class MyTestEvent extends AbstractSerializerTestCase
 {
     public function testFooBar(): void
     {
@@ -181,7 +181,7 @@ final protected function getResult(Event $event);
 #### Example
 
 ```php
-final class MyTest extends AbstractEventSubscriberTestCase
+final class MyTestEvent extends AbstractEventSubscriberTestCase
 {
     public function testFooBar(): void
     {
@@ -233,7 +233,7 @@ The `configure` closure can be used to configure any mocked service the event su
 #### Example
 
 ```php
-final class MyTest extends AbstractSubscribingHandlerTestCase
+final class MyTestEvent extends AbstractSubscribingHandlerTestCase
 {
     public function testFooBar(): void
     {
@@ -278,7 +278,7 @@ The `configure` closure can be used to configure any mocked service the event su
 #### Example
 
 ```php
-final class MyTest extends AbstractObjectConstructorTestCase
+final class MyTestEvent extends AbstractObjectConstructorTestCase
 {
     public function testFooBar(): void
     {
