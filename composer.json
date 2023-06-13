@@ -3,9 +3,11 @@
   "type": "library",
   "description": "PHP testing tools",
   "keywords": [
-    "testing"
+    "PHPUnit",
+    "testing",
+    "tools"
   ],
-  "homepage": "https://github.com/forlond",
+  "homepage": "https://github.com/forlond/php-testing-tools",
   "license": "MIT",
   "authors": [
     {
@@ -14,15 +16,18 @@
     }
   ],
   "require": {
-    "php": ">=8.1"
+    "php": ">=8.1",
+    "phpunit/phpunit": "^9.5 || ^10"
   },
   "require-dev": {
-    "psr/log": "3.x-dev",
-    "phpunit/phpunit": "^9.5 | ^10",
+    "psr/log": "2.0.x-dev || 3.x-dev",
     "jms/serializer": "3.x-dev",
-    "symfony/expression-language": "6.4.x-dev"
+    "symfony/expression-language": "5.4.x-dev || 6.4.x-dev"
   },
   "conflict": {
+    "psr/log": "<2.*",
+    "jms/serializer": "<3.*",
+    "symfony/expression-language": "<5.4.*"
   },
   "autoload": {
     "psr-4": {
@@ -35,9 +40,5 @@
     },
     "files": [
     ]
-  },
-  "minimum-stability": "dev",
-  "extra": {
-    "branch-version": "0.x"
   }
 }

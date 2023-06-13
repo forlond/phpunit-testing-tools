@@ -1,4 +1,4 @@
-# PHP Unit Testing Tools
+# PHPUnit Testing Tools
 
 ## Index
 
