@@ -1,9 +1,8 @@
 {
   "name": "forlond/php-testing-tools",
   "type": "library",
-  "description": "PHP testing tools",
+  "description": "A set of utilities for PHPUnit testing",
   "keywords": [
-    "PHPUnit",
     "testing",
     "tools"
   ],
