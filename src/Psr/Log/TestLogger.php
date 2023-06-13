@@ -3,7 +3,6 @@
 namespace Forlond\TestTools\Psr\Log;
 
 use Forlond\TestTools\PHPUnit\Constraint\TraversableContainsCallback;
-use JetBrains\PhpStorm\ArrayShape;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\Constraint\Constraint;
 use PHPUnit\Framework\Constraint\IsIdentical;
@@ -26,11 +25,6 @@ final class TestLogger extends AbstractLogger
         $this->logs[] = ['level' => $level, 'message' => $message, 'context' => $context];
     }
 
-    #[ArrayShape([
-        'level'   => 'string',
-        'message' => 'string',
-        'context' => 'array',
-    ])]
     public function getLogs(): array
     {
         return $this->logs;
