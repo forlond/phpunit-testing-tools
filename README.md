@@ -12,7 +12,7 @@ composer require --dev forlond/php-testing-tools
 
 ## Integrations
 
-| Name                                       | Supported Versions | Link                                     |
-|--------------------------------------------|--------------------|------------------------------------------|
-| [JMS/Serializer](./docs/jms_serializer.md) | \>= 3.0            | https://github.com/schmittjoh/serializer |
-| [Psr/Log](./docs/psr_log.md)               | \>= 2.0            | https://github.com/php-fig/log           |
+| Name                                                       | Supported Versions | Documentation                      |
+|------------------------------------------------------------|--------------------|------------------------------------|
+| [JMS/Serializer](https://github.com/schmittjoh/serializer) | \>= 3.0            | [Readme](./docs/jms_serializer.md) |
+| [Psr/Log](https://github.com/php-fig/log)                  | \>= 2.0            | [Readme](./docs/psr_log.md)        |
