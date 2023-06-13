@@ -25,9 +25,9 @@
     "symfony/expression-language": "5.4.x-dev || 6.4.x-dev"
   },
   "conflict": {
-    "psr/log": "<2.*",
-    "jms/serializer": "<3.*",
-    "symfony/expression-language": "<5.4.*"
+    "psr/log": "<2.0",
+    "jms/serializer": "<3.0",
+    "symfony/expression-language": "<5.4.0"
   },
   "autoload": {
     "psr-4": {
