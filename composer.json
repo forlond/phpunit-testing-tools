@@ -20,7 +20,8 @@
     "psr/log": "3.x-dev",
     "phpunit/phpunit": "^9.5 | ^10",
     "jms/serializer": "3.x-dev",
-    "symfony/expression-language": "6.4.x-dev"
+    "symfony/expression-language": "6.4.x-dev",
+    "doctrine/orm": "3.0.x-dev"
   },
   "conflict": {
   },
