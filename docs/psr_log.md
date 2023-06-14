@@ -263,3 +263,11 @@ $logger
     ->assert()
 ;
 ```
+
+## Reset
+
+Use the `reset` method to restore the logger.
+
+```php
+public function reset(): void
+```

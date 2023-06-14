@@ -20,12 +20,11 @@
     "phpunit/phpunit": "^9.5 || ^10"
   },
   "require-dev": {
-    "psr/log": "2.0.x-dev || 3.x-dev",
+    "psr/log": "^1.0 || ^2.0 || ^3.0",
     "jms/serializer": "3.x-dev",
     "symfony/expression-language": "5.4.x-dev || 6.4.x-dev"
   },
   "conflict": {
-    "psr/log": "<2.0",
     "jms/serializer": "<3.0",
     "symfony/expression-language": "<5.4.0"
   },

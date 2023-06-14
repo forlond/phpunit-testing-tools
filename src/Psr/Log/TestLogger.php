@@ -18,11 +18,18 @@ final class TestLogger extends AbstractLogger
     private array $expects = [];
 
     /**
+     * @param string|\Stringable $message
+     *
      * @inheritDoc
      */
-    public function log($level, \Stringable|string $message, array $context = []): void
+    public function log($level, $message, array $context = []): void
     {
-        $this->logs[] = ['level' => $level, 'message' => $message, 'context' => $context];
+        // Backward compatibility for $message as a non type-hinted argument in v1.x
+        if (!is_string($message) && !$message instanceof \Stringable) {
+            throw new \InvalidArgumentException('Invalid message value. Use string or Stringable instance.');
+        }
+
+        $this->logs[] = ['level' => $level, 'message' => (string) $message, 'context' => $context];
     }
 
     public function getLogs(): array
@@ -79,5 +86,11 @@ final class TestLogger extends AbstractLogger
                 __CLASS__
             );
         }
+    }
+
+    public function reset(): void
+    {
+        $this->logs    = [];
+        $this->expects = [];
     }
 }
