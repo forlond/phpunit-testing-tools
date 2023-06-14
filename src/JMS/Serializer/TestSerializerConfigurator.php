@@ -2,7 +2,9 @@
 
 namespace Forlond\TestTools\JMS\Serializer;
 
+use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\GraphNavigator\Factory\GraphNavigatorFactoryInterface;
+use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\Factory\DeserializationVisitorFactory;
 use JMS\Serializer\Visitor\Factory\SerializationVisitorFactory;
 use Metadata\MetadataFactoryInterface;
@@ -24,8 +26,8 @@ final class TestSerializerConfigurator
     private array $visitorFactories;
 
     public function __construct(
-        public readonly TestSerializationContext|TestDeserializationContext $context,
-        public GraphNavigatorFactoryInterface                               $graphNavigatorFactory,
+        public readonly SerializationContext|DeserializationContext $context,
+        public GraphNavigatorFactoryInterface                       $graphNavigatorFactory,
     ) {
     }
 

@@ -40,8 +40,8 @@ final class MyTestEvent extends AbstractSerializerTestCase
 ---
 
 ```php
-protected function createSerializationContext(?callable $configure): TestSerializationContext;
-protected function createDeserializationContext(?callable $configure): TestDeserializationContext
+protected function createSerializationContext(?callable $configure): SerializationContext;
+protected function createDeserializationContext(?callable $configure): DeserializationContext
 ```
 
 Allows to create a new `SerializationContext` or `DeserializationContext` instance. The context can be decorated before
@@ -210,9 +210,7 @@ final class MyTestEvent extends AbstractSerializerTestCase
     public function testFooBar(): void
     {
         $context = $this->createSerializationContext(static function(TestSerializerConfigurator $configurator) {
-            $configurator->graphNavigatorFactory = new TestGraphNavigatorFactory(static function() {
-                return new MyGraphNavigator();
-            });
+            $configurator->graphNavigatorFactory = new TestGraphNavigatorFactory(static fn() => new MyGraphNavigator());
         });
 
         // ...
@@ -222,8 +220,9 @@ final class MyTestEvent extends AbstractSerializerTestCase
 
 However, some configurable factories are set initially.
 
-For serialization contexts, the `TestSerializationGraphNavigatorFactory` is initially set as default factory. This
-factory creates `SerializationGraphNavigator` and allows to configure this navigator instance in the following manner:
+For serialization contexts, the `TestSerializationGraphNavigatorFactory` is initially set as the default factory. This
+factory creates a `SerializationGraphNavigator` instance and allows to configure this navigator instance in the
+following manner:
 
 - Adding handlers to the `HandlerRegistryInterface` instance (by default is `HandlerRegistry`)
 - Changing the `AccessorStrategyInterface` instance (by default is `DefaultAccessorStrategy`)
@@ -249,8 +248,9 @@ final class MyTestEvent extends AbstractSerializerTestCase
 }
 ```
 
-For deserialization contexts, the `TestDeserializationGraphNavigatorFactory` is initially set as default factory. This
-factory creates `DeserializationGraphNavigator` and allows to configure this navigator instance in the following manner:
+For deserialization contexts, the `TestDeserializationGraphNavigatorFactory` is initially set as the default factory.
+This factory creates a `DeserializationGraphNavigator` instance and allows to configure this navigator instance in the
+following manner:
 
 - Adding handlers to the `HandlerRegistryInterface` instance (by default is `HandlerRegistry`)
 - Changing the `AccessorStrategyInterface` instance (by default is `DefaultAccessorStrategy`)
@@ -320,10 +320,10 @@ The `configure` closure can be used to configure any mocked service the event su
 In order to create the correct event instance, use one of the following methods:
 
 ```php
-final protected function createPreSerializeEvent(TestSerializationContext $context, object $object): PreSerializeEvent;
-final protected function createPreDeserializeEvent(TestDeserializationContext $context, mixed $data, string $type): PreDeserializeEvent;
-final protected function createPostSerializeEvent(TestSerializationContext $context, object $object): ObjectEvent;
-final protected function createPostDeserializeEvent(TestDeserializationContext $context, object $object): ObjectEvent;
+final protected function createPreSerializeEvent(SerializationContext $context, object $object): PreSerializeEvent;
+final protected function createPreDeserializeEvent(DeserializationContext $context, mixed $data, string $type): PreDeserializeEvent;
+final protected function createPostSerializeEvent(SerializationContext $context, object $object): ObjectEvent;
+final protected function createPostDeserializeEvent(DeserializationContext $context, object $object): ObjectEvent;
 ```
 
 For some events, and after the subscriber execution, it is possible to the get the data _result_.

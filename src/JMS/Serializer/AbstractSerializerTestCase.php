@@ -2,8 +2,10 @@
 
 namespace Forlond\TestTools\JMS\Serializer;
 
+use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Metadata\Driver\AttributeDriver;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
+use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
 use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\Visitor\Factory\JsonDeserializationVisitorFactory;
@@ -37,9 +39,9 @@ abstract class AbstractSerializerTestCase extends TestCase
         return $builder->build();
     }
 
-    protected function createSerializationContext(?callable $configure): TestSerializationContext
+    protected function createSerializationContext(?callable $configure): SerializationContext
     {
-        $context      = new TestSerializationContext();
+        $context      = new SerializationContext();
         $configurator = new TestSerializerConfigurator($context, new TestSerializationGraphNavigatorFactory());
         $configurator
             ->setVisitorFactory('json', new JsonSerializationVisitorFactory())
@@ -53,9 +55,9 @@ abstract class AbstractSerializerTestCase extends TestCase
         return $context;
     }
 
-    protected function createDeserializationContext(?callable $configure): TestDeserializationContext
+    protected function createDeserializationContext(?callable $configure): DeserializationContext
     {
-        $context      = new TestDeserializationContext();
+        $context      = new DeserializationContext();
         $configurator = new TestSerializerConfigurator($context, new TestDeserializationGraphNavigatorFactory());
         $configurator
             ->setVisitorFactory('json', new JsonDeserializationVisitorFactory())
@@ -81,7 +83,6 @@ abstract class AbstractSerializerTestCase extends TestCase
                 true
             );
         }
-        $metadataFactory = new TestMetadataFactory($metadataFactory);
 
         // Graph Navigator
         $factory = $configurator->graphNavigatorFactory;
@@ -90,14 +91,10 @@ abstract class AbstractSerializerTestCase extends TestCase
         ) {
             $factory->metadataFactory = $metadataFactory;
         }
-        $navigator = new TestGraphNavigator($factory->getGraphNavigator());
+        $navigator = $factory->getGraphNavigator();
 
         // Visitor
         $visitor = $configurator->getVisitorFactory()->getVisitor();
-        $visitor = match (get_class($context)) {
-            TestSerializationContext::class   => new TestSerializationVisitor($visitor),
-            TestDeserializationContext::class => new TestDeserializationVisitor($visitor),
-        };
 
         $context->initialize(
             $configurator->format,
