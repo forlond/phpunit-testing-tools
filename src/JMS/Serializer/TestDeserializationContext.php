@@ -3,7 +3,6 @@
 namespace Forlond\TestTools\JMS\Serializer;
 
 use JMS\Serializer\DeserializationContext;
-use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 
 /**
  * @author Carlos Dominguez <ixarlie@gmail.com>
@@ -18,8 +17,18 @@ final class TestDeserializationContext extends DeserializationContext
         $this->increaseDepth();
     }
 
-    public function getVisitor(): DeserializationVisitorInterface
+    public function getMetadataFactory(): TestMetadataFactory
+    {
+        return parent::getMetadataFactory();
+    }
+
+    public function getVisitor(): TestDeserializationVisitor
     {
         return parent::getVisitor();
+    }
+
+    public function getNavigator(): TestGraphNavigator
+    {
+        return parent::getNavigator();
     }
 }

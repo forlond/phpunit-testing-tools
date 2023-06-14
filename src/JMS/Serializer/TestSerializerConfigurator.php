@@ -2,10 +2,9 @@
 
 namespace Forlond\TestTools\JMS\Serializer;
 
-use JMS\Serializer\GraphNavigatorInterface;
+use JMS\Serializer\GraphNavigator\Factory\GraphNavigatorFactoryInterface;
 use JMS\Serializer\Visitor\Factory\DeserializationVisitorFactory;
 use JMS\Serializer\Visitor\Factory\SerializationVisitorFactory;
-use JMS\Serializer\VisitorInterface;
 use Metadata\MetadataFactoryInterface;
 
 /**
@@ -13,11 +12,7 @@ use Metadata\MetadataFactoryInterface;
  */
 final class TestSerializerConfigurator
 {
-    public ?string $format = null;
-
-    public ?VisitorInterface $visitor = null;
-
-    public ?GraphNavigatorInterface $navigator = null;
+    public string $format = 'json';
 
     public ?MetadataFactoryInterface $metadataFactory = null;
 
@@ -28,12 +23,14 @@ final class TestSerializerConfigurator
      */
     private array $visitorFactories;
 
+    public function __construct(
+        public readonly TestSerializationContext|TestDeserializationContext $context,
+        public GraphNavigatorFactoryInterface                               $graphNavigatorFactory,
+    ) {
+    }
+
     public function getVisitorFactory(): SerializationVisitorFactory|DeserializationVisitorFactory
     {
-        if (null === $this->format) {
-            throw new \RuntimeException('Set a format value first.');
-        }
-
         return $this->visitorFactories[$this->format];
     }
 

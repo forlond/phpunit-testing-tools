@@ -2,11 +2,6 @@
 
 namespace Forlond\TestTools\JMS\Serializer;
 
-use JMS\Serializer\Accessor\DefaultAccessorStrategy;
-use JMS\Serializer\Construction\UnserializeObjectConstructor;
-use JMS\Serializer\GraphNavigator\DeserializationGraphNavigator;
-use JMS\Serializer\GraphNavigator\SerializationGraphNavigator;
-use JMS\Serializer\Handler\HandlerRegistry;
 use JMS\Serializer\Metadata\Driver\AttributeDriver;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
 use JMS\Serializer\Serializer;
@@ -44,42 +39,39 @@ abstract class AbstractSerializerTestCase extends TestCase
 
     protected function createSerializationContext(?callable $configure): TestSerializationContext
     {
-        $configurator = new TestSerializerConfigurator();
         $context      = new TestSerializationContext();
+        $configurator = new TestSerializerConfigurator($context, new TestSerializationGraphNavigatorFactory());
         $configurator
             ->setVisitorFactory('json', new JsonSerializationVisitorFactory())
             ->setVisitorFactory('xml', new XmlSerializationVisitorFactory())
         ;
 
-        $configure && $configure($configurator, $context);
+        $configure && $configure($configurator);
 
-        $this->initializeContext($configurator, $context);
+        $this->initializeContext($configurator);
 
         return $context;
     }
 
     protected function createDeserializationContext(?callable $configure): TestDeserializationContext
     {
-        $configurator = new TestSerializerConfigurator();
         $context      = new TestDeserializationContext();
+        $configurator = new TestSerializerConfigurator($context, new TestDeserializationGraphNavigatorFactory());
         $configurator
             ->setVisitorFactory('json', new JsonDeserializationVisitorFactory())
             ->setVisitorFactory('xml', new XmlDeserializationVisitorFactory())
         ;
 
-        $configure && $configure($configurator, $context);
+        $configure && $configure($configurator);
 
-        $this->initializeContext($configurator, $context);
+        $this->initializeContext($configurator);
 
         return $context;
     }
 
-    private function initializeContext(
-        TestSerializerConfigurator                          $configurator,
-        TestSerializationContext|TestDeserializationContext $context,
-    ): void {
-        // Set default format
-        $configurator->format = $configurator->format ?? 'json';
+    private function initializeContext(TestSerializerConfigurator $configurator): void
+    {
+        $context = $configurator->context;
 
         // Metadata Factory
         if (null === ($metadataFactory = $configurator->metadataFactory)) {
@@ -92,27 +84,16 @@ abstract class AbstractSerializerTestCase extends TestCase
         $metadataFactory = new TestMetadataFactory($metadataFactory);
 
         // Graph Navigator
-        if (null === ($navigator = $configurator->navigator)) {
-            $navigator = match (get_class($context)) {
-                TestSerializationContext::class   => new SerializationGraphNavigator(
-                    $metadataFactory,
-                    new HandlerRegistry(),
-                    new DefaultAccessorStrategy(),
-                ),
-                TestDeserializationContext::class => new DeserializationGraphNavigator(
-                    $metadataFactory,
-                    new HandlerRegistry(),
-                    new UnserializeObjectConstructor(),
-                    new DefaultAccessorStrategy(),
-                ),
-            };
+        $factory = $configurator->graphNavigatorFactory;
+        if ($factory instanceof TestSerializationGraphNavigatorFactory ||
+            $factory instanceof TestDeserializationGraphNavigatorFactory
+        ) {
+            $factory->metadataFactory = $metadataFactory;
         }
-        $navigator = new TestGraphNavigator($navigator);
+        $navigator = new TestGraphNavigator($factory->getGraphNavigator());
 
         // Visitor
-        if (null === ($visitor = $configurator->visitor)) {
-            $visitor = $configurator->getVisitorFactory()->getVisitor();
-        }
+        $visitor = $configurator->getVisitorFactory()->getVisitor();
         $visitor = match (get_class($context)) {
             TestSerializationContext::class   => new TestSerializationVisitor($visitor),
             TestDeserializationContext::class => new TestDeserializationVisitor($visitor),
