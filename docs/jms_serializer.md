@@ -175,7 +175,7 @@ final protected function createPostDeserializeEvent(TestDeserializationContext $
 For some events, and after the event execution, it is possible to the get the data _result_.
 
 ```php
-final protected function getResult(Event $event);
+final protected function getEventResult(Event $event);
 ```
 
 #### Example
@@ -203,7 +203,7 @@ final class MyTestEvent extends AbstractEventSubscriberTestCase
         // The logic adds a foo property with bar value.
         $subscriber->onPostSerialize($event);
 
-        $data = $this->getResult($event);
+        $data = $this->getEventResult($event);
 
         self::assertSame(['foo' => 'bar'], $data);
     }

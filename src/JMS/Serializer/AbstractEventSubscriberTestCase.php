@@ -50,7 +50,7 @@ abstract class AbstractEventSubscriberTestCase extends AbstractSerializerTestCas
         return new ObjectEvent($context, $object, ['name' => get_class($object)]);
     }
 
-    final protected function getResult(Event $event): mixed
+    final protected function getEventResult(Event $event): mixed
     {
         $metadata = $event->getContext()->getMetadataFactory()->getMetadataForClass($event->getType()['name']);
         $visitor  = $event->getVisitor();
