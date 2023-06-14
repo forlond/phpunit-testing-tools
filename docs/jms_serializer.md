@@ -187,7 +187,7 @@ final class MyTestEvent extends AbstractEventSubscriberTestCase
     {
         $object     = new \stdClass();
         $context    = $this->createSerializationContext(
-            static function(TestSerializerConfigurator $configurator, TestDeserializationContext $context) {
+            static function(TestSerializerConfigurator $configurator, TestSerializationContext $context) {
                 $configurator->pushInitialVisiting(new TestClass(), 'property');
             }
         );
