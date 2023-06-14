@@ -2,6 +2,7 @@
 
 namespace Forlond\TestTools\JMS\Serializer;
 
+use JMS\Serializer\Context;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\Metadata\Driver\AttributeDriver;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
@@ -105,10 +106,18 @@ abstract class AbstractSerializerTestCase extends TestCase
         $visitor->setNavigator($navigator);
         $navigator->initialize($visitor, $context);
 
+        $startVisiting = static function(Context $context, object $object): void {
+            if ($context instanceof SerializationContext) {
+                $context->startVisiting($object);
+            } else if ($context instanceof DeserializationContext) {
+                $context->increaseDepth();
+            }
+        };
+
         // Add initial visiting objects
         foreach ($configurator->getInitialVisiting() as [$object, $propertyName]) {
             $metadata = $metadataFactory->getMetadataForClass(get_class($object));
-            $context->startVisiting($object);
+            $startVisiting($context, $object);
             $context->pushClassMetadata($metadata);
             $property = $metadata->propertyMetadata[$propertyName] ?? null;
             if (null === $property) {
