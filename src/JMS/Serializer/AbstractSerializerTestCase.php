@@ -134,7 +134,7 @@ abstract class AbstractSerializerTestCase extends TestCase
 
     final protected function parseType(string $type): array
     {
-        if (static::$typeParser) {
+        if (null === static::$typeParser) {
             static::$typeParser = new Parser();
         }
 
