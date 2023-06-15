@@ -40,6 +40,29 @@ final class MyTestEvent extends AbstractSerializerTestCase
 ---
 
 ```php
+final protected function parseType(string $type): array
+```
+
+Allows to return well-formed type in an array format.
+
+If no closure is passed, then the serializer is built with the default settings.
+
+```php
+final class MyTestEvent extends AbstractSerializerTestCase
+{
+    public function testFooBar(): void
+    {
+        // ['name' => 'array', 'params' => [['name' => 'MyClass', 'params' => []]]
+        $type = $this->parseType('array<MyClass>');
+
+        // ...
+    }
+}
+```
+
+---
+
+```php
 protected function createSerializationContext(?callable $configure): SerializationContext;
 protected function createDeserializationContext(?callable $configure): DeserializationContext
 ```
