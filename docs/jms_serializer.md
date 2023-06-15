@@ -320,16 +320,16 @@ The `configure` closure can be used to configure any mocked service the event su
 In order to create the correct event instance, use one of the following methods:
 
 ```php
-final protected function createPreSerializeEvent(SerializationContext $context, object $object): PreSerializeEvent;
-final protected function createPreDeserializeEvent(DeserializationContext $context, mixed $data, string $type): PreDeserializeEvent;
-final protected function createPostSerializeEvent(SerializationContext $context, object $object): ObjectEvent;
-final protected function createPostDeserializeEvent(DeserializationContext $context, object $object): ObjectEvent;
+protected function createPreSerializeEvent(SerializationContext $context, object $object, ?string $type = null): PreSerializeEvent;
+protected function createPreDeserializeEvent(DeserializationContext $context, mixed $data, string $type): PreDeserializeEvent;
+protected function createPostSerializeEvent(SerializationContext $context, object $object, ?string $type = null): ObjectEvent;
+protected function createPostDeserializeEvent(DeserializationContext $context, object $object, ?string $type = null): ObjectEvent;
 ```
 
 For some events, and after the subscriber execution, it is possible to the get the data _result_.
 
 ```php
-final protected function getEventResult(Event $event);
+protected function getEventResult(Event $event): mixed;
 ```
 
 **Example**

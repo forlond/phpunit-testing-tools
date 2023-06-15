@@ -19,11 +19,14 @@ abstract class AbstractEventSubscriberTestCase extends AbstractSerializerTestCas
 {
     abstract protected function createSubscriber(?callable $configure): EventSubscriberInterface;
 
-    protected function createPreSerializeEvent(SerializationContext $context, object $object): PreSerializeEvent
-    {
+    protected function createPreSerializeEvent(
+        SerializationContext $context,
+        object               $object,
+        ?string              $type = null,
+    ): PreSerializeEvent {
         $context->startVisiting($object);
 
-        return new PreSerializeEvent($context, $object, ['name' => get_class($object)]);
+        return new PreSerializeEvent($context, $object, $this->parseType($type ?? get_class($object)));
     }
 
     protected function createPreDeserializeEvent(
@@ -33,17 +36,23 @@ abstract class AbstractEventSubscriberTestCase extends AbstractSerializerTestCas
     ): PreDeserializeEvent {
         $context->increaseDepth();
 
-        return new PreDeserializeEvent($context, $data, ['name' => $type]);
+        return new PreDeserializeEvent($context, $data, $this->parseType($type));
     }
 
-    protected function createPostSerializeEvent(SerializationContext $context, object $object): ObjectEvent
-    {
-        return new ObjectEvent($context, $object, ['name' => get_class($object)]);
+    protected function createPostSerializeEvent(
+        SerializationContext $context,
+        object               $object,
+        ?string              $type = null,
+    ): ObjectEvent {
+        return new ObjectEvent($context, $object, $this->parseType($type ?? get_class($object)));
     }
 
-    protected function createPostDeserializeEvent(DeserializationContext $context, object $object): ObjectEvent
-    {
-        return new ObjectEvent($context, $object, ['name' => get_class($object)]);
+    protected function createPostDeserializeEvent(
+        DeserializationContext $context,
+        object                 $object,
+        ?string                $type = null,
+    ): ObjectEvent {
+        return new ObjectEvent($context, $object, $this->parseType($type ?? get_class($object)));
     }
 
     protected function getEventResult(Event $event): mixed

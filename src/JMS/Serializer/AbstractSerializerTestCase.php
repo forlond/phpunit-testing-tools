@@ -9,6 +9,7 @@ use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Serializer;
 use JMS\Serializer\SerializerBuilder;
+use JMS\Serializer\Type\Parser;
 use JMS\Serializer\Visitor\Factory\JsonDeserializationVisitorFactory;
 use JMS\Serializer\Visitor\Factory\JsonSerializationVisitorFactory;
 use JMS\Serializer\Visitor\Factory\XmlDeserializationVisitorFactory;
@@ -22,6 +23,8 @@ use PHPUnit\Framework\TestCase;
  */
 abstract class AbstractSerializerTestCase extends TestCase
 {
+    private static ?Parser $typeParser = null;
+
     protected function createSerializer(?callable $configure): Serializer
     {
         $builder = new SerializerBuilder();
@@ -127,5 +130,14 @@ abstract class AbstractSerializerTestCase extends TestCase
             $visitor->startVisitingObject($metadata, $object, ['name' => $metadata->name]);
             $context->pushPropertyMetadata($property);
         }
+    }
+
+    final protected function parseType(string $type): array
+    {
+        if (static::$typeParser) {
+            static::$typeParser = new Parser();
+        }
+
+        return static::$typeParser->parse($type);
     }
 }
