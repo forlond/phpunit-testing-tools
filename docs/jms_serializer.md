@@ -43,9 +43,7 @@ final class MyTestEvent extends AbstractSerializerTestCase
 final protected function parseType(string $type): array
 ```
 
-Allows to return well-formed type in an array format.
-
-If no closure is passed, then the serializer is built with the default settings.
+Allows to return well-formed types in an array format.
 
 ```php
 final class MyTestEvent extends AbstractSerializerTestCase
@@ -75,9 +73,9 @@ final class MyTestEvent extends AbstractSerializerTestCase
 {
     public function testFoo(): void
     {
-        $context = $this->createSerializationContext(static function(TestSerializerConfigurator $configurator) {
-            $configurator->format = 'json';
-            $configurator->context->setAttribute('foo', 'bar');
+        $context = $this->createSerializationContext(static function(TestSerializationContextFactory $factory) {
+            $factory->format = 'json';
+            $factory->context->setAttribute('foo', 'bar');
         });
 
         // ...
@@ -85,9 +83,9 @@ final class MyTestEvent extends AbstractSerializerTestCase
     
     public function testBar(): void
     {
-        $context = $this->createDeserializationContext(static function(TestSerializerConfigurator $configurator) {
-            $configurator->format = 'json';
-            $configurator->context->setAttribute('foo', 'bar');
+        $context = $this->createDeserializationContext(static function(TestDeserializationContextFactory $factory) {
+            $factory->format = 'json';
+            $factory->context->setAttribute('foo', 'bar');
         });
 
         // ...
@@ -95,7 +93,7 @@ final class MyTestEvent extends AbstractSerializerTestCase
 }
 ```
 
-### TestSerializerConfigurator
+### TestSerializationContextFactory/TestDeserializationContextFactory
 
 Allows to configure the `format` and the factories for the `visitor`, `graph navigator` and `metadata` by updating its
 public properties.
@@ -119,16 +117,14 @@ final class MyTestEvent extends AbstractSerializerTestCase
 {
     public function testFooBar(): void
     {
-        $context = $this->createSerializationContext(static function(TestSerializerConfigurator $configurator) {
-            $configurator->format = 'xml';
+        $context = $this->createSerializationContext(static function(TestSerializationContextFactory $factory) {
+            $factory->format = 'xml';
         });
 
         // ...
     }
 }
 ```
-
-Note: The format is important when using the `TestSerializerConfigurator::getVisitorFactory` method.
 
 #### Configure the Metadata factory
 
@@ -139,8 +135,8 @@ final class MyTestEvent extends AbstractSerializerTestCase
 {
     public function testFooBar(): void
     {
-        $context = $this->createSerializationContext(static function(TestSerializerConfigurator $configurator) {
-            $configurator->metadataFactory = new MetadataFactory(new MyCustomDriver(), ClassHierarchyMetadata::class);
+        $context = $this->createSerializationContext(static function(TestSerializationContextFactory $factory) {
+            $factory->metadataFactory = new MetadataFactory(new MyCustomDriver(), ClassHierarchyMetadata::class);
         });
 
         // ...
@@ -157,9 +153,9 @@ final class MyTestEvent extends AbstractSerializerTestCase
 {
     public function testFooBar(): void
     {
-        $context = $this->createSerializationContext(static function(TestSerializerConfigurator $configurator) {
-            $configurator->format = 'csv';
-            $configurator->setVisitorFactory('csv', new CSVSerializationVisitorFactory())
+        $context = $this->createSerializationContext(static function(TestSerializationContextFactory $factory) {
+            $factory->format = 'csv';
+            $factory->setVisitorFactory('csv', new CSVSerializationVisitorFactory())
         });
 
         // ...
@@ -174,9 +170,9 @@ final class MyTestEvent extends AbstractSerializerTestCase
 {
     public function testFooBar(): void
     {
-        $context = $this->createSerializationContext(static function(TestSerializerConfigurator $configurator) {
-            $configurator->format = 'csv';
-            $configurator->setVisitorFactory(
+        $context = $this->createSerializationContext(static function(TestSerializationContextFactory $factory) {
+            $factory->format = 'csv';
+            $factory->setVisitorFactory(
                 'csv',
                 new TestSerializationVisitorFactory(static fn() => new CSVSerializationVisitor())
             )
@@ -187,8 +183,8 @@ final class MyTestEvent extends AbstractSerializerTestCase
 }
 ```
 
-However, the JMS visitor factories for `json` and `xml` are registered before the closure for customization is called.
-If the visitor allows it, the `SerializationVisitorInterface` and/or `DeserializationVisitorInterface` can be
+However, the JMS visitor factories for `json` and `xml` are already registered before the closure for customization is
+called. If the visitor allows it, the `SerializationVisitorInterface` and/or `DeserializationVisitorInterface` can be
 configured.
 
 ```php
@@ -196,10 +192,10 @@ final class MyTestEvent extends AbstractSerializerTestCase
 {
     public function testFooBar(): void
     {
-        $context = $this->createSerializationContext(static function(TestSerializerConfigurator $configurator) {
-            /** @var JsonSerializationVisitorFactory $factory */
-            $factory = $configurator->getVisitorFactory();
-            $factory->setOptions(JSON_ERROR_NONE);
+        $context = $this->createSerializationContext(static function(TestSerializationContextFactory $factory) {
+            /** @var JsonSerializationVisitorFactory $visitorFactory */
+            $visitorFactory = $factory->getVisitorFactory('json');
+            $visitorFactory->setOptions(JSON_ERROR_NONE);
         });
 
         // ...
@@ -216,8 +212,8 @@ final class MyTestEvent extends AbstractSerializerTestCase
 {
     public function testFooBar(): void
     {
-        $context = $this->createSerializationContext(static function(TestSerializerConfigurator $configurator) {
-            $configurator->graphNavigatorFactory = new MyGraphNavigatorFactory();
+        $context = $this->createSerializationContext(static function(TestSerializationContextFactory $factory) {
+            $factory->graphNavigatorFactory = new MyGraphNavigatorFactory();
         });
 
         // ...
@@ -232,8 +228,8 @@ final class MyTestEvent extends AbstractSerializerTestCase
 {
     public function testFooBar(): void
     {
-        $context = $this->createSerializationContext(static function(TestSerializerConfigurator $configurator) {
-            $configurator->graphNavigatorFactory = new TestGraphNavigatorFactory(static fn() => new MyGraphNavigator());
+        $context = $this->createSerializationContext(static function(TestSerializationContextFactory $factory) {
+            $factory->graphNavigatorFactory = new TestGraphNavigatorFactory(static fn() => new MyGraphNavigator());
         });
 
         // ...
@@ -257,13 +253,13 @@ final class MyTestEvent extends AbstractSerializerTestCase
 {
     public function testFooBar(): void
     {
-        $context = $this->createSerializationContext(static function(TestSerializerConfigurator $configurator) {
-            /** @var TestSerializationGraphNavigatorFactory $factory */
-            $factory = $configurator->graphNavigatorFactory;
-            $factory->handlerRegistry->registerSubscribingHandler(new MyCustomHandler());
-            $factory->accessor            = new MyCustomAccessorStrategy();
-            $factory->dispatcher          = new MyCustomEventDispatcher();
-            $factory->expressionEvaluator = new MyCustomExpressionEvaluator();
+        $context = $this->createSerializationContext(static function(TestSerializationContextFactory $factory) {
+            /** @var TestSerializationGraphNavigatorFactory $navigatorFactory */
+            $navigatorFactory = $factory->graphNavigatorFactory;
+            $navigatorFactory->handlerRegistry->registerSubscribingHandler(new MyCustomHandler());
+            $navigatorFactory->accessor            = new MyCustomAccessorStrategy();
+            $navigatorFactory->dispatcher          = new MyCustomEventDispatcher();
+            $navigatorFactory->expressionEvaluator = new MyCustomExpressionEvaluator();
         });
 
         // ...
@@ -286,14 +282,14 @@ final class MyTestEvent extends AbstractSerializerTestCase
 {
     public function testFooBar(): void
     {
-        $context = $this->createDeserializationContext(static function(TestSerializerConfigurator $configurator) {
-            /** @var TestDeserializationGraphNavigatorFactory $factory */
-            $factory = $configurator->graphNavigatorFactory;
-            $factory->handlerRegistry->registerSubscribingHandler(new MyCustomHandler());
-            $factory->accessor            = new MyCustomAccessorStrategy();
-            $factory->objectConstructor   = new MyObjectConstructor();
-            $factory->dispatcher          = new MyCustomEventDispatcher();
-            $factory->expressionEvaluator = new MyCustomExpressionEvaluator();
+        $context = $this->createDeserializationContext(static function(TestDeserializationContextFactory $factory) {
+            /** @var TestDeserializationGraphNavigatorFactory $graphFactory */
+            $graphFactory = $factory->graphNavigatorFactory;
+            $graphFactory->handlerRegistry->registerSubscribingHandler(new MyCustomHandler());
+            $graphFactory->accessor            = new MyCustomAccessorStrategy();
+            $graphFactory->objectConstructor   = new MyObjectConstructor();
+            $graphFactory->dispatcher          = new MyCustomEventDispatcher();
+            $graphFactory->expressionEvaluator = new MyCustomExpressionEvaluator();
         });
 
         // ...
@@ -306,9 +302,9 @@ Notes:
 - Depending on the context a correct `GraphNavigatorInterface` instance is necessary.
 - The `metadataFactory` property is for internal use and it will be replaced by the test case.
 
-#### Simulate Navigation
+#### Initial Graph Navigation
 
-If the test requires an initial navigation, this can be done with the `pushInitialVisiting` method. This is useful if
+If the test requires an initial navigation, this can be done with the `pushInitialGraph` method. This is useful if
 the logic depends on some context's properties such as the _depth_, _metadata_, etc.
 
 ```php
@@ -316,10 +312,10 @@ final class MyTestEvent extends AbstractSerializerTestCase
 {
     public function testFooBar(): void
     {
-        $context = $this->createSerializationContext(static function(TestSerializerConfigurator $configurator) {
-            $configurator->pushInitialVisiting(new TestAClass(), 'propertyOne');
-            $configurator->pushInitialVisiting(new TestBClass(), 'propertyTwo');
-            // current path will be propertyOne.propertyTwo with the class and property metadatas
+        $context = $this->createSerializationContext(static function(TestSerializationContextFactory $factory) {
+            $factory->pushInitialGraph(new TestAClass(), 'propertyOne');
+            $factory->pushInitialGraph(new TestBClass(), 'propertyTwo');
+            // current path will be propertyOne.propertyTwo
         });
 
         // ...
@@ -363,8 +359,8 @@ final class MyTestEvent extends AbstractEventSubscriberTestCase
     public function testFooBar(): void
     {
         $object     = new \stdClass();
-        $context    = $this->createSerializationContext(static function(TestSerializerConfigurator $configurator) {
-            $configurator->pushInitialVisiting(new TestClass(), 'property');
+        $context    = $this->createSerializationContext(static function(TestSerializationContextFactory $factory) {
+            $factory->pushInitialGraph(new TestClass(), 'property');
         });
         $event      = $this->createPostSerializeEvent($context, $object);
         $subscriber = $this->createSubscriber(static function(MockObject $service) {
