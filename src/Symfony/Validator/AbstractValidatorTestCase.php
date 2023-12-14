@@ -14,19 +14,65 @@ use Symfony\Component\Validator\ValidatorBuilder;
  */
 abstract class AbstractValidatorTestCase extends TestCase
 {
+    protected function configureBuilder(): ValidatorBuilder
+    {
+        return Validation::createValidatorBuilder();
+    }
+
     final protected function validate(
         mixed                      $value,
         Constraint|array           $constraints = null,
         GroupSequence|array|string $groups = null,
         ?callable                  $configure = null,
     ): TestConstraintViolationList {
-        $builder = $this->createBuilder();
+        $builder = $this->configureBuilder();
         if ($configure) {
             $configure($builder);
         }
 
-        $validator = $builder->getValidator();
-        $list      = $validator->validate($value, $constraints, $groups);
+        $list = $builder
+            ->getValidator()
+            ->validate($value, $constraints, $groups)
+        ;
+
+        return new TestConstraintViolationList($list);
+    }
+
+    final protected function validateProperty(
+        object                     $object,
+        string                     $propertyName,
+        GroupSequence|array|string $groups = null,
+        ?callable                  $configure = null,
+    ): TestConstraintViolationList {
+        $builder = $this->configureBuilder();
+        if ($configure) {
+            $configure($builder);
+        }
+
+        $list = $builder
+            ->getValidator()
+            ->validateProperty($object, $propertyName, $groups)
+        ;
+
+        return new TestConstraintViolationList($list);
+    }
+
+    final protected function validatePropertyValue(
+        object|string              $objectOrClass,
+        string                     $propertyName,
+        mixed                      $value,
+        GroupSequence|array|string $groups = null,
+        ?callable                  $configure = null,
+    ): TestConstraintViolationList {
+        $builder = $this->configureBuilder();
+        if ($configure) {
+            $configure($builder);
+        }
+
+        $list = $builder
+            ->getValidator()
+            ->validatePropertyValue($objectOrClass, $propertyName, $value, $groups)
+        ;
 
         return new TestConstraintViolationList($list);
     }
@@ -35,19 +81,12 @@ abstract class AbstractValidatorTestCase extends TestCase
         mixed     $root,
         ?callable $configure = null,
     ): ExecutionContextInterface {
-        $builder = $this->createBuilder();
+        $builder = $this->configureBuilder();
         $factory = new TestExecutionContextFactory();
         if ($configure) {
             $configure($factory, $builder);
         }
 
-        $validator = $builder->getValidator();
-
-        return $factory->createContext($validator, $root);
-    }
-
-    protected function createBuilder(): ValidatorBuilder
-    {
-        return Validation::createValidatorBuilder();
+        return $factory->createContext($builder->getValidator(), $root);
     }
 }

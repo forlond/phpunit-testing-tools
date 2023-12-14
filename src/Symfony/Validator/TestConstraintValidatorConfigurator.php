@@ -27,6 +27,10 @@ class TestConstraintValidatorConfigurator
 
     private Constraint $constraint;
 
+    private Constraint $code;
+
+    private Constraint $root;
+
     public function __construct(
         Constraint|string                            $message,
         private readonly TestConstraintViolationList $list,
@@ -38,6 +42,8 @@ class TestConstraintValidatorConfigurator
         $this->invalidValue    = new IsAnything();
         $this->plural          = new IsAnything();
         $this->constraint      = new IsAnything();
+        $this->code            = new IsAnything();
+        $this->root            = new IsAnything();
     }
 
     public function expect(Constraint|string $message): self
@@ -87,6 +93,20 @@ class TestConstraintValidatorConfigurator
         return $this;
     }
 
+    public function code(Constraint|string $code): self
+    {
+        $this->code = $this->normalize($code);
+
+        return $this;
+    }
+
+    public function root(mixed $root): self
+    {
+        $this->root = $this->normalize($root);
+
+        return $this;
+    }
+
     public function assert(bool $strict = true): void
     {
         $this->list->assert($strict);
@@ -100,6 +120,8 @@ class TestConstraintValidatorConfigurator
             $this->messageTemplate->evaluate($violation->getMessageTemplate(), 'messageTemplate', true) &&
             $this->invalidValue->evaluate($violation->getInvalidValue(), 'invalidValue', true) &&
             $this->plural->evaluate($violation->getPlural(), 'plural', true) &&
+            $this->code->evaluate($violation->getCode(), 'code', true) &&
+            $this->root->evaluate($violation->getRoot(), 'root', true) &&
             $this->constraint->evaluate($violation->getConstraint(), 'constraint', true);
     }
 
