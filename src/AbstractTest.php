@@ -4,6 +4,7 @@ namespace Forlond\TestTools;
 
 use PHPUnit\Framework\Constraint\Constraint;
 use PHPUnit\Framework\Constraint\IsIdentical;
+use PHPUnit\Framework\ExpectationFailedException;
 use SebastianBergmann\Exporter\Exporter;
 
 /**
@@ -17,6 +18,26 @@ abstract class AbstractTest implements TestInterface
     private array $constraints = [];
 
     private ?Exporter $exporter = null;
+
+    public function assert(bool $strict = true): void
+    {
+        $unmatched = [];
+        $value     = $this->getOtherValue();
+        foreach ($this->getConstraints() as $test) {
+            if (!$test->evaluate($value)) {
+                $unmatched[] = $test;
+            }
+        }
+
+        if (!empty($unmatched)) {
+            throw new ExpectationFailedException(
+                sprintf(
+                    'Failed asserting that the following expectations are met: %s',
+                    $this->exporter()->export($unmatched)
+                )
+            );
+        }
+    }
 
     protected function set(string $name, mixed $expected, mixed $actual): void
     {
@@ -47,4 +68,6 @@ abstract class AbstractTest implements TestInterface
 
         return $this->exporter;
     }
+
+    abstract protected function getOtherValue(): mixed;
 }
