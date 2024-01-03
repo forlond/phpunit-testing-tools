@@ -5,7 +5,7 @@ namespace Forlond\TestTools;
 /**
  * @author Carlos Dominguez <ixarlie@gmail.com>
  */
-interface TestInterface
+interface TestConstraintInterface
 {
-    public function assert(bool $strict = true): void;
+    public function evaluate(mixed $other): bool;
 }
