@@ -2,8 +2,7 @@
 
 namespace Forlond\TestTools\Symfony\Form;
 
-use Forlond\TestTools\TestConstraintConfiguratorTrait;
-use Forlond\TestTools\TestInterface;
+use Forlond\TestTools\AbstractTest;
 use PHPUnit\Framework\Constraint\Constraint;
 use PHPUnit\Framework\Constraint\IsInstanceOf;
 use PHPUnit\Framework\ExpectationFailedException;
@@ -12,10 +11,8 @@ use Symfony\Component\Form\FormInterface;
 /**
  * @author Carlos Dominguez <ixarlie@gmail.com>
  */
-final class TestForm implements TestInterface
+final class TestForm extends AbstractTest
 {
-    use TestConstraintConfiguratorTrait;
-
     /**
      * @var array<TestForm|bool>
      */
@@ -137,9 +134,11 @@ final class TestForm implements TestInterface
 
     public function assert(bool $strict = true): void
     {
-        $form = clone $this->form;
-        $name = $form->getName();
-        $this->evaluate($name);
+        parent::assert($strict);
+
+        $form    = clone $this->form;
+        $name    = $form->getName();
+        $visited = [];
 
         foreach ($this->children as $child => $test) {
             $hasChild = $form->has($child);
@@ -158,11 +157,13 @@ final class TestForm implements TestInterface
             }
 
             $test->assert($strict);
-            $form->remove($child);
+            $visited[] = $child;
         }
 
-        if ($strict && $form->count()) {
+        if ($strict && count($visited) !== $form->count()) {
             $names = array_map(static fn(FormInterface $form) => $form->getName(), iterator_to_array($form));
+            $names = array_diff($names, $visited);
+
             throw new ExpectationFailedException(
                 sprintf('Failed asserting that "%s" children does not exist', implode(', ', $names))
             );
