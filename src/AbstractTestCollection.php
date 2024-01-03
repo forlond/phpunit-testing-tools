@@ -11,31 +11,6 @@ abstract class AbstractTestCollection extends AbstractTest
 {
     private int $current = 0;
 
-    protected function set(string $name, mixed $expected, mixed $actual): void
-    {
-        $name = sprintf('%d.%s', $this->current, $name);
-
-        parent::set($name, $expected, $actual);
-    }
-
-    final protected function next(): void
-    {
-        $this->current++;
-    }
-
-    protected function getConstraints(): array
-    {
-        $result      = [];
-        $constraints = parent::getConstraints();
-        foreach ($constraints as $key => $constraint) {
-            [$index] = explode('.', $key);
-            $list = $result[$index] = $result[$index] ?? new TestConstraintCollection();
-            $list->addConstraint($constraint);
-        }
-
-        return $result;
-    }
-
     public function assert(bool $strict = true): void
     {
         $unmatched  = [];
@@ -70,5 +45,35 @@ abstract class AbstractTestCollection extends AbstractTest
         }
     }
 
+    protected function set(string $name, mixed $expected, mixed $actual): void
+    {
+        $name = sprintf('%d.%s', $this->current, $name);
+
+        parent::set($name, $expected, $actual);
+    }
+
+    final protected function next(): void
+    {
+        $this->current++;
+    }
+
+    protected function getConstraints(): array
+    {
+        $result      = [];
+        $constraints = parent::getConstraints();
+        foreach ($constraints as $key => $constraint) {
+            [$index] = explode('.', $key);
+            $list = $result[$index] = $result[$index] ?? new TestConstraintCollection();
+            $list->addConstraint($constraint);
+        }
+
+        return $result;
+    }
+
     abstract protected function getCollection(): array;
+
+    final protected function getOtherValue(): mixed
+    {
+        return null;
+    }
 }

@@ -22,8 +22,9 @@ abstract class AbstractTest implements TestInterface
     public function assert(bool $strict = true): void
     {
         $unmatched = [];
-        foreach ($this->getConstraints() as $field => $test) {
-            if (!$test->evaluate(sprintf('%s constraint.', $field))) {
+        $value     = $this->getOtherValue();
+        foreach ($this->getConstraints() as $test) {
+            if (!$test->evaluate($value)) {
                 $unmatched[] = $test;
             }
         }
@@ -67,4 +68,6 @@ abstract class AbstractTest implements TestInterface
 
         return $this->exporter;
     }
+
+    abstract protected function getOtherValue(): mixed;
 }
