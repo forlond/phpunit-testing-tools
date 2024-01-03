@@ -2,61 +2,124 @@
 
 namespace Forlond\TestTools\Symfony\Validator;
 
-use Forlond\TestTools\PHPUnit\Constraint\TraversableContainsCallback;
-use PHPUnit\Framework\Assert;
+use Forlond\TestTools\AbstractTestCollection;
 use PHPUnit\Framework\Constraint\Constraint;
+use Symfony\Component\Validator\Constraint as ValidatorConstraint;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 /**
  * @author Carlos Dominguez <ixarlie@gmail.com>
  */
-final class TestConstraintViolationList
+final class TestConstraintViolationList extends AbstractTestCollection
 {
-    private array $expects = [];
-
     public function __construct(
         private readonly ConstraintViolationListInterface $list,
     ) {
     }
 
-    public function expect(Constraint|string $message): TestConstraintValidatorConfigurator
+    public function expect(Constraint|string $message): self
     {
-        $configurator    = new TestConstraintValidatorConfigurator($message, $this);
-        $this->expects[] = $configurator;
+        $this->next();
+        $this->set(
+            'message',
+            $message,
+            static fn(ConstraintViolationInterface $violation) => $violation->getMessage()
+        );
 
-        return $configurator;
+        return $this;
     }
 
-    public function assert(bool $strict = true): void
+    public function path(Constraint|string $propertyPath): self
     {
-        if ($strict) {
-            Assert::assertCount(count($this->expects), $this->list, __CLASS__);
-        }
+        $this->set(
+            'path',
+            $propertyPath,
+            static fn(ConstraintViolationInterface $violation) => $violation->getPropertyPath()
+        );
 
-        $violations = clone $this->list;
-        foreach ($this->expects as $expect) {
-            Assert::assertThat(
-                $violations,
-                new TraversableContainsCallback(
-                    $expect,
-                    static function(
-                        TestConstraintValidatorConfigurator $expect,
-                        ConstraintViolationInterface        $violation,
-                        int                                 $index,
-                    ) use ($violations): bool {
-                        if (!$expect->matches($violation)) {
-                            return false;
-                        }
+        return $this;
+    }
 
-                        // When the expected matches, then removes the violation from the main list.
-                        $violations->remove($index);
+    public function parameters(Constraint|array $parameters): self
+    {
+        $this->set(
+            'parameters',
+            $parameters,
+            static fn(ConstraintViolationInterface $violation) => $violation->getParameters()
+        );
 
-                        return true;
-                    }
-                ),
-                __CLASS__
-            );
-        }
+        return $this;
+    }
+
+    public function messageTemplate(Constraint|string $messageTemplate): self
+    {
+        $this->set(
+            'messageTemplate',
+            $messageTemplate,
+            static fn(ConstraintViolationInterface $violation) => $violation->getMessageTemplate()
+        );
+
+        return $this;
+    }
+
+    public function invalidValue(mixed $invalidValue): self
+    {
+        $this->set(
+            'invalidValue',
+            $invalidValue,
+            static fn(ConstraintViolationInterface $violation) => $violation->getInvalidValue()
+        );
+
+        return $this;
+    }
+
+    public function plural(Constraint|int $plural): self
+    {
+        $this->set(
+            'plural',
+            $plural,
+            static fn(ConstraintViolationInterface $violation) => $violation->getPlural()
+        );
+
+        return $this;
+    }
+
+    public function constraint(Constraint|ValidatorConstraint $constraint): self
+    {
+        $this->set(
+            'constraint',
+            $constraint,
+            static fn(ConstraintViolationInterface $violation) => $violation->getConstraint()
+        );
+
+        return $this;
+    }
+
+    public function code(Constraint|string $code): self
+    {
+        $this->set(
+            'code',
+            $code,
+            static fn(ConstraintViolationInterface $violation) => $violation->getCode()
+        );
+
+        return $this;
+    }
+
+    public function root(mixed $root): self
+    {
+        $this->set(
+            'root',
+            $root,
+            static fn(ConstraintViolationInterface $violation) => $violation->getRoot()
+        );
+
+        return $this;
+    }
+
+    protected function getCollection(): array
+    {
+        return iterator_to_array($this->list);
     }
 }
