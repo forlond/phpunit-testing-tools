@@ -5,18 +5,24 @@ namespace Forlond\TestTools;
 use PHPUnit\Framework\Constraint\Constraint;
 
 /**
- * @internal
+ * @author Carlos Dominguez <ixarlie@gmail.com>
  */
-final class TestConstraint
+final class TestConstraint implements TestConstraintInterface
 {
     public function __construct(
-        private readonly Constraint $delegate,
-        private readonly mixed      $value,
+        public readonly string     $name,
+        public readonly Constraint $delegate,
+        public readonly mixed      $value,
     ) {
     }
 
-    public function evaluate(string $description = ''): ?bool
+    public function evaluate(mixed $other): bool
     {
-        return $this->delegate->evaluate($this->value, $description);
+        $value = $this->value;
+        if (is_callable($value)) {
+            $value = $value($other);
+        }
+
+        return $this->delegate->evaluate($value, $this->name, true);
     }
 }
