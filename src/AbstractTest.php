@@ -21,20 +21,20 @@ abstract class AbstractTest implements TestInterface
 
     public function assert(bool $strict = true): void
     {
-        $unmatched = [];
-        $value     = $this->getValue();
+        $unmet = [];
+        $value = $this->getValue();
 
         foreach ($this->getConstraints() as $constraint) {
             if (!$constraint->evaluate($value)) {
-                $unmatched[] = $constraint;
+                $unmet[] = $constraint;
             }
         }
 
-        if (!empty($unmatched)) {
+        if (!empty($unmet)) {
             throw new ExpectationFailedException(
                 sprintf(
                     'Failed asserting that the following constraints are met: %s',
-                    $this->exporter()->export($unmatched)
+                    $this->exporter()->export($unmet)
                 )
             );
         }
