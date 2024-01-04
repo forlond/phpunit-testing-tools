@@ -10,19 +10,14 @@ use PHPUnit\Framework\Constraint\Constraint;
 final class TestConstraint implements TestConstraintInterface
 {
     public function __construct(
-        public readonly string     $name,
         public readonly Constraint $delegate,
-        public readonly mixed      $value,
+        public readonly \Closure   $value,
+        public readonly string     $name,
     ) {
     }
 
     public function evaluate(mixed $other): bool
     {
-        $value = $this->value;
-        if (is_callable($value)) {
-            $value = $value($other);
-        }
-
-        return $this->delegate->evaluate($value, $this->name, true);
+        return $this->delegate->evaluate(($this->value)($other), $this->name, true);
     }
 }

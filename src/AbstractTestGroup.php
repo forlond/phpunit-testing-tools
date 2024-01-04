@@ -7,19 +7,19 @@ use PHPUnit\Framework\ExpectationFailedException;
 /**
  * @author Carlos Dominguez <ixarlie@gmail.com>
  */
-abstract class AbstractTestCollection extends AbstractTest
+abstract class AbstractTestGroup extends AbstractTest
 {
     private int $current = 0;
 
     public function assert(bool $strict = true): void
     {
-        $unmatched  = [];
-        $collection = $this->getCollection();
+        $unmatched = [];
+        $group     = $this->getValue();
 
         foreach ($this->getConstraints() as $constraint) {
-            foreach ($collection as $index => $element) {
+            foreach ($group as $index => $element) {
                 if ($constraint->evaluate($element)) {
-                    unset($collection[$index]);
+                    unset($group[$index]);
                     continue 2;
                 }
             }
@@ -29,27 +29,27 @@ abstract class AbstractTestCollection extends AbstractTest
         if (!empty($unmatched)) {
             throw new ExpectationFailedException(
                 sprintf(
-                    'Failed asserting that list contains the following expectations: %s',
+                    'Failed asserting that list contains the following constraints group: %s',
                     $this->exporter()->export($unmatched)
                 )
             );
         }
 
-        if ($strict && !empty($collection)) {
+        if ($strict && !empty($group)) {
             throw new ExpectationFailedException(
                 sprintf(
                     'Failed asserting that list does not contain the following elements: %s',
-                    $this->exporter()->export($collection)
+                    $this->exporter()->export($group)
                 )
             );
         }
     }
 
-    protected function set(string $name, mixed $expected, mixed $actual): void
-    {
-        $name = sprintf('%d.%s', $this->current, $name);
+    abstract protected function getValue(): array;
 
-        parent::set($name, $expected, $actual);
+    protected function set(string $name, mixed $expected, callable $actual): void
+    {
+        parent::set(sprintf('%d.%s', $this->current, $name), $expected, $actual);
     }
 
     final protected function next(): void
@@ -59,21 +59,14 @@ abstract class AbstractTestCollection extends AbstractTest
 
     protected function getConstraints(): array
     {
-        $result      = [];
+        $groups      = [];
         $constraints = parent::getConstraints();
+
         foreach ($constraints as $key => $constraint) {
             [$index] = explode('.', $key);
-            $list = $result[$index] = $result[$index] ?? new TestConstraintCollection();
-            $list->addConstraint($constraint);
+            $groups[$index][] = $constraint;
         }
 
-        return $result;
-    }
-
-    abstract protected function getCollection(): array;
-
-    final protected function getOtherValue(): mixed
-    {
-        return null;
+        return array_map(static fn(array $constraints) => new TestConstraintGroup($constraints), $groups);
     }
 }

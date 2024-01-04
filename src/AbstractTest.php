@@ -22,24 +22,27 @@ abstract class AbstractTest implements TestInterface
     public function assert(bool $strict = true): void
     {
         $unmatched = [];
-        $value     = $this->getOtherValue();
-        foreach ($this->getConstraints() as $test) {
-            if (!$test->evaluate($value)) {
-                $unmatched[] = $test;
+        $value     = $this->getValue();
+
+        foreach ($this->getConstraints() as $constraint) {
+            if (!$constraint->evaluate($value)) {
+                $unmatched[] = $constraint;
             }
         }
 
         if (!empty($unmatched)) {
             throw new ExpectationFailedException(
                 sprintf(
-                    'Failed asserting that the following expectations are met: %s',
+                    'Failed asserting that the following constraints are met: %s',
                     $this->exporter()->export($unmatched)
                 )
             );
         }
     }
 
-    protected function set(string $name, mixed $expected, mixed $actual): void
+    abstract protected function getValue(): mixed;
+
+    protected function set(string $name, mixed $expected, callable $actual): void
     {
         if (isset($this->constraints[$name])) {
             throw new \RuntimeException('Cannot redefine ' . $name);
@@ -49,7 +52,7 @@ abstract class AbstractTest implements TestInterface
             $expected = new IsIdentical($expected);
         }
 
-        $this->constraints[$name] = new TestConstraint($name, $expected, $actual);
+        $this->constraints[$name] = new TestConstraint($expected, $actual(...), $name);
     }
 
     /**
@@ -68,6 +71,4 @@ abstract class AbstractTest implements TestInterface
 
         return $this->exporter;
     }
-
-    abstract protected function getOtherValue(): mixed;
 }

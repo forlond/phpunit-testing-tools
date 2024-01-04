@@ -5,18 +5,14 @@ namespace Forlond\TestTools;
 /**
  * @author Carlos Dominguez <ixarlie@gmail.com>
  */
-final class TestConstraintCollection implements TestConstraintInterface
+final class TestConstraintGroup implements TestConstraintInterface
 {
-    /**
-     * @var array<TestConstraintInterface>
-     */
-    private array $constraints = [];
-
-    public function addConstraint(TestConstraintInterface $constraint): self
-    {
-        $this->constraints[] = $constraint;
-
-        return $this;
+    public function __construct(
+        /**
+         * @var array<TestConstraintInterface>
+         */
+        private readonly array $constraints,
+    ) {
     }
 
     public function evaluate(mixed $other): bool
