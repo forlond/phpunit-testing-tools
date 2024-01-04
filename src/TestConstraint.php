@@ -10,9 +10,9 @@ use PHPUnit\Framework\Constraint\Constraint;
 final class TestConstraint implements TestConstraintInterface
 {
     public function __construct(
+        public readonly string     $name,
         public readonly Constraint $delegate,
         public readonly \Closure   $value,
-        public readonly string     $name,
     ) {
     }
 

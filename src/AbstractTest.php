@@ -52,7 +52,7 @@ abstract class AbstractTest implements TestInterface
             $expected = new IsIdentical($expected);
         }
 
-        $this->constraints[$name] = new TestConstraint($expected, $actual(...), $name);
+        $this->constraints[$name] = new TestConstraint($name, $expected, $actual(...));
     }
 
     /**

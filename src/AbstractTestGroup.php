@@ -29,7 +29,7 @@ abstract class AbstractTestGroup extends AbstractTest
         if (!empty($unmatched)) {
             throw new ExpectationFailedException(
                 sprintf(
-                    'Failed asserting that list contains the following constraints group: %s',
+                    'Failed asserting that list contains the following constraint groups: %s',
                     $this->exporter()->export($unmatched)
                 )
             );
