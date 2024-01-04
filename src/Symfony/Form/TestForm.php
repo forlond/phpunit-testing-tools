@@ -29,35 +29,35 @@ final class TestForm extends AbstractTest
             $value = new IsInstanceOf($value);
         }
 
-        $this->set('type', $value, $this->form->getConfig()->getType());
+        $this->set('type', $value, static fn(FormInterface $form) => $form->getConfig()->getType());
 
         return $this;
     }
 
     public function options(Constraint|array $value): self
     {
-        $this->set('options', $value, $this->form->getConfig()->getOptions());
+        $this->set('options', $value, static fn(FormInterface $form) => $form->getConfig()->getOptions());
 
         return $this;
     }
 
     public function required(bool $value): self
     {
-        $this->set('required', $value, $this->form->isRequired());
+        $this->set('required', $value, static fn(FormInterface $form) => $form->isRequired());
 
         return $this;
     }
 
     public function disabled(bool $value): self
     {
-        $this->set('disabled', $value, $this->form->isDisabled());
+        $this->set('disabled', $value, static fn(FormInterface $form) => $form->isDisabled());
 
         return $this;
     }
 
     public function isEmpty(bool $value): self
     {
-        $this->set('isEmpty', $value, $this->form->isEmpty());
+        $this->set('isEmpty', $value, static fn(FormInterface $form) => $form->isEmpty());
 
         return $this;
     }
@@ -74,28 +74,28 @@ final class TestForm extends AbstractTest
 
     public function data(mixed $value): self
     {
-        $this->set('data', $value, $this->form->getData());
+        $this->set('data', $value, static fn(FormInterface $form) => $form->getData());
 
         return $this;
     }
 
     public function normData(mixed $value): self
     {
-        $this->set('normData', $value, $this->form->getNormData());
+        $this->set('normData', $value, static fn(FormInterface $form) => $form->getNormData());
 
         return $this;
     }
 
     public function viewData(mixed $value): self
     {
-        $this->set('viewData', $value, $this->form->getViewData());
+        $this->set('viewData', $value, static fn(FormInterface $form) => $form->getViewData());
 
         return $this;
     }
 
     public function extraData(mixed $value): self
     {
-        $this->set('extraData', $value, $this->form->getExtraData());
+        $this->set('extraData', $value, static fn(FormInterface $form) => $form->getExtraData());
 
         return $this;
     }
@@ -106,13 +106,17 @@ final class TestForm extends AbstractTest
             throw new \RuntimeException('Cannot use valid() if the form was not submitted.');
         }
 
-        $this->set('valid', $value, $this->form->isValid());
+        $this->set('valid', $value, static fn(FormInterface $form) => $form->isValid());
 
         return $this;
     }
 
     public function child(string $child, callable $expect): self
     {
+        if (isset($this->children[$child])) {
+            throw new \RuntimeException('Cannot redefine child' . $child);
+        }
+
         if ($this->form->has($child)) {
             $test = new self($this->form->get($child));
             $expect($test);
@@ -127,6 +131,10 @@ final class TestForm extends AbstractTest
 
     public function absence(string $child): self
     {
+        if (isset($this->children[$child])) {
+            throw new \RuntimeException('Cannot redefine child' . $child);
+        }
+
         $this->children[$child] = false;
 
         return $this;
@@ -136,12 +144,11 @@ final class TestForm extends AbstractTest
     {
         parent::assert($strict);
 
-        $form    = clone $this->form;
-        $name    = $form->getName();
+        $name    = $this->form->getName();
         $visited = [];
 
         foreach ($this->children as $child => $test) {
-            $hasChild = $form->has($child);
+            $hasChild = $this->form->has($child);
             if (false === $test) {
                 if ($hasChild) {
                     throw new ExpectationFailedException(
@@ -160,13 +167,18 @@ final class TestForm extends AbstractTest
             $visited[] = $child;
         }
 
-        if ($strict && count($visited) !== $form->count()) {
-            $names = array_map(static fn(FormInterface $form) => $form->getName(), iterator_to_array($form));
+        if ($strict && count($visited) !== $this->form->count()) {
+            $names = array_map(static fn(FormInterface $form) => $form->getName(), iterator_to_array($this->form));
             $names = array_diff($names, $visited);
 
             throw new ExpectationFailedException(
                 sprintf('Failed asserting that "%s" children does not exist', implode(', ', $names))
             );
         }
+    }
+
+    protected function getValue(): FormInterface
+    {
+        return $this->form;
     }
 }
