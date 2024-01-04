@@ -29,7 +29,7 @@ abstract class AbstractTestGroup extends AbstractTest
         if (!empty($unmet)) {
             throw new ExpectationFailedException(
                 sprintf(
-                    'Failed asserting that list contains the following constraint groups: %s',
+                    'Failed asserting that the value contains the following constraint groups: %s',
                     $this->exporter()->export($unmet)
                 )
             );
@@ -38,7 +38,7 @@ abstract class AbstractTestGroup extends AbstractTest
         if ($strict && !empty($group)) {
             throw new ExpectationFailedException(
                 sprintf(
-                    'Failed asserting that list does not contain the following elements: %s',
+                    'Failed asserting that the value does not contain the following elements: %s',
                     $this->exporter()->export($group)
                 )
             );
