@@ -653,5 +653,10 @@ public function assert(bool $strict = true): void
 
 The default behaviour for the `strict` mode is `true`.
 
-Note: If you are using `TestFormErrors` within a `TestForm::errors` call, then it is not necessary to call `assert`,
-the `TestForm::assert` will call it.
+Notes:
+
+- If you are using `TestFormErrors` within a `TestForm::errors` call, then it is not necessary to call `assert`,
+  the `TestForm::assert` will call it.
+- When a form error matches something expected, that form error is not considered again for the remaining
+  expectations. The test fails if the same expectation is added more than once.
+- When a form error is not found for an expectation, then the test fails.
