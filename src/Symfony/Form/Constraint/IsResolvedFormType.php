@@ -16,6 +16,9 @@ final class IsResolvedFormType extends Constraint
         $this->delegate = new IsInstanceOf($this->type);
     }
 
+    /**
+     * @inheritDoc
+     */
     public function evaluate($other, string $description = '', bool $returnResult = false): ?bool
     {
         $other = $this->resolveType($other);
