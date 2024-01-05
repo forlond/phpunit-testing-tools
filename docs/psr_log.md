@@ -32,17 +32,18 @@ Finally, when all the expectations are in place, the `assert` method needs be us
 public function assert(bool $strict = true): void
 ```
 
-- When the `strict` mode is `true`, the number of expected logs must match the number of collected log messages.
+- When the `strict` mode is `true`, there must be an expectation for all the log messages, otherwise the test will fail.
 - When the `strict` mode is `false`, only the expected logs will be checked against the collected log messages,
   regardless of any unchecked log messages.
 
 The default behaviour for the `strict` mode is `true`.
 
-Notes:
+> [!NOTE]
+> When a log message matches something expected, that log message is not considered again for the remaining
+> expectations. The test fails if the same expectation is added more than once.
 
-- When a log message matches something expected, that log message is not considered again for the remaining
-  expectations. The test fails in that case.
-- When a log message is not found for an expectation, then the test fails.
+> [!NOTE]
+> When a log message is not found for an expectation, then the test fails.
 
 ### Examples
 

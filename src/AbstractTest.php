@@ -2,10 +2,10 @@
 
 namespace Forlond\TestTools;
 
+use Forlond\TestTools\Exception\TestFailedException;
 use PHPUnit\Framework\Constraint\Constraint;
 use PHPUnit\Framework\Constraint\IsIdentical;
 use PHPUnit\Framework\ExpectationFailedException;
-use SebastianBergmann\Exporter\Exporter;
 
 /**
  * @author Carlos Dominguez <ixarlie@gmail.com>
@@ -17,29 +17,30 @@ abstract class AbstractTest implements TestInterface
      */
     private array $constraints = [];
 
-    private ?Exporter $exporter = null;
-
+    /**
+     * @inheritDoc
+     */
     public function assert(bool $strict = true): void
     {
-        $unmatched = [];
-        $value     = $this->getOtherValue();
-        foreach ($this->getConstraints() as $test) {
-            if (!$test->evaluate($value)) {
-                $unmatched[] = $test;
+        $failed = [];
+        $value  = $this->getValue();
+
+        foreach ($this->getConstraints() as $constraint) {
+            try {
+                $constraint->evaluate($value);
+            } catch (ExpectationFailedException $e) {
+                $failed[] = $e;
             }
         }
 
-        if (!empty($unmatched)) {
-            throw new ExpectationFailedException(
-                sprintf(
-                    'Failed asserting that the following expectations are met: %s',
-                    $this->exporter()->export($unmatched)
-                )
-            );
+        if (!empty($failed)) {
+            throw new TestFailedException($failed, $this->failureDescription());
         }
     }
 
-    protected function set(string $name, mixed $expected, mixed $actual): void
+    abstract protected function getValue(): mixed;
+
+    protected function set(string $name, mixed $expected, callable $actual): void
     {
         if (isset($this->constraints[$name])) {
             throw new \RuntimeException('Cannot redefine ' . $name);
@@ -49,7 +50,7 @@ abstract class AbstractTest implements TestInterface
             $expected = new IsIdentical($expected);
         }
 
-        $this->constraints[$name] = new TestConstraint($name, $expected, $actual);
+        $this->constraints[$name] = new TestConstraint($name, $expected, $actual(...));
     }
 
     /**
@@ -60,14 +61,8 @@ abstract class AbstractTest implements TestInterface
         return $this->constraints;
     }
 
-    protected function exporter(): Exporter
+    protected function failureDescription(): ?string
     {
-        if ($this->exporter === null) {
-            $this->exporter = new Exporter();
-        }
-
-        return $this->exporter;
+        return null;
     }
-
-    abstract protected function getOtherValue(): mixed;
 }

@@ -10,19 +10,25 @@ use PHPUnit\Framework\Constraint\Constraint;
 final class TestConstraint implements TestConstraintInterface
 {
     public function __construct(
-        public readonly string     $name,
-        public readonly Constraint $delegate,
-        public readonly mixed      $value,
+        private readonly string     $name,
+        private readonly Constraint $delegate,
+        private readonly \Closure   $resolver,
     ) {
     }
 
-    public function evaluate(mixed $other): bool
+    /**
+     * @inheritDoc
+     */
+    public function evaluate(mixed $other, bool $returnResult = false): ?bool
     {
-        $value = $this->value;
-        if (is_callable($value)) {
-            $value = $value($other);
-        }
+        return $this->delegate->evaluate(($this->resolver)($other), $this->name, $returnResult);
+    }
 
-        return $this->delegate->evaluate($value, $this->name, true);
+    /**
+     * @inheritDoc
+     */
+    public function toString(): string
+    {
+        return sprintf('%s %s', $this->name, $this->delegate->toString());
     }
 }
