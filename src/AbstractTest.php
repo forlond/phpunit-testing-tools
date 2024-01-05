@@ -2,10 +2,10 @@
 
 namespace Forlond\TestTools;
 
+use Forlond\TestTools\Exception\TestFailedException;
 use PHPUnit\Framework\Constraint\Constraint;
 use PHPUnit\Framework\Constraint\IsIdentical;
 use PHPUnit\Framework\ExpectationFailedException;
-use SebastianBergmann\Exporter\Exporter;
 
 /**
  * @author Carlos Dominguez <ixarlie@gmail.com>
@@ -17,26 +17,24 @@ abstract class AbstractTest implements TestInterface
      */
     private array $constraints = [];
 
-    private ?Exporter $exporter = null;
-
+    /**
+     * @inheritDoc
+     */
     public function assert(bool $strict = true): void
     {
-        $unmet = [];
-        $value = $this->getValue();
+        $failed = [];
+        $value  = $this->getValue();
 
         foreach ($this->getConstraints() as $constraint) {
-            if (!$constraint->evaluate($value)) {
-                $unmet[] = $constraint;
+            try {
+                $constraint->evaluate($value);
+            } catch (ExpectationFailedException $e) {
+                $failed[] = $e;
             }
         }
 
-        if (!empty($unmet)) {
-            throw new ExpectationFailedException(
-                sprintf(
-                    'Failed asserting that the following constraints are met: %s',
-                    $this->exporter()->export($unmet)
-                )
-            );
+        if (!empty($failed)) {
+            throw new TestFailedException($failed, $this->failureDescription());
         }
     }
 
@@ -63,12 +61,8 @@ abstract class AbstractTest implements TestInterface
         return $this->constraints;
     }
 
-    protected function exporter(): Exporter
+    protected function failureDescription(): ?string
     {
-        if ($this->exporter === null) {
-            $this->exporter = new Exporter();
-        }
-
-        return $this->exporter;
+        return null;
     }
 }

@@ -2,6 +2,9 @@
 
 namespace Forlond\TestTools;
 
+use Forlond\TestTools\Exception\TestFailedException;
+use PHPUnit\Framework\ExpectationFailedException;
+
 /**
  * @author Carlos Dominguez <ixarlie@gmail.com>
  */
@@ -15,14 +18,41 @@ final class TestConstraintGroup implements TestConstraintInterface
     ) {
     }
 
-    public function evaluate(mixed $other): bool
+    /**
+     * @inheritDoc
+     */
+    public function evaluate(mixed $other, bool $returnResult = false): ?bool
     {
+        $failed = [];
         foreach ($this->constraints as $constraint) {
-            if (!$constraint->evaluate($other)) {
-                return false;
+            try {
+                $constraint->evaluate($other);
+            } catch (ExpectationFailedException $e) {
+                $failed[] = $e;
             }
         }
 
-        return true;
+        if ($returnResult) {
+            return empty($failed);
+        }
+
+        if (!empty($failed)) {
+            throw new ExpectationFailedException((new TestFailedException($failed))->getMessage());
+        }
+
+        return null;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function toString(): string
+    {
+        $values = array_map(
+            static fn(TestConstraintInterface $constraint) => $constraint->toString(),
+            $this->constraints
+        );
+
+        return implode("\n", $values);
     }
 }
