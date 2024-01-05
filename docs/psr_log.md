@@ -38,11 +38,12 @@ public function assert(bool $strict = true): void
 
 The default behaviour for the `strict` mode is `true`.
 
-Notes:
+> [!NOTE]
+> When a log message matches something expected, that log message is not considered again for the remaining
+> expectations. The test fails if the same expectation is added more than once.
 
-- When a log message matches something expected, that log message is not considered again for the remaining
-  expectations. The test fails if the same expectation is added more than once.
-- When a log message is not found for an expectation, then the test fails.
+> [!NOTE]
+> When a log message is not found for an expectation, then the test fails.
 
 ### Examples
 

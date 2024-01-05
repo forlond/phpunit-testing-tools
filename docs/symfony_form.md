@@ -2,8 +2,8 @@
 
 ## Integration
 
-Use the `TestForm` to perform expectations to any `FormInterface` instance.
-Use the `TestFormErrors` to perform expectations to any `FormErrorIterator` instance.
+- Use the `TestForm` to perform expectations to any `FormInterface` instance.
+- Use the `TestFormErrors` to perform expectations to any `FormErrorIterator` instance.
 
 ## TestForm
 
@@ -193,7 +193,8 @@ $test
 
 Use the method `errors` to perform expectations about the form errors.
 
-Note: Child errors are not included. Use the `child` method to make errors expectations about child errors.
+> [!NOTE]
+> Child errors are not included. Use the `child` method to make errors expectations about child errors.
 
 The callable will be called with a `TestFormErrors` instance. Read more about `TestFormErrors`.
 
@@ -375,8 +376,9 @@ Use the method `child` to perform expectations about form children.
 
 The callable will be called with a new `TestForm` instance for that child, all the `TestForm` methods ara available.
 
-Note: The use of this method will assert about the existence of the child, so if the child does not exist, the test will
-fail.
+> [!NOTE]
+> The use of this method will assert about the existence of the child, so if the child does not exist the test will
+> fail.
 
 ```php
 public function child(string $child, callable $expect): self
@@ -431,8 +433,9 @@ public function assert(bool $strict = true): void
 
 The default behaviour for the `strict` mode is `true`.
 
-Note: If you are using `TestForm` within a `TestForm::child` call, then it is not necessary to call `assert`,
-the parent `TestForm::assert` will call it.
+> [!NOTE]
+> If you are using `TestForm` within a `TestForm::child` call, then it is not necessary to call `assert`,
+> the parent `TestForm::assert` will call it.
 
 ## TestFormErrors
 
@@ -565,10 +568,13 @@ public function assert(bool $strict = true): void
 
 The default behaviour for the `strict` mode is `true`.
 
-Notes:
+> [!NOTE]
+> If you are using `TestFormErrors` within a `TestForm::errors` call, then it is not necessary to call `assert`,
+> the `TestForm::assert` will call it.
 
-- If you are using `TestFormErrors` within a `TestForm::errors` call, then it is not necessary to call `assert`,
-  the `TestForm::assert` will call it.
-- When a form error matches something expected, that form error is not considered again for the remaining
-  expectations. The test fails if the same expectation is added more than once.
-- When a form error is not found for an expectation, then the test fails.
+> [!NOTE]
+> When a form error matches something expected, that form error is not considered again for the remaining
+> expectations. The test fails if the same expectation is added more than once.
+
+> [!NOTE]
+> When a form error is not found for an expectation, then the test fails.

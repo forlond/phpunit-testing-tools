@@ -29,7 +29,7 @@ final class MyTestEvent extends AbstractSerializerTestCase
     public function testFooBar(): void
     {
         $serializer = $this->createSerializer(static function(SerializerBuilder $builder) {
-            $builder->enableEnumSupport(true);        
+            $builder->enableEnumSupport(true);
         });
 
         // ...
@@ -80,7 +80,7 @@ final class MyTestEvent extends AbstractSerializerTestCase
 
         // ...
     }
-    
+
     public function testBar(): void
     {
         $context = $this->createDeserializationContext(static function(TestDeserializationContextFactory $factory) {
@@ -98,15 +98,20 @@ final class MyTestEvent extends AbstractSerializerTestCase
 Allows to configure the `format` and the factories for the `visitor`, `graph navigator` and `metadata` by updating its
 public properties.
 
-Notes:
+> [!NOTE]
+> The default `format` is `json`
 
-- The default `format` is `json`
-- The default `GraphNavigatorFactoryInterface` for the serialization context is `TestSerializationGraphNavigatorFactory`
-  that creates a configurable `SerializationGraphNavigator`.
-- The default `GraphNavigatorFactoryInterface` for the deserialization context
-  is `TestDeserializationGraphNavigatorFactory` that creates a configurable `DeserializationGraphNavigator`.
-- The default `metadata` factory is the`MetadataFactory` implementation with the `AttributeDriver` driver and
-  the `IdenticalPropertyNamingStrategy` strategy name.
+> [!NOTE]
+> The default `GraphNavigatorFactoryInterface` for the serialization context is `TestSerializationGraphNavigatorFactory`
+> that creates a configurable `SerializationGraphNavigator`.
+
+> [!NOTE]
+> The default `GraphNavigatorFactoryInterface` for the deserialization context
+> is `TestDeserializationGraphNavigatorFactory` that creates a configurable `DeserializationGraphNavigator`.
+
+> [!NOTE]
+> The default `metadata` factory is the`MetadataFactory` implementation with the `AttributeDriver` driver and
+> the `IdenticalPropertyNamingStrategy` strategy name.
 
 #### Configure the Format
 
@@ -297,10 +302,11 @@ final class MyTestEvent extends AbstractSerializerTestCase
 }
 ```
 
-Notes:
+> [!NOTE]
+> Depending on the context a correct `GraphNavigatorInterface` instance is necessary.
 
-- Depending on the context a correct `GraphNavigatorInterface` instance is necessary.
-- The `metadataFactory` property is for internal use and it will be replaced by the test case.
+> [!NOTE]
+> The `metadataFactory` property is for internal use and it will be replaced by the test case.
 
 #### Initial Graph Navigation
 
@@ -378,14 +384,14 @@ final class MyTestEvent extends AbstractEventSubscriberTestCase
 
         self::assertSame(['foo' => 'bar'], $data);
     }
-    
+
     protected function createSubscriber(?callable $configure): MyEventSubscriber
     {
         $service = $this->createMock(ServiceInterface::class);
-        
+
         $configure && $configure($service);
 
-        return new MyEventSubscriber($service);    
+        return new MyEventSubscriber($service);
     }
 }
 ```
@@ -423,14 +429,14 @@ final class MyTestEvent extends AbstractSubscribingHandlerTestCase
 
         self::assertSame(['id' => null], $result);
     }
-    
+
     protected function createHandler(?callable $configure): MySubscribingHandler
     {
         $service = $this->createMock(ServiceInterface::class);
-        
+
         $configure && $configure($service);
 
-        return new MySubscribingHandler($service);    
+        return new MySubscribingHandler($service);
     }
 }
 ```
@@ -473,14 +479,14 @@ final class MyTestEvent extends AbstractObjectConstructorTestCase
 
         self::assertInstanceOf(\stdClass::class, $result);
     }
-    
+
     protected function createConstructor(?callable $configure): ObjectConstructorInterface
     {
         $service = $this->createMock(ServiceInterface::class);
-        
+
         $configure && $configure($service);
 
-        return new MyObjectConstructor($service);    
+        return new MyObjectConstructor($service);
     }
 }
 ```
