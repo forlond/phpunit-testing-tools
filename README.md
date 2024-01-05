@@ -16,3 +16,4 @@ composer require --dev forlond/phpunit-testing-tools
 |------------------------------------------------------------|--------------------|------------------------------------|
 | [JMS/Serializer](https://github.com/schmittjoh/serializer) | 3.x                | [Readme](./docs/jms_serializer.md) |
 | [Psr/Log](https://github.com/php-fig/log)                  | 1.x, 2.x, 3.x      | [Readme](./docs/psr_log.md)        |
+| [Symfony/Form](https://github.com/symfony/form)            | 5.x, 6.x           | [Readme](./docs/symfony_form.md)   |
