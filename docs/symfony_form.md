@@ -15,8 +15,8 @@ Use the method `type` to indicate the form type.
 public function type(Constraint|string $value): self
 ```
 
-Example: Assert the form type is an instance of the specified class (internally value is transformed in
-an `IsInstanceOf` constraint)
+Example: Assert the form type is an instance of the specified class (the value is transformed in
+an `IsInstanceOf` constraint internally)
 
 ```php
 $test = new TestForm($form);
@@ -57,7 +57,7 @@ $test
 ;
 ```
 
-Example: Assert the form options is a subset.
+Example: Assert the form options is an options subset.
 
 ```php
 // options = ['foo' => 'bar', 'bar' => 'baz']
@@ -159,24 +159,6 @@ $test
 ;
 ```
 
-Finally, when all the expectations are in place, the `assert` method needs be used. There are two modalities:
-
-```php
-public function assert(bool $strict = true): void
-```
-
-- When the `strict` mode is `true`, the number of expected logs must match the number of collected log messages.
-- When the `strict` mode is `false`, only the expected logs will be checked against the collected log messages,
-  regardless of any unchecked log messages.
-
-The default behaviour for the `strict` mode is `true`.
-
-Notes:
-
-- When a log message matches something expected, that log message is not considered again for the remaining
-  expectations. The test fails in that case.
-- When a log message is not found for an expectation, then the test fails.
-
 ### propertyPath
 
 Use the method `propertyPath` to indicate the form property path as string value.
@@ -265,24 +247,6 @@ $test
 ;
 ```
 
-Finally, when all the expectations are in place, the `assert` method needs be used. There are two modalities:
-
-```php
-public function assert(bool $strict = true): void
-```
-
-- When the `strict` mode is `true`, the number of expected logs must match the number of collected log messages.
-- When the `strict` mode is `false`, only the expected logs will be checked against the collected log messages,
-  regardless of any unchecked log messages.
-
-The default behaviour for the `strict` mode is `true`.
-
-Notes:
-
-- When a log message matches something expected, that log message is not considered again for the remaining
-  expectations. The test fails in that case.
-- When a log message is not found for an expectation, then the test fails.
-
 ### normData
 
 Use the method `normData` to indicate the form data.
@@ -343,24 +307,6 @@ $test
 ;
 ```
 
-Finally, when all the expectations are in place, the `assert` method needs be used. There are two modalities:
-
-```php
-public function assert(bool $strict = true): void
-```
-
-- When the `strict` mode is `true`, the number of expected logs must match the number of collected log messages.
-- When the `strict` mode is `false`, only the expected logs will be checked against the collected log messages,
-  regardless of any unchecked log messages.
-
-The default behaviour for the `strict` mode is `true`.
-
-Notes:
-
-- When a log message matches something expected, that log message is not considered again for the remaining
-  expectations. The test fails in that case.
-- When a log message is not found for an expectation, then the test fails.
-
 ### extraData
 
 Use the method `extraData` to indicate the form data.
@@ -390,24 +336,6 @@ $test
     ->assert()
 ;
 ```
-
-Finally, when all the expectations are in place, the `assert` method needs be used. There are two modalities:
-
-```php
-public function assert(bool $strict = true): void
-```
-
-- When the `strict` mode is `true`, the number of expected logs must match the number of collected log messages.
-- When the `strict` mode is `false`, only the expected logs will be checked against the collected log messages,
-  regardless of any unchecked log messages.
-
-The default behaviour for the `strict` mode is `true`.
-
-Notes:
-
-- When a log message matches something expected, that log message is not considered again for the remaining
-  expectations. The test fails in that case.
-- When a log message is not found for an expectation, then the test fails.
 
 ### valid
 
@@ -440,24 +368,6 @@ $test
     ->assert()
 ;
 ```
-
-Finally, when all the expectations are in place, the `assert` method needs be used. There are two modalities:
-
-```php
-public function assert(bool $strict = true): void
-```
-
-- When the `strict` mode is `true`, the number of expected logs must match the number of collected log messages.
-- When the `strict` mode is `false`, only the expected logs will be checked against the collected log messages,
-  regardless of any unchecked log messages.
-
-The default behaviour for the `strict` mode is `true`.
-
-Notes:
-
-- When a log message matches something expected, that log message is not considered again for the remaining
-  expectations. The test fails in that case.
-- When a log message is not found for an expectation, then the test fails.
 
 ### child
 
@@ -507,7 +417,9 @@ $test
 ;
 ```
 
-Finally, when all the expectations are in place, the `assert` method needs be used. There are two modalities:
+### assert
+
+Finally, when all the expectations are in place, the `assert` method needs to be used. There are two modalities:
 
 ```php
 public function assert(bool $strict = true): void
@@ -641,7 +553,7 @@ $test
 ;
 ```
 
-Finally, when all the expectations are in place, the `assert` method needs be used. There are two modalities:
+Finally, when all the expectations are in place, the `assert` method needs to be used. There are two modalities:
 
 ```php
 public function assert(bool $strict = true): void
