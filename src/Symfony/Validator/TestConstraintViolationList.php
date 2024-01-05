@@ -2,7 +2,7 @@
 
 namespace Forlond\TestTools\Symfony\Validator;
 
-use Forlond\TestTools\AbstractTestCollection;
+use Forlond\TestTools\AbstractTestGroup;
 use PHPUnit\Framework\Constraint\Constraint;
 use Symfony\Component\Validator\Constraint as ValidatorConstraint;
 use Symfony\Component\Validator\ConstraintViolationInterface;
@@ -11,8 +11,10 @@ use Symfony\Component\Validator\ConstraintViolationListInterface;
 /**
  * @author Carlos Dominguez <ixarlie@gmail.com>
  */
-final class TestConstraintViolationList extends AbstractTestCollection
+final class TestConstraintViolationList extends AbstractTestGroup
 {
+    protected const GROUP_NAME = 'violation list';
+
     public function __construct(
         private readonly ConstraintViolationListInterface $list,
     ) {
@@ -118,7 +120,7 @@ final class TestConstraintViolationList extends AbstractTestCollection
         return $this;
     }
 
-    protected function getCollection(): array
+    protected function getValue(): array
     {
         return iterator_to_array($this->list);
     }
