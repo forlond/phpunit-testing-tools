@@ -10,14 +10,25 @@ use PHPUnit\Framework\Constraint\Constraint;
 final class TestConstraint implements TestConstraintInterface
 {
     public function __construct(
-        public readonly string     $name,
-        public readonly Constraint $delegate,
-        public readonly \Closure   $value,
+        private readonly string     $name,
+        private readonly Constraint $delegate,
+        private readonly \Closure   $resolver,
     ) {
     }
 
-    public function evaluate(mixed $other): bool
+    /**
+     * @inheritDoc
+     */
+    public function evaluate(mixed $other, bool $returnResult = false): ?bool
     {
-        return $this->delegate->evaluate(($this->value)($other), $this->name, true);
+        return $this->delegate->evaluate(($this->resolver)($other), $this->name, $returnResult);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function toString(): string
+    {
+        return sprintf('%s %s', $this->name, $this->delegate->toString());
     }
 }

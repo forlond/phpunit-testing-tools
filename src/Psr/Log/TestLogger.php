@@ -14,6 +14,8 @@ final class TestLogger extends AbstractTestGroup implements LoggerInterface
 {
     use LoggerTrait;
 
+    protected const GROUP_NAME = 'logger';
+
     private array $logs = [];
 
     /**

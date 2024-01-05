@@ -3,6 +3,7 @@
 namespace Forlond\TestTools\Symfony\Form;
 
 use Forlond\TestTools\AbstractTest;
+use Forlond\TestTools\Exception\TestFailedException;
 use PHPUnit\Framework\Constraint\Constraint;
 use PHPUnit\Framework\Constraint\IsInstanceOf;
 use PHPUnit\Framework\ExpectationFailedException;
@@ -17,6 +18,8 @@ final class TestForm extends AbstractTest
      * @var array<TestForm|bool>
      */
     private array $children = [];
+
+    private ?TestFormErrors $errors = null;
 
     public function __construct(
         private readonly FormInterface $form,
@@ -62,14 +65,25 @@ final class TestForm extends AbstractTest
         return $this;
     }
 
-    public function path(): self
+    public function propertyPath(Constraint|string $value): self
     {
-        throw new \RuntimeException('Not implemented yet.');
+        $this->set('propertyPath', $value, static fn(FormInterface $form) => $form->getPropertyPath()?->__toString());
+
+        return $this;
     }
 
-    public function errors(): self
+    public function errors(callable $expect): self
     {
-        throw new \RuntimeException('Not implemented yet.');
+        if (null !== $this->errors) {
+            throw new \RuntimeException('Cannot redefine errors');
+        }
+
+        $test = new TestFormErrors($this->form->getErrors());
+        $expect($test);
+
+        $this->errors = $test;
+
+        return $this;
     }
 
     public function data(mixed $value): self
@@ -114,7 +128,7 @@ final class TestForm extends AbstractTest
     public function child(string $child, callable $expect): self
     {
         if (isset($this->children[$child])) {
-            throw new \RuntimeException('Cannot redefine child' . $child);
+            throw new \RuntimeException('Cannot redefine child ' . $child);
         }
 
         if ($this->form->has($child)) {
@@ -132,7 +146,7 @@ final class TestForm extends AbstractTest
     public function absence(string $child): self
     {
         if (isset($this->children[$child])) {
-            throw new \RuntimeException('Cannot redefine child' . $child);
+            throw new \RuntimeException('Cannot redefine child ' . $child);
         }
 
         $this->children[$child] = false;
@@ -144,26 +158,41 @@ final class TestForm extends AbstractTest
     {
         parent::assert($strict);
 
-        $name    = $this->form->getName();
+        $errors = [];
+
+        try {
+            $this->errors?->assert($strict);
+        } catch (TestFailedException $e) {
+            $errors[] = new ExpectationFailedException(
+                sprintf("%s\nerrors\n%s", $this->failureDescription(), $e->getMessage())
+            );
+        }
+
         $visited = [];
+        $name    = $this->form->getName();
 
         foreach ($this->children as $child => $test) {
             $hasChild = $this->form->has($child);
             if (false === $test) {
                 if ($hasChild) {
-                    throw new ExpectationFailedException(
+                    $errors[] = new ExpectationFailedException(
                         sprintf('Failed asserting that "%s" child does not exist in "%s"', $child, $name)
                     );
                 }
                 continue;
             }
             if (!$hasChild) {
-                throw new ExpectationFailedException(
+                $errors[] = new ExpectationFailedException(
                     sprintf('Failed asserting that "%s" child exists in "%s"', $child, $name)
                 );
+                continue;
             }
 
-            $test->assert($strict);
+            try {
+                $test->assert($strict);
+            } catch (TestFailedException $e) {
+                $errors[] = new ExpectationFailedException($e->getMessage());
+            }
             $visited[] = $child;
         }
 
@@ -171,14 +200,33 @@ final class TestForm extends AbstractTest
             $names = array_map(static fn(FormInterface $form) => $form->getName(), iterator_to_array($this->form));
             $names = array_diff($names, $visited);
 
-            throw new ExpectationFailedException(
-                sprintf('Failed asserting that "%s" children does not exist', implode(', ', $names))
+            $errors[] = new ExpectationFailedException(
+                sprintf(
+                    "%s\nFailed asserting that %s children does not exist.",
+                    $this->failureDescription(),
+                    implode(', ', $names)
+                )
             );
+        }
+
+        if (!empty($errors)) {
+            throw new TestFailedException($errors);
         }
     }
 
     protected function getValue(): FormInterface
     {
         return $this->form;
+    }
+
+    protected function failureDescription(): ?string
+    {
+        $form = $this->form;
+        $name = $form->getName();
+        while ($form = $form->getParent()) {
+            $name = sprintf('%s.%s', $form->getName(), $name);
+        }
+
+        return sprintf('Expectation failed in form "%s"', $name);
     }
 }
