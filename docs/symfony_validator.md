@@ -51,6 +51,8 @@ final class MyTestValidation extends AbstractValidatorTestCase
 }
 ```
 
+---
+
 ```php
 final protected function validateProperty(
     object                     $object,
@@ -91,6 +93,8 @@ final class MyTestValidation extends AbstractValidatorTestCase
     }
 }
 ```
+
+---
 
 ```php
 final protected function validatePropertyValue(
@@ -135,6 +139,8 @@ final class MyTestValidation extends AbstractValidatorTestCase
 }
 ```
 
+---
+
 ```php
 final protected function createExecutionContext(
     mixed     $root,
@@ -150,7 +156,7 @@ class MyObject
     #[
         Assert\Callback()
     ]
-    public function validateClass(ExecutionContextInterface $context)
+    public function validateClass(ExecutionContextInterface $context): void
     {
         // ... validation logic ...
     }
@@ -189,6 +195,8 @@ final class MyTestValidation extends AbstractValidatorTestCase
     }
 }
 ```
+
+---
 
 ```php
 protected function configureBuilder(): ValidatorBuilder;
@@ -253,10 +261,83 @@ The `validate`, `validateProperty` and `validatePropertyValue` methods return a 
 The `TestConstraintViolationList` class allows to define expectations against the `ConstraintViolationListInterface`
 returned by the validator.
 
-Use the `expect` method to start a expectation definition. The `expect` method returns
-a `TestConstraintValidatorConfigurator` instance that allows to define the expectation in a more fluent way.
+Use the `expect` method to start a expectation definition.
 
-Once a violation expection is defined, it is possible to define another by using again the `expect` method.
+```php
+public function expect(Constraint|string $message): self
+```
+
+It is possible to continue defining the expectation with the following methods.
+
+```php
+public function path(Constraint|string $value): self
+```
+
+Assert the violation property path.
+
+---
+
+```php
+public function parameters(Constraint|array $value): self
+```
+
+Assert the violation parameters.
+
+---
+
+```php
+public function messageTemplate(Constraint|string $value): self
+```
+
+Assert the violation message template.
+
+---
+
+```php
+public function invalidValue(mixed $value): self
+```
+
+Assert the violation invalid value.
+
+---
+
+```php
+public function plural(Constraint|int $value): self
+```
+
+Assert the violation plural value.
+
+---
+
+```php
+public function constraint(Constraint|string $value): self
+```
+
+Assert the violation constraint value.
+
+When passing a string value, the value will be transformed in an IsInstanceOf constraint.
+
+---
+
+```php
+public function code(Constraint|string $value): self
+```
+
+Assert the violation code value.
+
+---
+
+```php
+public function root(mixed $value): self
+```
+
+Assert the violation root value.
+
+
+> [!TIP]
+> PHPUnit `Constraint` instances can also be used which provides more powerful assertions.
+
+Once a violation expectation is defined, it is possible to define another one by using again the `expect` method.
 
 When there are no more expectations to define, use the `assert` method.
 
@@ -269,7 +350,6 @@ final class MyTestValidation extends AbstractValidatorTestCase
         $violations = $this->validate($object);
 
         // Assert the violation list has only a violation with "foo.bar.message" as message.
-        // The rest of constraint violation properties are not considered.
         $violations
             ->expect('foo.bar.message')
             ->assert()
@@ -293,7 +373,7 @@ final class MyTestValidation extends AbstractValidatorTestCase
             ->invalidValue(null)
             ->plural(0)
             ->code('code')
-            ->constraint(\Symfony\Component\Validator\Constraints\NotNull::class)
+            ->constraint(NotNull::class)
             ->root($object)
             ->assert()
         ;
@@ -317,7 +397,7 @@ final class MyTestValidation extends AbstractValidatorTestCase
         $object     = new MyObject();
         $violations = $this->validate($object);
 
-        // Assert the violation list has one violation although the list has two violations.
+        // Assert the violation list has one violation although the list may have more violations.
         $violations
             ->expect('foo.bar.message')
             ->assert(false)
@@ -326,9 +406,6 @@ final class MyTestValidation extends AbstractValidatorTestCase
 }
 ```
 
-> [!TIP]
-> The violation expection properties can also be a PHPUnit `Constraint` instance which provides more powerful assertions.
-
 ### Configure custom constraint validators
 
 > [!IMPORTANT]
@@ -336,9 +413,7 @@ final class MyTestValidation extends AbstractValidatorTestCase
 > Constraint validators without dependecies (i.e.: NotNull, Expression) do not need to be registered explicitly.
 
 If the validation logic requires custom `ConstraintValidatorInterface` instances, it is possible to configure them.
-
-This is possible with the `TestConstraintValidatorFactory`. The factory should be set during the `ValidatorInterface`
-configuration.
+The `TestConstraintValidatorFactory` allows to set any `ConstraintValidatorInterface` instance.
 
 Let's imagine `CustomValidator` is the custom constraint validator, so a property class is configured with a `Custom`
 constraint.
@@ -394,7 +469,7 @@ final class MyTestValidation extends AbstractValidatorTestCase
                 $builder->setConstraintValidatorFactory($factory);
 
                 // Example, ignore the constraint validator.
-                // This should be the recommended option as you may have a test case for the constraint validator apart.
+                // This should be the recommended option as you may have a test case apart for the constraint validator.
                 $factory->setNoopInstance(CustomValidator::class);
             }
         );

@@ -4,7 +4,7 @@ namespace Forlond\TestTools\Symfony\Validator;
 
 use Forlond\TestTools\AbstractTestGroup;
 use PHPUnit\Framework\Constraint\Constraint;
-use Symfony\Component\Validator\Constraint as ValidatorConstraint;
+use PHPUnit\Framework\Constraint\IsInstanceOf;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 
@@ -23,99 +23,83 @@ final class TestConstraintViolationList extends AbstractTestGroup
     public function expect(Constraint|string $message): self
     {
         $this->next();
-        $this->set(
-            'message',
-            $message,
-            static fn(ConstraintViolationInterface $violation) => $violation->getMessage()
-        );
+        $this->set('message', $message, static fn(ConstraintViolationInterface $violation) => $violation->getMessage());
 
         return $this;
     }
 
-    public function path(Constraint|string $propertyPath): self
+    public function path(Constraint|string $value): self
     {
-        $this->set(
-            'path',
-            $propertyPath,
-            static fn(ConstraintViolationInterface $violation) => $violation->getPropertyPath()
-        );
+        $this->set('path', $value, static fn(ConstraintViolationInterface $violation) => $violation->getPropertyPath());
 
         return $this;
     }
 
-    public function parameters(Constraint|array $parameters): self
+    public function parameters(Constraint|array $value): self
     {
         $this->set(
             'parameters',
-            $parameters,
+            $value,
             static fn(ConstraintViolationInterface $violation) => $violation->getParameters()
         );
 
         return $this;
     }
 
-    public function messageTemplate(Constraint|string $messageTemplate): self
+    public function messageTemplate(Constraint|string $value): self
     {
         $this->set(
             'messageTemplate',
-            $messageTemplate,
+            $value,
             static fn(ConstraintViolationInterface $violation) => $violation->getMessageTemplate()
         );
 
         return $this;
     }
 
-    public function invalidValue(mixed $invalidValue): self
+    public function invalidValue(mixed $value): self
     {
         $this->set(
             'invalidValue',
-            $invalidValue,
+            $value,
             static fn(ConstraintViolationInterface $violation) => $violation->getInvalidValue()
         );
 
         return $this;
     }
 
-    public function plural(Constraint|int $plural): self
+    public function plural(Constraint|int $value): self
     {
-        $this->set(
-            'plural',
-            $plural,
-            static fn(ConstraintViolationInterface $violation) => $violation->getPlural()
-        );
+        $this->set('plural', $value, static fn(ConstraintViolationInterface $violation) => $violation->getPlural());
 
         return $this;
     }
 
-    public function constraint(Constraint|ValidatorConstraint $constraint): self
+    public function constraint(Constraint|string $value): self
     {
+        if (is_string($value)) {
+            $value = new IsInstanceOf($value);
+        }
+
         $this->set(
             'constraint',
-            $constraint,
+            $value,
             static fn(ConstraintViolationInterface $violation) => $violation->getConstraint()
         );
 
         return $this;
     }
 
-    public function code(Constraint|string $code): self
+    public function code(Constraint|string $value): self
     {
-        $this->set(
-            'code',
-            $code,
-            static fn(ConstraintViolationInterface $violation) => $violation->getCode()
-        );
+        $this->set('code', $value, static fn(ConstraintViolationInterface $violation) => $violation->getCode());
 
         return $this;
     }
 
-    public function root(mixed $root): self
+    public function root(mixed $value): self
     {
-        $this->set(
-            'root',
-            $root,
-            static fn(ConstraintViolationInterface $violation) => $violation->getRoot()
-        );
+        $this->set('root', $value, static fn(ConstraintViolationInterface $violation) => $violation->getRoot());
 
         return $this;
     }
