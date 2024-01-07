@@ -1,11 +1,13 @@
 {
-  "name": "forlond/php-testing-tools",
+  "name": "forlond/phpunit-testing-tools",
   "type": "library",
-  "description": "PHP testing tools",
+  "description": "A set of utilities for PHPUnit testing",
   "keywords": [
-    "testing"
+    "PhpUnit",
+    "testing",
+    "tools"
   ],
-  "homepage": "https://github.com/forlond",
+  "homepage": "https://github.com/forlond/phpunit-testing-tools",
   "license": "MIT",
   "authors": [
     {
@@ -14,14 +16,14 @@
     }
   ],
   "require": {
-    "php": ">=8.1"
+    "php": ">=8.1",
+    "phpunit/phpunit": "^9.5 || ^10"
   },
   "require-dev": {
-    "psr/log": "3.x-dev",
-    "phpunit/phpunit": "^9.5 | ^10",
+    "psr/log": "^1.0 || ^2.0 || ^3.0",
     "jms/serializer": "3.x-dev",
-    "symfony/expression-language": "6.4.x-dev",
-    "doctrine/orm": "3.0.x-dev"
+    "symfony/expression-language": "5.4.x-dev || 6.4.x-dev",
+    "symfony/form": "5.4.x-dev || 6.4.x-dev"
   },
   "conflict": {
   },
@@ -37,8 +39,9 @@
     "files": [
     ]
   },
-  "minimum-stability": "dev",
   "extra": {
-    "branch-version": "0.x"
+    "branch-alias": {
+      "dev-master": "1.x-dev"
+    }
   }
 }

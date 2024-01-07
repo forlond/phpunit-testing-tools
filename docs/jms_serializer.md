@@ -2,7 +2,7 @@
 
 ## Integration
 
-Use one of the following abstract test cases for your custom JMS implementations:
+Use one of the following abstract test cases:
 
 - `AbstractSerializerTestCase` for general serializer purposes.
 - `AbstractEventSubscriberTestCase` for `EventSubscriberInterface` implementations.
@@ -29,7 +29,7 @@ final class MyTestEvent extends AbstractSerializerTestCase
     public function testFooBar(): void
     {
         $serializer = $this->createSerializer(static function(SerializerBuilder $builder) {
-            $builder->enableEnumSupport(true);        
+            $builder->enableEnumSupport(true);
         });
 
         // ...
@@ -40,8 +40,29 @@ final class MyTestEvent extends AbstractSerializerTestCase
 ---
 
 ```php
-protected function createSerializationContext(?callable $configure): TestSerializationContext;
-protected function createDeserializationContext(?callable $configure): TestDeserializationContext
+final protected function parseType(string $type): array
+```
+
+Allows to return well-formed types in an array format.
+
+```php
+final class MyTestEvent extends AbstractSerializerTestCase
+{
+    public function testFooBar(): void
+    {
+        // ['name' => 'array', 'params' => [['name' => 'MyClass', 'params' => []]]
+        $type = $this->parseType('array<MyClass>');
+
+        // ...
+    }
+}
+```
+
+---
+
+```php
+protected function createSerializationContext(?callable $configure): SerializationContext;
+protected function createDeserializationContext(?callable $configure): DeserializationContext
 ```
 
 Allows to create a new `SerializationContext` or `DeserializationContext` instance. The context can be decorated before
@@ -52,98 +73,256 @@ final class MyTestEvent extends AbstractSerializerTestCase
 {
     public function testFoo(): void
     {
-        $context = $this->createSerializationContext(
-            static function(TestSerializerConfigurator $configurator, TestSerializationContext $context) {
-                $configurator->format = 'json';
-                $context->setAttribute('foo', 'bar');
-            }
-        );
+        $context = $this->createSerializationContext(static function(TestSerializationContextFactory $factory) {
+            $factory->format = 'json';
+            $factory->context->setAttribute('foo', 'bar');
+        });
 
         // ...
     }
-    
+
     public function testBar(): void
     {
-        $context = $this->createDeserializationContext(
-            static function(TestSerializerConfigurator $configurator, TestDeserializationContext $context) {
-                $configurator->format = 'json';
-                $context->setAttribute('foo', 'bar');
-            }
-        );
+        $context = $this->createDeserializationContext(static function(TestDeserializationContextFactory $factory) {
+            $factory->format = 'json';
+            $factory->context->setAttribute('foo', 'bar');
+        });
 
         // ...
     }
 }
 ```
 
-### TestSerializerConfigurator
+### TestSerializationContextFactory/TestDeserializationContextFactory
 
-Allows to configure the format, visitor, graph navigator and metadata factory by updating its public properties.
+Allows to configure the `format` and the factories for the `visitor`, `graph navigator` and `metadata` by updating its
+public properties.
 
-- `format`, by default is `json`
-- `visitor`, the `VisitorInterface` instance. If no value is set, then the test case will set the correct
-  out-of-the-box visitor implementation based on the format.
-- `navigator`, the `GraphNavigatorInterface` instance. If no value is set, then the test case will set the correct
-  out-of-the-box graph navigator based on the serialization direction.
-- `metadataFactory`, the `MetadataFactoryInterface` instance. If no value is set, then the test case will set the JMS
-  `MetadataFactory` implementation with the `AttributeDriver` driver and the `IdenticalPropertyNamingStrategy` strategy
-  name.
+> [!NOTE]
+> The default `format` is `json`
 
-#### Configuring visitors
+> [!NOTE]
+> The default `GraphNavigatorFactoryInterface` for the serialization context is `TestSerializationGraphNavigatorFactory`
+> that creates a configurable `SerializationGraphNavigator`.
 
-The `TestSerializerConfigurator` can be configured with different visitor factories. By default, the `json` and `xml`
-visitor factories are already registered before you can do some other changes in the closure.
+> [!NOTE]
+> The default `GraphNavigatorFactoryInterface` for the deserialization context
+> is `TestDeserializationGraphNavigatorFactory` that creates a configurable `DeserializationGraphNavigator`.
+
+> [!NOTE]
+> The default `metadata` factory is the`MetadataFactory` implementation with the `AttributeDriver` driver and
+> the `IdenticalPropertyNamingStrategy` strategy name.
+
+#### Configure the Format
+
+The format is a scalar string value, and it is defaulted to `json`.
 
 ```php
 final class MyTestEvent extends AbstractSerializerTestCase
 {
     public function testFooBar(): void
     {
-        $context = $this->createSerializationContext(
-            static function(TestSerializerConfigurator $configurator, TestSerializationContext $context) {
-                $configurator->format = 'json';
-                $factory = $configurator->getVisitorFactory(); // returns JsonSerializationVisitorFactory
-                $factory->setOptions(JSON_ERROR_NONE);
-            }
-        );
+        $context = $this->createSerializationContext(static function(TestSerializationContextFactory $factory) {
+            $factory->format = 'xml';
+        });
 
         // ...
     }
 }
 ```
 
-Also, your custom visitor implementations can be added:
+#### Configure the Metadata factory
+
+Set a new `MetadataFactoryInterface` instance in the `metadataFactory` property.
 
 ```php
 final class MyTestEvent extends AbstractSerializerTestCase
 {
     public function testFooBar(): void
     {
-        $context = $this->createSerializationContext(
-            static function(TestSerializerConfigurator $configurator, TestSerializationContext $context) {
-                $configurator->format = 'csv';
-                $configurator->setVisitorFactory('csv', new CSVSerializationVisitorFactory())
-            }
-        );
+        $context = $this->createSerializationContext(static function(TestSerializationContextFactory $factory) {
+            $factory->metadataFactory = new MetadataFactory(new MyCustomDriver(), ClassHierarchyMetadata::class);
+        });
 
         // ...
     }
 }
 ```
 
-Finally, you can replicate some navigation state with the `pushInitialVisiting` method. This is useful if your logic
-depends on the context _depth_, _metadata_, etc.
+#### Configure the Visitor factories
+
+New `SerializationVisitorFactory` and/or `DeserializationVisitorFactory` visitors can be registered for certain formats.
 
 ```php
 final class MyTestEvent extends AbstractSerializerTestCase
 {
     public function testFooBar(): void
     {
-        $context = $this->createSerializationContext(
-            static function(TestSerializerConfigurator $configurator, TestSerializationContext $context) {
-                $configurator->pushInitialVisiting(new TestClass(), 'property');
-            }
-        );
+        $context = $this->createSerializationContext(static function(TestSerializationContextFactory $factory) {
+            $factory->format = 'csv';
+            $factory->setVisitorFactory('csv', new CSVSerializationVisitorFactory())
+        });
+
+        // ...
+    }
+}
+```
+
+In case there is no factory for the visitor, the `TestSerializationVisitorFactory` can be used.
+
+```php
+final class MyTestEvent extends AbstractSerializerTestCase
+{
+    public function testFooBar(): void
+    {
+        $context = $this->createSerializationContext(static function(TestSerializationContextFactory $factory) {
+            $factory->format = 'csv';
+            $factory->setVisitorFactory(
+                'csv',
+                new TestSerializationVisitorFactory(static fn() => new CSVSerializationVisitor())
+            )
+        });
+
+        // ...
+    }
+}
+```
+
+However, the JMS visitor factories for `json` and `xml` are already registered before the closure for customization is
+called. If the visitor allows it, the `SerializationVisitorInterface` and/or `DeserializationVisitorInterface` can be
+configured.
+
+```php
+final class MyTestEvent extends AbstractSerializerTestCase
+{
+    public function testFooBar(): void
+    {
+        $context = $this->createSerializationContext(static function(TestSerializationContextFactory $factory) {
+            /** @var JsonSerializationVisitorFactory $visitorFactory */
+            $visitorFactory = $factory->getVisitorFactory('json');
+            $visitorFactory->setOptions(JSON_ERROR_NONE);
+        });
+
+        // ...
+    }
+}
+```
+
+#### Configure the Graph Navigator factory
+
+A new `GraphNavigatorFactoryInterface` can be set by updating the public `graphNavigatorFactory` property.
+
+```php
+final class MyTestEvent extends AbstractSerializerTestCase
+{
+    public function testFooBar(): void
+    {
+        $context = $this->createSerializationContext(static function(TestSerializationContextFactory $factory) {
+            $factory->graphNavigatorFactory = new MyGraphNavigatorFactory();
+        });
+
+        // ...
+    }
+}
+```
+
+In case there is no factory for the graph navigator, the `TestGraphNavigatorFactory` can be used.
+
+```php
+final class MyTestEvent extends AbstractSerializerTestCase
+{
+    public function testFooBar(): void
+    {
+        $context = $this->createSerializationContext(static function(TestSerializationContextFactory $factory) {
+            $factory->graphNavigatorFactory = new TestGraphNavigatorFactory(static fn() => new MyGraphNavigator());
+        });
+
+        // ...
+    }
+}
+```
+
+However, some configurable factories are set initially.
+
+For serialization contexts, the `TestSerializationGraphNavigatorFactory` is initially set as the default factory. This
+factory creates a `SerializationGraphNavigator` instance and allows to configure this navigator instance in the
+following manner:
+
+- Adding handlers to the `HandlerRegistryInterface` instance (by default is `HandlerRegistry`)
+- Changing the `AccessorStrategyInterface` instance (by default is `DefaultAccessorStrategy`)
+- Setting a `EventDispatcherInterface` instance (by default none is set)
+- Setting a `ExpressionEvaluatorInterface` instance (by default none is set)
+
+```php
+final class MyTestEvent extends AbstractSerializerTestCase
+{
+    public function testFooBar(): void
+    {
+        $context = $this->createSerializationContext(static function(TestSerializationContextFactory $factory) {
+            /** @var TestSerializationGraphNavigatorFactory $navigatorFactory */
+            $navigatorFactory = $factory->graphNavigatorFactory;
+            $navigatorFactory->handlerRegistry->registerSubscribingHandler(new MyCustomHandler());
+            $navigatorFactory->accessor            = new MyCustomAccessorStrategy();
+            $navigatorFactory->dispatcher          = new MyCustomEventDispatcher();
+            $navigatorFactory->expressionEvaluator = new MyCustomExpressionEvaluator();
+        });
+
+        // ...
+    }
+}
+```
+
+For deserialization contexts, the `TestDeserializationGraphNavigatorFactory` is initially set as the default factory.
+This factory creates a `DeserializationGraphNavigator` instance and allows to configure this navigator instance in the
+following manner:
+
+- Adding handlers to the `HandlerRegistryInterface` instance (by default is `HandlerRegistry`)
+- Changing the `AccessorStrategyInterface` instance (by default is `DefaultAccessorStrategy`)
+- Changing the `ObjectConstructorInterface` instance (by default is `UnserializeObjectConstructor`)
+- Setting a `EventDispatcherInterface` instance (by default none is set)
+- Setting a `ExpressionEvaluatorInterface` instance (by default none is set)
+
+```php
+final class MyTestEvent extends AbstractSerializerTestCase
+{
+    public function testFooBar(): void
+    {
+        $context = $this->createDeserializationContext(static function(TestDeserializationContextFactory $factory) {
+            /** @var TestDeserializationGraphNavigatorFactory $graphFactory */
+            $graphFactory = $factory->graphNavigatorFactory;
+            $graphFactory->handlerRegistry->registerSubscribingHandler(new MyCustomHandler());
+            $graphFactory->accessor            = new MyCustomAccessorStrategy();
+            $graphFactory->objectConstructor   = new MyObjectConstructor();
+            $graphFactory->dispatcher          = new MyCustomEventDispatcher();
+            $graphFactory->expressionEvaluator = new MyCustomExpressionEvaluator();
+        });
+
+        // ...
+    }
+}
+```
+
+> [!NOTE]
+> Depending on the context a correct `GraphNavigatorInterface` instance is necessary.
+
+> [!NOTE]
+> The `metadataFactory` property is for internal use and it will be replaced by the test case.
+
+#### Initial Graph Navigation
+
+If the test requires an initial navigation, this can be done with the `pushInitialGraph` method. This is useful if
+the logic depends on some context's properties such as the _depth_, _metadata_, etc.
+
+```php
+final class MyTestEvent extends AbstractSerializerTestCase
+{
+    public function testFooBar(): void
+    {
+        $context = $this->createSerializationContext(static function(TestSerializationContextFactory $factory) {
+            $factory->pushInitialGraph(new TestAClass(), 'propertyOne');
+            $factory->pushInitialGraph(new TestBClass(), 'propertyTwo');
+            // current path will be propertyOne.propertyTwo
+        });
 
         // ...
     }
@@ -153,7 +332,7 @@ final class MyTestEvent extends AbstractSerializerTestCase
 ## AbstractEventSubscriberTestCase
 
 Allows to unit test `EventSubscriberInterface` instances. It extends `AbstractSerializerTestCase` to be able to create
-contexts instances.  The test must implement the following method.
+contexts instances. The test must implement the following method.
 
 ```php
 abstract protected function createSubscriber(?callable $configure): EventSubscriberInterface;
@@ -166,19 +345,19 @@ The `configure` closure can be used to configure any mocked service the event su
 In order to create the correct event instance, use one of the following methods:
 
 ```php
-final protected function createPreSerializeEvent(TestSerializationContext $context, object $object): PreSerializeEvent;
-final protected function createPreDeserializeEvent(TestDeserializationContext $context, mixed $data, string $type): PreDeserializeEvent;
-final protected function createPostSerializeEvent(TestSerializationContext $context, object $object): ObjectEvent;
-final protected function createPostDeserializeEvent(TestDeserializationContext $context, object $object): ObjectEvent;
+protected function createPreSerializeEvent(SerializationContext $context, object $object, ?string $type = null): PreSerializeEvent;
+protected function createPreDeserializeEvent(DeserializationContext $context, mixed $data, string $type): PreDeserializeEvent;
+protected function createPostSerializeEvent(SerializationContext $context, object $object, ?string $type = null): ObjectEvent;
+protected function createPostDeserializeEvent(DeserializationContext $context, object $object, ?string $type = null): ObjectEvent;
 ```
 
-For some events, and after the event execution, it is possible to the get the data _result_.
+For some events, and after the subscriber execution, it is possible to the get the data _result_.
 
 ```php
-final protected function getResult(Event $event);
+protected function getEventResult(Event $event): mixed;
 ```
 
-#### Example
+**Example**
 
 ```php
 final class MyTestEvent extends AbstractEventSubscriberTestCase
@@ -186,13 +365,11 @@ final class MyTestEvent extends AbstractEventSubscriberTestCase
     public function testFooBar(): void
     {
         $object     = new \stdClass();
-        $context    = $this->createSerializationContext(
-            static function(TestSerializerConfigurator $configurator, TestDeserializationContext $context) {
-                $configurator->pushInitialVisiting(new TestClass(), 'property');
-            }
-        );
+        $context    = $this->createSerializationContext(static function(TestSerializationContextFactory $factory) {
+            $factory->pushInitialGraph(new TestClass(), 'property');
+        });
         $event      = $this->createPostSerializeEvent($context, $object);
-        $subscriber = $this->createSubscriber(function(MockObject $service) {
+        $subscriber = $this->createSubscriber(static function(MockObject $service) {
             $service
                 ->expect(self::once())
                 ->method('methodName')
@@ -203,18 +380,18 @@ final class MyTestEvent extends AbstractEventSubscriberTestCase
         // The logic adds a foo property with bar value.
         $subscriber->onPostSerialize($event);
 
-        $data = $this->getResult($event);
+        $data = $this->getEventResult($event);
 
         self::assertSame(['foo' => 'bar'], $data);
     }
-    
+
     protected function createSubscriber(?callable $configure): MyEventSubscriber
     {
         $service = $this->createMock(ServiceInterface::class);
-        
+
         $configure && $configure($service);
 
-        return new MyEventSubscriber($service);    
+        return new MyEventSubscriber($service);
     }
 }
 ```
@@ -230,7 +407,7 @@ abstract protected function createHandler(?callable $configure): SubscribingHand
 
 The `configure` closure can be used to configure any mocked service the event subscriber may use.
 
-#### Example
+**Example**
 
 ```php
 final class MyTestEvent extends AbstractSubscribingHandlerTestCase
@@ -239,7 +416,7 @@ final class MyTestEvent extends AbstractSubscribingHandlerTestCase
     {
         $object  = new \stdClass();
         $context = $this->createSerializationContext(null);
-        $handler = $this->createHandler(function(MockObject $service) {
+        $handler = $this->createHandler(static function(MockObject $service) {
             $service
                 ->expect(self::once())
                 ->method('methodName')
@@ -252,14 +429,14 @@ final class MyTestEvent extends AbstractSubscribingHandlerTestCase
 
         self::assertSame(['id' => null], $result);
     }
-    
+
     protected function createHandler(?callable $configure): MySubscribingHandler
     {
         $service = $this->createMock(ServiceInterface::class);
-        
+
         $configure && $configure($service);
 
-        return new MySubscribingHandler($service);    
+        return new MySubscribingHandler($service);
     }
 }
 ```
@@ -275,7 +452,7 @@ abstract protected function createConstructor(?callable $configure): ObjectConst
 
 The `configure` closure can be used to configure any mocked service the event subscriber may use.
 
-#### Example
+**Example**
 
 ```php
 final class MyTestEvent extends AbstractObjectConstructorTestCase
@@ -284,7 +461,7 @@ final class MyTestEvent extends AbstractObjectConstructorTestCase
     {
         $object      = new \stdClass();
         $context     = $this->createDeserializationContext(null);
-        $constructor = $this->createConstructor(function(MockObject $service) {
+        $constructor = $this->createConstructor(static function(MockObject $service) {
             $service
                 ->expect(self::once())
                 ->method('methodName')
@@ -302,14 +479,14 @@ final class MyTestEvent extends AbstractObjectConstructorTestCase
 
         self::assertInstanceOf(\stdClass::class, $result);
     }
-    
+
     protected function createConstructor(?callable $configure): ObjectConstructorInterface
     {
         $service = $this->createMock(ServiceInterface::class);
-        
+
         $configure && $configure($service);
 
-        return new MyObjectConstructor($service);    
+        return new MyObjectConstructor($service);
     }
 }
 ```

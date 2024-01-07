@@ -2,35 +2,37 @@
 
 namespace Forlond\TestTools\Psr\Log;
 
-use Forlond\TestTools\PHPUnit\Constraint\TraversableContainsCallback;
-use JetBrains\PhpStorm\ArrayShape;
-use PHPUnit\Framework\Assert;
+use Forlond\TestTools\AbstractTestGroup;
 use PHPUnit\Framework\Constraint\Constraint;
-use PHPUnit\Framework\Constraint\IsIdentical;
-use Psr\Log\AbstractLogger;
+use Psr\Log\LoggerInterface;
+use Psr\Log\LoggerTrait;
 
 /**
  * @author Carlos Dominguez <ixarlie@gmail.com>
  */
-final class TestLogger extends AbstractLogger
+final class TestLogger extends AbstractTestGroup implements LoggerInterface
 {
+    use LoggerTrait;
+
+    protected const GROUP_NAME = 'logger';
+
     private array $logs = [];
 
-    private array $expects = [];
-
     /**
+     * @param string|\Stringable $message
+     *
      * @inheritDoc
      */
-    public function log($level, \Stringable|string $message, array $context = []): void
+    public function log($level, $message, array $context = []): void
     {
-        $this->logs[] = ['level' => $level, 'message' => $message, 'context' => $context];
+        // Backward compatibility for $message as a non type-hinted argument in v1.x
+        if (!is_string($message) && !$message instanceof \Stringable) {
+            throw new \InvalidArgumentException('Invalid message value. Use string or Stringable instance.');
+        }
+
+        $this->logs[] = ['level' => $level, 'message' => (string) $message, 'context' => $context];
     }
 
-    #[ArrayShape([
-        'level'   => 'string',
-        'message' => 'string',
-        'context' => 'array',
-    ])]
     public function getLogs(): array
     {
         return $this->logs;
@@ -38,52 +40,23 @@ final class TestLogger extends AbstractLogger
 
     public function expect(string $level, Constraint|\Stringable|string $message, Constraint|array|null $context): self
     {
-        if (!$message instanceof Constraint) {
-            $message = new IsIdentical($message);
+        $this->next();
+        $this->set('level', $level, static fn(array $log) => $log['level']);
+        $this->set('message', $message, static fn(array $log) => $log['message']);
+        if (null !== $context) {
+            $this->set('context', $context, static fn(array $log) => $log['context']);
         }
-        if ($context && !$context instanceof Constraint) {
-            $context = new IsIdentical($context);
-        }
-
-        $this->expects[] = ['level' => $level, 'message' => $message, 'context' => $context];
 
         return $this;
     }
 
-    /**
-     * Compare the indicated expects against the registered log messages.
-     * Use the strict option to assert the amount of log messages.
-     */
-    public function assert(bool $strict = true): void
+    public function reset(): void
     {
-        if ($strict) {
-            Assert::assertCount(count($this->expects), $this->logs, __CLASS__);
-        }
+        $this->logs = [];
+    }
 
-        $logs = $this->logs;
-        foreach ($this->expects as $expect) {
-            Assert::assertThat(
-                $logs,
-                new TraversableContainsCallback(
-                    $expect,
-                    function(array $expect, array $log, int $index) use (&$logs): bool {
-                        ['level' => $logLevel, 'message' => $logMessage, 'context' => $logContext] = $log;
-                        ['level' => $level, 'message' => $message, 'context' => $context] = $expect;
-
-                        $result = $logLevel === $level &&
-                            $message->evaluate($logMessage, 'message', true) &&
-                            (!$context || $context->evaluate($logContext, 'context', true));
-
-                        // When the expected matches, then removes the log from the main list.
-                        if ($result) {
-                            unset($logs[$index]);
-                        }
-
-                        return $result;
-                    }
-                ),
-                __CLASS__
-            );
-        }
+    protected function getValue(): array
+    {
+        return $this->logs;
     }
 }
