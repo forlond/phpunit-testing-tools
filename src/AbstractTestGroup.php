@@ -3,6 +3,7 @@
 namespace Forlond\TestTools;
 
 use Forlond\TestTools\Exception\TestFailedException;
+use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\ExpectationFailedException;
 use SebastianBergmann\Exporter\Exporter;
 
@@ -53,6 +54,8 @@ abstract class AbstractTestGroup extends AbstractTest
         if (!empty($failed)) {
             throw new TestFailedException($failed, $this->failureDescription());
         }
+
+        Assert::assertEmpty($failed);
     }
 
     abstract protected function getValue(): array;

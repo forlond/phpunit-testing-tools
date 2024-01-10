@@ -4,6 +4,7 @@ namespace Forlond\TestTools\Symfony\Form;
 
 use Forlond\TestTools\AbstractTest;
 use Forlond\TestTools\Exception\TestFailedException;
+use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\Constraint\Constraint;
 use PHPUnit\Framework\Constraint\IsInstanceOf;
 use PHPUnit\Framework\ExpectationFailedException;
@@ -212,6 +213,8 @@ final class TestForm extends AbstractTest
         if (!empty($errors)) {
             throw new TestFailedException($errors);
         }
+
+        Assert::assertEmpty($errors);
     }
 
     protected function getValue(): FormInterface

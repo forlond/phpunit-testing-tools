@@ -3,6 +3,7 @@
 namespace Forlond\TestTools;
 
 use Forlond\TestTools\Exception\TestFailedException;
+use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\Constraint\Constraint;
 use PHPUnit\Framework\Constraint\IsIdentical;
 use PHPUnit\Framework\ExpectationFailedException;
@@ -36,6 +37,8 @@ abstract class AbstractTest implements TestInterface
         if (!empty($failed)) {
             throw new TestFailedException($failed, $this->failureDescription());
         }
+
+        Assert::assertEmpty($failed);
     }
 
     abstract protected function getValue(): mixed;
