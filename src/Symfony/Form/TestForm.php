@@ -211,11 +211,12 @@ final class TestForm extends AbstractTest
                 );
                 continue;
             }
-
-            try {
-                $test->assert($strict);
-            } catch (TestFailedException $e) {
-                $errors[] = new ExpectationFailedException($e->getMessage());
+            if ($test instanceof self) {
+                try {
+                    $test->assert($strict);
+                } catch (TestFailedException $e) {
+                    $errors[] = new ExpectationFailedException($e->getMessage());
+                }
             }
             $visited[] = $child;
         }
