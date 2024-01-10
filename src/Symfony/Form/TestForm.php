@@ -126,6 +126,13 @@ final class TestForm extends AbstractTest
         return $this;
     }
 
+    public function submitted(bool $value): self
+    {
+        $this->set('submitted', $value, static fn(FormInterface $form) => $form->isSubmitted());
+
+        return $this;
+    }
+
     public function child(string $child, callable $expect): self
     {
         if (isset($this->children[$child])) {

@@ -7,13 +7,11 @@
 
 ## TestForm
 
-### type
-
-Use the method `type` to indicate the form type.
-
 ```php
 public function type(Constraint|string $value): self
 ```
+
+Use the method `type` to indicate the form type.
 
 Example: Assert the form type is an instance of the specified class (the value is transformed in
 an `IsInstanceOf` constraint internally)
@@ -38,13 +36,13 @@ $test
 ;
 ```
 
-### options
-
-Use the method `options` to indicate how is the form options array.
+---
 
 ```php
 public function options(Constraint|array $value): self
 ```
+
+Use the method `options` to indicate how is the form options array.
 
 Example: Assert the form options is exactly the same.
 
@@ -69,13 +67,13 @@ $test
 ;
 ```
 
-### required
-
-Use the method `required` to indicate if the form is required or not.
+---
 
 ```php
 public function required(bool $value): self
 ```
+
+Use the method `required` to indicate if the form is required or not.
 
 Example: Assert the form is required.
 
@@ -99,13 +97,13 @@ $test
 ;
 ```
 
-### disabled
-
-Use the method `disabled` to indicate if the form is disabled or not.
+---
 
 ```php
 public function disabled(bool $value): self
 ```
+
+Use the method `disabled` to indicate if the form is disabled or not.
 
 Example: Assert the form is disabled.
 
@@ -129,13 +127,13 @@ $test
 ;
 ```
 
-### isEmpty
-
-Use the method `isEmpty` to indicate if the form is empty or not.
+---
 
 ```php
 public function isEmpty(bool $value): self
 ```
+
+Use the method `isEmpty` to indicate if the form is empty or not.
 
 Example: Assert the form is empty.
 
@@ -159,13 +157,13 @@ $test
 ;
 ```
 
-### propertyPath
-
-Use the method `propertyPath` to indicate the form property path as string value.
+---
 
 ```php
 public function propertyPath(Constraint|string $value): self
 ```
+
+Use the method `propertyPath` to indicate the form property path as string value.
 
 Example: Assert the form property path is equals to string value.
 
@@ -189,7 +187,11 @@ $test
 ;
 ```
 
-### errors
+---
+
+```php
+public function errors(callable $expect): self
+```
 
 Use the method `errors` to perform expectations about the form errors.
 
@@ -197,10 +199,6 @@ Use the method `errors` to perform expectations about the form errors.
 > Child errors are not included. Use the `child` method to make errors expectations about child errors.
 
 The callable will be called with a `TestFormErrors` instance. Read more about `TestFormErrors`.
-
-```php
-public function errors(callable $expect): self
-```
 
 Example: Assert the form has some errors.
 
@@ -218,13 +216,13 @@ $test
 ;
 ```
 
-### data
-
-Use the method `data` to indicate the form data.
+---
 
 ```php
 public function data(mixed $value): self
 ```
+
+Use the method `data` to indicate the form data.
 
 Example: Assert the form data is exactly the same.
 
@@ -248,13 +246,13 @@ $test
 ;
 ```
 
-### normData
-
-Use the method `normData` to indicate the form data.
+---
 
 ```php
 public function normData(mixed $value): self
 ```
+
+Use the method `normData` to indicate the form data.
 
 Example: Assert the form normData is exactly the same.
 
@@ -278,13 +276,13 @@ $test
 ;
 ```
 
-### viewData
-
-Use the method `viewData` to indicate the form data.
+---
 
 ```php
 public function viewData(mixed $value): self
 ```
+
+Use the method `viewData` to indicate the form data.
 
 Example: Assert the form viewData is exactly the same.
 
@@ -308,13 +306,13 @@ $test
 ;
 ```
 
-### extraData
-
-Use the method `extraData` to indicate the form data.
+---
 
 ```php
 public function extraData(mixed $value): self
 ```
+
+Use the method `extraData` to indicate the form data.
 
 Example: Assert the form extraData is exactly the same.
 
@@ -338,13 +336,13 @@ $test
 ;
 ```
 
-### valid
-
-Use the method `valid` to indicate if the form is valid or not.
+---
 
 ```php
 public function valid(bool $value): self
 ```
+
+Use the method `valid` to indicate if the form is valid or not.
 
 The `valid` method cannot be used if the form was not submitted.
 
@@ -370,7 +368,41 @@ $test
 ;
 ```
 
-### child
+---
+
+```php
+public function submitted(bool $value): self
+```
+
+Use the method `submitted` to indicate if the form is submitted or not.
+
+Example: Assert the form is submitted.
+
+```php
+$test = new TestForm($form);
+
+$test
+    ->submitted(true)
+    ->assert()
+;
+```
+
+Example: Assert the form is not submitted.
+
+```php
+$test = new TestForm($form);
+
+$test
+    ->submitted(false)
+    ->assert()
+;
+```
+
+---
+
+```php
+public function child(string $child, callable $expect): self
+```
 
 Use the method `child` to perform expectations about form children.
 
@@ -379,10 +411,6 @@ The callable will be called with a new `TestForm` instance for that child, all t
 > [!NOTE]
 > The use of this method will assert about the existence of the child, so if the child does not exist the test will
 > fail.
-
-```php
-public function child(string $child, callable $expect): self
-```
 
 Example: Assert the form has a child called `newChild` which is required and `TextType` type.
 
@@ -400,13 +428,13 @@ $test
 ;
 ```
 
-### absence
-
-Use the method `absence` to perform expectations about the absence of form children.
+---
 
 ```php
 public function absence(string $child): self
 ```
+
+Use the method `absence` to perform expectations about the absence of form children.
 
 Example: Assert the form has not a child called `newChild`.
 
@@ -419,13 +447,13 @@ $test
 ;
 ```
 
-### assert
-
-Finally, when all the expectations are in place, the `assert` method needs to be used. There are two modalities:
+---
 
 ```php
 public function assert(bool $strict = true): void
 ```
+
+Finally, when all the expectations are in place, the `assert` method needs to be used. There are two modalities:
 
 - When the `strict` mode is `true`, all the form children should have a expectation. For example, if the form has more
   children than the ones expected, then the test will fail.
@@ -439,13 +467,11 @@ The default behaviour for the `strict` mode is `true`.
 
 ## TestFormErrors
 
-### expect
-
-Use the method `expect` to indicate the existence of a form error message.
-
 ```php
 public function expect(Constraint|string $message): self
 ```
+
+Use the method `expect` to indicate the existence of a form error message.
 
 Example: Assert the form errors have an exact message.
 
@@ -469,13 +495,13 @@ $test
 ;
 ```
 
-### messageTemplate
-
-Use the method `messageTemplate` to indicate the message template for the current form error.
+---
 
 ```php
 public function messageTemplate(Constraint|string $value): self
 ```
+
+Use the method `messageTemplate` to indicate the message template for the current form error.
 
 Example: Assert the error message template.
 
@@ -488,13 +514,13 @@ $test
 ;
 ```
 
-### parameters
-
-Use the method `parameters` to indicate the paratemers for the current form error.
+---
 
 ```php
 public function parameters(Constraint|array $value): self
 ```
+
+Use the method `parameters` to indicate the paratemers for the current form error.
 
 Example: Assert the error parameters.
 
@@ -507,13 +533,13 @@ $test
 ;
 ```
 
-### pluralization
-
-Use the method `pluralization` to indicate the pluralization for the current form error.
+---
 
 ```php
 public function pluralization(Constraint|int $value): self
 ```
+
+Use the method `pluralization` to indicate the pluralization for the current form error.
 
 Example: Assert the error pluralization.
 
@@ -526,13 +552,13 @@ $test
 ;
 ```
 
-### cause
-
-Use the method `cause` to indicate the cause for the current form error.
+---
 
 ```php
 public function cause(mixed $value): self
 ```
+
+Use the method `cause` to indicate the cause for the current form error.
 
 Example: Assert the error cause.
 
@@ -556,11 +582,13 @@ $test
 ;
 ```
 
-Finally, when all the expectations are in place, the `assert` method needs to be used. There are two modalities:
+---
 
 ```php
 public function assert(bool $strict = true): void
 ```
+
+Finally, when all the expectations are in place, the `assert` method needs to be used. There are two modalities:
 
 - When the `strict` mode is `true`, there must be an expectation for all the form errors, otherwise the test will fail.
 - When the `strict` mode is `false`, only the expected form errors will be checked against the form error list,
