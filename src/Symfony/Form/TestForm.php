@@ -20,11 +20,20 @@ final class TestForm extends AbstractTest
      */
     private array $children = [];
 
+    private bool $childAssertion = true;
+
     private ?TestFormErrors $errors = null;
 
     public function __construct(
         private readonly FormInterface $form,
     ) {
+    }
+
+    public function disableChildAssertion(): self
+    {
+        $this->childAssertion = false;
+
+        return $this;
     }
 
     public function type(Constraint|string $value): self
@@ -190,6 +199,10 @@ final class TestForm extends AbstractTest
         $visited = [];
         $name    = $this->form->getName();
 
+        if (!$this->childAssertion && !empty($this->children)) {
+            throw new \RuntimeException('Cannot disable child assertions when declaring children expectations');
+        }
+
         foreach ($this->children as $child => $test) {
             $hasChild = $this->form->has($child);
             if (false === $test) {
@@ -215,7 +228,7 @@ final class TestForm extends AbstractTest
             $visited[] = $child;
         }
 
-        if ($strict && count($visited) !== $this->form->count()) {
+        if ($strict && $this->childAssertion && count($visited) !== $this->form->count()) {
             $names = array_map(static fn(FormInterface $form) => $form->getName(), iterator_to_array($this->form));
             $names = array_diff($names, $visited);
 
