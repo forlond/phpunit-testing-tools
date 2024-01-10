@@ -62,7 +62,37 @@ Example: Assert the form options is an options subset.
 $test = new TestForm($form);
 
 $test
-    ->type(new AssociativeArrayContains(['foo' => 'bar'], false))
+    ->options(new AssociativeArrayContains(['foo' => 'bar'], false))
+    ->assert()
+;
+```
+
+---
+
+```php
+public function option(string $option, mixed $value, mixed $default = null): self
+```
+
+Use the method `option` to indicate the value for any option value.
+
+Example: Assert the form option `foo` is exactly the same.
+
+```php
+$test = new TestForm($form);
+
+$test
+    ->option('foo', 'bar')
+    ->assert()
+;
+```
+
+Example: Assert the form option `foo` matches a constraint.
+
+```php
+$test = new TestForm($form);
+
+$test
+    ->option('foo', new StringStartsWith('bar'))
     ->assert()
 ;
 ```

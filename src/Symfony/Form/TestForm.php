@@ -45,6 +45,17 @@ final class TestForm extends AbstractTest
         return $this;
     }
 
+    public function option(string $name, mixed $value, mixed $default = null): self
+    {
+        $this->set(
+            sprintf('options.%s', $name),
+            $value,
+            static fn(FormInterface $form) => $form->getConfig()->getOption($value, $default)
+        );
+
+        return $this;
+    }
+
     public function required(bool $value): self
     {
         $this->set('required', $value, static fn(FormInterface $form) => $form->isRequired());
