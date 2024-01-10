@@ -431,7 +431,7 @@ $test
 ---
 
 ```php
-public function child(string $child, callable $expect): self
+public function child(string $child, callable|bool $expect): self
 ```
 
 Use the method `child` to perform expectations about form children.
@@ -448,31 +448,37 @@ Example: Assert the form has a child called `newChild` which is required and `Te
 $test = new TestForm($form);
 
 $test
-    ->child('newChild', static function(TestForm $child) {
-        $child
-            ->type(TextType::class)
-            ->required(true)
-        ;
-    })
+    ->child(
+        'newChild',
+        static function(TestForm $child) {
+            $child
+                ->type(TextType::class)
+                ->required(true)
+            ;
+        }
+    )
     ->assert()
 ;
 ```
 
----
-
-```php
-public function absence(string $child): self
-```
-
-Use the method `absence` to perform expectations about the absence of form children.
-
-Example: Assert the form has not a child called `newChild`.
+Example: Assert the form has a child but without any assertion.
 
 ```php
 $test = new TestForm($form);
 
 $test
-    ->absence('newChild')
+    ->child('newChild', true)
+    ->assert()
+;
+```
+
+Example: Assert the form has not a child.
+
+```php
+$test = new TestForm($form);
+
+$test
+    ->child('newChild', false)
     ->assert()
 ;
 ```

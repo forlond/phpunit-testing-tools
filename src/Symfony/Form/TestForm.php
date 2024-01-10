@@ -153,31 +153,23 @@ final class TestForm extends AbstractTest
         return $this;
     }
 
-    public function child(string $child, callable $expect): self
+    public function child(string $child, callable|bool $expect): self
     {
         if (isset($this->children[$child])) {
             throw new \RuntimeException('Cannot redefine child ' . $child);
         }
 
-        if ($this->form->has($child)) {
+        if (!$this->form->has($child) && is_callable($expect)) {
+            $expect = true;
+        }
+        if (is_callable($expect)) {
             $test = new self($this->form->get($child));
             $expect($test);
         } else {
-            $test = true;
+            $test = $expect;
         }
 
         $this->children[$child] = $test;
-
-        return $this;
-    }
-
-    public function absence(string $child): self
-    {
-        if (isset($this->children[$child])) {
-            throw new \RuntimeException('Cannot redefine child ' . $child);
-        }
-
-        $this->children[$child] = false;
 
         return $this;
     }
