@@ -50,7 +50,7 @@ final class TestForm extends AbstractTest
         $this->set(
             sprintf('options.%s', $name),
             $value,
-            static fn(FormInterface $form) => $form->getConfig()->getOption($value, $default)
+            static fn(FormInterface $form) => $form->getConfig()->getOption($name, $default)
         );
 
         return $this;
