@@ -4,6 +4,7 @@ namespace Forlond\TestTools\Symfony\Form;
 
 use Forlond\TestTools\AbstractTest;
 use Forlond\TestTools\Exception\TestFailedException;
+use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\Constraint\Constraint;
 use PHPUnit\Framework\Constraint\IsInstanceOf;
 use PHPUnit\Framework\ExpectationFailedException;
@@ -19,11 +20,20 @@ final class TestForm extends AbstractTest
      */
     private array $children = [];
 
+    private bool $childAssertion = true;
+
     private ?TestFormErrors $errors = null;
 
     public function __construct(
         private readonly FormInterface $form,
     ) {
+    }
+
+    public function disableChildAssertion(): self
+    {
+        $this->childAssertion = false;
+
+        return $this;
     }
 
     public function type(Constraint|string $value): self
@@ -40,6 +50,17 @@ final class TestForm extends AbstractTest
     public function options(Constraint|array $value): self
     {
         $this->set('options', $value, static fn(FormInterface $form) => $form->getConfig()->getOptions());
+
+        return $this;
+    }
+
+    public function option(string $name, mixed $value, mixed $default = null): self
+    {
+        $this->set(
+            sprintf('options.%s', $name),
+            $value,
+            static fn(FormInterface $form) => $form->getConfig()->getOption($name, $default)
+        );
 
         return $this;
     }
@@ -125,31 +146,30 @@ final class TestForm extends AbstractTest
         return $this;
     }
 
-    public function child(string $child, callable $expect): self
+    public function submitted(bool $value): self
     {
-        if (isset($this->children[$child])) {
-            throw new \RuntimeException('Cannot redefine child ' . $child);
-        }
-
-        if ($this->form->has($child)) {
-            $test = new self($this->form->get($child));
-            $expect($test);
-        } else {
-            $test = true;
-        }
-
-        $this->children[$child] = $test;
+        $this->set('submitted', $value, static fn(FormInterface $form) => $form->isSubmitted());
 
         return $this;
     }
 
-    public function absence(string $child): self
+    public function child(string $child, callable|bool $expect): self
     {
         if (isset($this->children[$child])) {
             throw new \RuntimeException('Cannot redefine child ' . $child);
         }
 
-        $this->children[$child] = false;
+        if (!$this->form->has($child) && is_callable($expect)) {
+            $expect = true;
+        }
+        if (is_callable($expect)) {
+            $test = new self($this->form->get($child));
+            $expect($test);
+        } else {
+            $test = $expect;
+        }
+
+        $this->children[$child] = $test;
 
         return $this;
     }
@@ -171,6 +191,10 @@ final class TestForm extends AbstractTest
         $visited = [];
         $name    = $this->form->getName();
 
+        if (!$this->childAssertion && !empty($this->children)) {
+            throw new \RuntimeException('Cannot disable child assertions when declaring children expectations');
+        }
+
         foreach ($this->children as $child => $test) {
             $hasChild = $this->form->has($child);
             if (false === $test) {
@@ -187,16 +211,17 @@ final class TestForm extends AbstractTest
                 );
                 continue;
             }
-
-            try {
-                $test->assert($strict);
-            } catch (TestFailedException $e) {
-                $errors[] = new ExpectationFailedException($e->getMessage());
+            if ($test instanceof self) {
+                try {
+                    $test->assert($strict);
+                } catch (TestFailedException $e) {
+                    $errors[] = new ExpectationFailedException($e->getMessage());
+                }
             }
             $visited[] = $child;
         }
 
-        if ($strict && count($visited) !== $this->form->count()) {
+        if ($strict && $this->childAssertion && count($visited) !== $this->form->count()) {
             $names = array_map(static fn(FormInterface $form) => $form->getName(), iterator_to_array($this->form));
             $names = array_diff($names, $visited);
 
@@ -212,6 +237,8 @@ final class TestForm extends AbstractTest
         if (!empty($errors)) {
             throw new TestFailedException($errors);
         }
+
+        Assert::assertEmpty($errors);
     }
 
     protected function getValue(): FormInterface
