@@ -13,36 +13,36 @@ abstract class AbstractEventSubscriberTestCase extends AbstractEntityManagerTest
 {
     abstract protected function createSubscriber(?callable $configure): EventSubscriber;
 
-    protected function createPostLoadEvent(TestEntityManager $manager, object $object): Event\PostLoadEventArgs
+    final protected function createPostLoadEvent(TestEntityManager $manager, object $object): Event\PostLoadEventArgs
     {
         return new Event\PostLoadEventArgs($object, $manager);
     }
 
-    protected function createLoadClassMetadataEvent(
+    final protected function createLoadClassMetadataEvent(
         TestEntityManager $manager,
         ClassMetadata     $classMetadata,
     ): Event\LoadClassMetadataEventArgs {
         return new Event\LoadClassMetadataEventArgs($classMetadata, $manager);
     }
 
-    protected function createOnClassMetadataNotFoundEvent(
+    final protected function createOnClassMetadataNotFoundEvent(
         TestEntityManager $manager,
         string            $className,
     ): Event\OnClassMetadataNotFoundEventArgs {
         return new Event\OnClassMetadataNotFoundEventArgs($className, $manager);
     }
 
-    protected function createPrePersistEvent(TestEntityManager $manager, object $object): Event\PrePersistEventArgs
+    final protected function createPrePersistEvent(TestEntityManager $manager, object $object): Event\PrePersistEventArgs
     {
         return new Event\PrePersistEventArgs($object, $manager);
     }
 
-    protected function createPostPersistEvent(TestEntityManager $manager, object $object): Event\PostPersistEventArgs
+    final protected function createPostPersistEvent(TestEntityManager $manager, object $object): Event\PostPersistEventArgs
     {
         return new Event\PostPersistEventArgs($object, $manager);
     }
 
-    protected function createPreUpdateEvent(
+    final protected function createPreUpdateEvent(
         TestEntityManager $manager,
         object            $object,
         array             &$changeSet,
@@ -50,37 +50,37 @@ abstract class AbstractEventSubscriberTestCase extends AbstractEntityManagerTest
         return new Event\PreUpdateEventArgs($object, $manager, $changeSet);
     }
 
-    protected function createPostUpdateEvent(TestEntityManager $manager, object $object): Event\PostUpdateEventArgs
+    final protected function createPostUpdateEvent(TestEntityManager $manager, object $object): Event\PostUpdateEventArgs
     {
         return new Event\PostUpdateEventArgs($object, $manager);
     }
 
-    protected function createPreRemoveEvent(TestEntityManager $manager, object $object): Event\PreRemoveEventArgs
+    final protected function createPreRemoveEvent(TestEntityManager $manager, object $object): Event\PreRemoveEventArgs
     {
         return new Event\PreRemoveEventArgs($object, $manager);
     }
 
-    protected function createPostRemoveEvent(TestEntityManager $manager, object $object): Event\PostRemoveEventArgs
+    final protected function createPostRemoveEvent(TestEntityManager $manager, object $object): Event\PostRemoveEventArgs
     {
         return new Event\PostRemoveEventArgs($object, $manager);
     }
 
-    protected function createPreFlushEvent(TestEntityManager $manager): Event\PreFlushEventArgs
+    final protected function createPreFlushEvent(TestEntityManager $manager): Event\PreFlushEventArgs
     {
         return new Event\PreFlushEventArgs($manager);
     }
 
-    protected function createOnFlushEvent(TestEntityManager $manager): Event\OnFlushEventArgs
+    final protected function createOnFlushEvent(TestEntityManager $manager): Event\OnFlushEventArgs
     {
         return new Event\OnFlushEventArgs($manager);
     }
 
-    protected function createPostFlushEvent(TestEntityManager $manager): Event\PostFlushEventArgs
+    final protected function createPostFlushEvent(TestEntityManager $manager): Event\PostFlushEventArgs
     {
         return new Event\PostFlushEventArgs($manager);
     }
 
-    protected function createOnClearEvent(TestEntityManager $manager): Event\OnClearEventArgs
+    final protected function createOnClearEvent(TestEntityManager $manager): Event\OnClearEventArgs
     {
         return new Event\OnClearEventArgs($manager);
     }

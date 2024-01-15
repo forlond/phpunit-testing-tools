@@ -18,3 +18,4 @@ composer require --dev forlond/phpunit-testing-tools
 | [Psr/Log](https://github.com/php-fig/log)                  | 1.x, 2.x, 3.x      | [Readme](./docs/psr_log.md)           |
 | [Symfony/Form](https://github.com/symfony/form)            | 5.x, 6.x           | [Readme](./docs/symfony_form.md)      |
 | [Symfony/Validator](https://github.com/symfony/validator)  | 5.x, 6.x           | [Readme](./docs/symfony_validator.md) |
+| [Doctrine/ORM](https://github.com/doctrine/orm)            | 3.x                | [Readme](./docs/doctrine_orm.md)      |

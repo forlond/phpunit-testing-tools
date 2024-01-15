@@ -10,8 +10,15 @@ use PHPUnit\Framework\TestCase;
  */
 abstract class AbstractDBALTestCase extends TestCase
 {
-    protected function createConnection(AbstractPlatform $platform): TestDBALConnection
+    final protected function createConnection(?AbstractPlatform $platform = null): TestDBALConnection
     {
-        return new TestDBALConnection(new TestDBALDriver(new TestDBALDriverConnection(), $platform));
+        return new TestDBALConnection(
+            new TestDBALDriver(new TestDBALDriverConnection(), $platform ?? $this->getPlatform())
+        );
+    }
+
+    protected function getPlatform(): AbstractPlatform
+    {
+        return new TestPlatform();
     }
 }

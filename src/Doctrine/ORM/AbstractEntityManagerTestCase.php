@@ -7,15 +7,16 @@ use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\AttributeDriver;
 use Forlond\TestTools\Doctrine\DBAL\AbstractDBALTestCase;
-use Forlond\TestTools\Doctrine\DBAL\TestPlatform;
 
 /**
  * @author Carlos Dominguez <ixarlie@gmail.com>
  */
 abstract class AbstractEntityManagerTestCase extends AbstractDBALTestCase
 {
-    protected function createEntityManager(?callable $configure, ?AbstractPlatform $platform = null): TestEntityManager
-    {
+    final protected function createEntityManager(
+        ?callable         $configure,
+        ?AbstractPlatform $platform = null,
+    ): TestEntityManager {
         $configuration = new Configuration();
         $configure && $configure($configuration);
 
@@ -25,12 +26,7 @@ abstract class AbstractEntityManagerTestCase extends AbstractDBALTestCase
         $configuration->setProxyNamespace($configuration->getProxyNamespace() ?? 'DoctrineTest');
 
         return new TestEntityManager(
-            new EntityManager($this->createConnection($platform ?? $this->getPlatform()), $configuration)
+            new EntityManager($this->createConnection($platform), $configuration)
         );
-    }
-
-    protected function getPlatform(): AbstractPlatform
-    {
-        return new TestPlatform();
     }
 }
