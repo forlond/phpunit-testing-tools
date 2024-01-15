@@ -5,7 +5,6 @@ namespace Forlond\TestTools\Doctrine\DBAL;
 use Doctrine\DBAL\Cache\ArrayResult;
 use Doctrine\DBAL\Driver\Connection;
 use Doctrine\DBAL\Driver\Result;
-use Doctrine\DBAL\Driver\Statement;
 use Doctrine\DBAL\ParameterType;
 
 /**
@@ -15,7 +14,7 @@ final class TestDBALDriverConnection implements Connection
 {
     public array $results = [];
 
-    public function prepare(string $sql): Statement
+    public function prepare(string $sql): TestStatement
     {
         return new TestStatement($this->results);
     }

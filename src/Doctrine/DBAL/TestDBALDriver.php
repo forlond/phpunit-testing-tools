@@ -5,7 +5,13 @@ namespace Forlond\TestTools\Doctrine\DBAL;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver;
 use Doctrine\DBAL\Driver\API\ExceptionConverter;
+use Doctrine\DBAL\Driver\Exception;
+use Doctrine\DBAL\Exception\DriverException;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
+use Doctrine\DBAL\Query;
+use Doctrine\DBAL\Schema\AbstractSchemaManager;
+use Doctrine\DBAL\Schema\Column;
+use Doctrine\DBAL\Types\StringType;
 
 /**
  * @author Carlos Dominguez <ixarlie@gmail.com>
@@ -14,21 +20,19 @@ final class TestDBALDriver implements Driver
 {
     public function __construct(
         public readonly TestDBALDriverConnection $connection,
-        public readonly TestExceptionConverter   $exceptionConverter,
         private readonly AbstractPlatform        $platform,
-        private readonly ?Driver                 $delegate = null,
     ) {
     }
 
     /**
      * @inheritDoc
      */
-    public function connect(array $params, $username = null, $password = null, array $driverOptions = [])
-    {
-        if ($this->delegate) {
-            return $this->delegate->connect($params, $username, $password, $driverOptions);
-        }
-
+    public function connect(
+        array $params,
+              $username = null,
+              $password = null,
+        array $driverOptions = [],
+    ): TestDBALDriverConnection {
         return $this->connection;
     }
 
@@ -37,10 +41,6 @@ final class TestDBALDriver implements Driver
      */
     public function getDatabasePlatform()
     {
-        if ($this->delegate) {
-            return $this->delegate->getDatabasePlatform();
-        }
-
         return $this->platform;
     }
 
@@ -49,11 +49,12 @@ final class TestDBALDriver implements Driver
      */
     public function getSchemaManager(Connection $conn, AbstractPlatform $platform)
     {
-        if ($this->delegate) {
-            return $this->delegate->getSchemaManager($conn, $platform);
-        }
-
-        return new TestSchemaManager($conn, $platform);
+        return new class() extends AbstractSchemaManager {
+            protected function _getPortableTableColumnDefinition($tableColumn)
+            {
+                return new Column('test_column', new StringType());
+            }
+        };
     }
 
     /**
@@ -61,10 +62,11 @@ final class TestDBALDriver implements Driver
      */
     public function getExceptionConverter(): ExceptionConverter
     {
-        if ($this->delegate) {
-            return $this->delegate->getExceptionConverter();
-        }
-
-        return $this->exceptionConverter;
+        return new class() implements ExceptionConverter {
+            public function convert(Exception $exception, ?Query $query): DriverException
+            {
+                return new DriverException($exception, $query);
+            }
+        };
     }
 }
