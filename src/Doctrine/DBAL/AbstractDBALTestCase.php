@@ -2,6 +2,7 @@
 
 namespace Forlond\TestTools\Doctrine\DBAL;
 
+use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use PHPUnit\Framework\TestCase;
 
@@ -10,14 +11,22 @@ use PHPUnit\Framework\TestCase;
  */
 abstract class AbstractDBALTestCase extends TestCase
 {
-    final protected function createConnection(?AbstractPlatform $platform = null): TestDBALConnection
-    {
+    final protected function createConnection(
+        ?Configuration    $configuration = null,
+        ?AbstractPlatform $platform = null,
+    ): TestDBALConnection {
         return new TestDBALConnection(
-            new TestDBALDriver(new TestDBALDriverConnection(), $platform ?? $this->getPlatform())
+            new TestDBALDriver(new TestDBALDriverConnection(), $platform ?? $this->createPlatform()),
+            $configuration ?? $this->createConfiguration()
         );
     }
 
-    protected function getPlatform(): AbstractPlatform
+    protected function createConfiguration(): Configuration
+    {
+        return new Configuration();
+    }
+
+    protected function createPlatform(): AbstractPlatform
     {
         return new TestPlatform();
     }

@@ -32,13 +32,17 @@ abstract class AbstractEventSubscriberTestCase extends AbstractEntityManagerTest
         return new Event\OnClassMetadataNotFoundEventArgs($className, $manager);
     }
 
-    final protected function createPrePersistEvent(TestEntityManager $manager, object $object): Event\PrePersistEventArgs
-    {
+    final protected function createPrePersistEvent(
+        TestEntityManager $manager,
+        object            $object,
+    ): Event\PrePersistEventArgs {
         return new Event\PrePersistEventArgs($object, $manager);
     }
 
-    final protected function createPostPersistEvent(TestEntityManager $manager, object $object): Event\PostPersistEventArgs
-    {
+    final protected function createPostPersistEvent(
+        TestEntityManager $manager,
+        object            $object,
+    ): Event\PostPersistEventArgs {
         return new Event\PostPersistEventArgs($object, $manager);
     }
 
@@ -50,8 +54,10 @@ abstract class AbstractEventSubscriberTestCase extends AbstractEntityManagerTest
         return new Event\PreUpdateEventArgs($object, $manager, $changeSet);
     }
 
-    final protected function createPostUpdateEvent(TestEntityManager $manager, object $object): Event\PostUpdateEventArgs
-    {
+    final protected function createPostUpdateEvent(
+        TestEntityManager $manager,
+        object            $object,
+    ): Event\PostUpdateEventArgs {
         return new Event\PostUpdateEventArgs($object, $manager);
     }
 
@@ -60,8 +66,10 @@ abstract class AbstractEventSubscriberTestCase extends AbstractEntityManagerTest
         return new Event\PreRemoveEventArgs($object, $manager);
     }
 
-    final protected function createPostRemoveEvent(TestEntityManager $manager, object $object): Event\PostRemoveEventArgs
-    {
+    final protected function createPostRemoveEvent(
+        TestEntityManager $manager,
+        object            $object,
+    ): Event\PostRemoveEventArgs {
         return new Event\PostRemoveEventArgs($object, $manager);
     }
 

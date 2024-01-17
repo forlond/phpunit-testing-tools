@@ -14,19 +14,23 @@ use Forlond\TestTools\Doctrine\DBAL\AbstractDBALTestCase;
 abstract class AbstractEntityManagerTestCase extends AbstractDBALTestCase
 {
     final protected function createEntityManager(
-        ?callable         $configure,
+        ?Configuration    $configuration = null,
         ?AbstractPlatform $platform = null,
     ): TestEntityManager {
+        $configuration = $configuration ?? $this->createConfiguration();
+        $connection    = $this->createConnection($configuration, $platform);
+
+        return new TestEntityManager(new EntityManager($connection, $configuration));
+    }
+
+    protected function createConfiguration(): Configuration
+    {
         $configuration = new Configuration();
-        $configure && $configure($configuration);
+        // Apply default values, the user can modify this.
+        $configuration->setMetadataDriverImpl(new AttributeDriver([]));
+        $configuration->setProxyDir(sys_get_temp_dir());
+        $configuration->setProxyNamespace('DoctrineTest');
 
-        // Apply necessary default values if the user has not set any.
-        $configuration->setMetadataDriverImpl($configuration->getMetadataDriverImpl() ?? new AttributeDriver([]));
-        $configuration->setProxyDir($configuration->getProxyDir() ?? sys_get_temp_dir());
-        $configuration->setProxyNamespace($configuration->getProxyNamespace() ?? 'DoctrineTest');
-
-        return new TestEntityManager(
-            new EntityManager($this->createConnection($platform), $configuration)
-        );
+        return $configuration;
     }
 }

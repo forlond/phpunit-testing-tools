@@ -10,53 +10,134 @@ Use one of the following abstract test cases:
 
 ## AbstractDBALTestCase
 
-Provides a base for any test that uses DBAL connection, drivers, etc.
-
-### Methods
+Provides a base for any test that uses a DBAL connection.
 
 ```php
-final protected function createConnection(?AbstractPlatform $platform = null): TestDBALConnection;
+final protected function createConnection(
+    ?Configuration $configuration = null,
+    ?AbstractPlatform $platform = null,
+): TestDBALConnection;
 ```
 
-Allows to create a new `Connection` DBAL instance.
+Creates a new `TestDBALConnection` instance which extends from `Doctrine\DBAL\Connection`.
 
-It is possible to pass a specific platform, otherwise the defined class platform will be used.
+It is possible to pass a custom `Doctrine\DBAL\Configuration`, otherwise the `createConnection` method will be used.
+
+It is possible to pass a custom `Doctrine\DBAL\Platforms\AbstractPlatform`, otherwise the `createPlatform` method will
+be used.
+
+> [!IMPORTANT]
+> The `TestDBALConnection` has limited functionalities, but it is possible to configure the result of any statement.
+> Use `TestDBALConnection::setResult` before using any other method that returns results.
+
+Example:
+
+```php
+final class MyClassTest extends AbstractDBALTestCase
+{
+    public function testStatement(): void
+    {
+        $connection = $this->createConnection();
+
+        $connection->setResults(['first', 'second'], ['other_first', 'other_second']);
+        $value = $connection->fetchFirstColumn('SELECT * FROM foobar');
+
+        self::assertSame(['first', 'other_first'], $value);
+    }
+}
+```
 
 ---
 
 ```php
-protected function getPlatform(): AbstractPlatform
+protected function createConfiguration(): AbstractPlatform
 ```
 
-Allows to change the default platform instance for the
+Override this method if the class test needs the same configuration for all the test cases.
+
+---
+
+```php
+protected function createPlatform(): AbstractPlatform
+```
+
+Override this method if the class test needs the same platform for all the test cases.
 
 ## AbstractEntityManagerTestCase
 
 Provides a base for any test that uses `EntityManagerInterface`. It extends `AbstractDBALTestCase` to be able to create
-a DBAL test connection.
-
-### Methods
+DBAL connections.
 
 ```php
-final protected function createEntityManager(?callable $configure, ?AbstractPlatform $platform = null): TestEntityManager
+final protected function createEntityManager(
+    ?Configuration    $configuration = null,
+    ?AbstractPlatform $platform = null,
+): TestEntityManager;
 ```
 
-Allows to create a new `EntityManagerInterface` instance.
+Creates a new `TestEntityManager` which extends from `Doctrine\ORM\EntityManager`.
+
+It is possible to pass a custom `Doctrine\ORM\Configuration`, otherwise the `createConnection` method will be used.
+
+It is possible to pass a custom `Doctrine\DBAL\Platforms\AbstractPlatform`, otherwise the `createPlatform` method will
+be used.
+
+Example:
+
+```php
+use Doctrine\ORM\Configuration;
+use Doctrine\ORM\Mapping\Driver\AttributeDriver;
+use Doctrine\ORM\Mapping\UnderscoreNamingStrategy;
+
+final class MyClassTest extends AbstractEntityManagerTestCase
+{
+    public function testManager(): void
+    {
+        $configuration = $this->createConfiguration();
+        $configuration->setNamingStrategy(new UnderscoreNamingStrategy());
+        $em = $this->createEntityManager($configuration);
+
+        $entity = new MyObject();
+        $em->persist($entity);
+
+        self::assertTrue($em->getUnitOfWork()->isScheduledForInsert($entity));
+    }
+
+    protected function createConfiguration(): Configuration
+    {
+        $configuration = parent::createConfiguration();
+        $metadata      = $configuration->getMetadataDriverImpl();
+        if ($metadata instanceof AttributeDriver) {
+            $metadata->addPaths([__DIR__]);
+        }
+
+        return $configuration;
+    }
+}
+
+#[Entity]
+final class MyObject
+{
+    #[Id]
+    #[GeneratedValue]
+    #[Column]
+    public ?int $id = null;
+}
+```
 
 ## AbstractEventSubscriberTestCase
 
-Allows to unit test `EventSubscriber` instances. It extends `AbstractEntityManagerTestCase` to be able to create
-the available Doctrine events. The test must implement the following method.
+Provides a base for any test that uses `Doctrine\Common\EventSubscriber;`. It extends `AbstractEntityManagerTestCase` to
+be able to create entity managers.
 
 ```php
 abstract protected function createSubscriber(?callable $configure): EventSubscriber;
 ```
 
-The `configure` closure can be used to configure any mocked service the event subscriber may use.
+The class test must implement this method and return the subscriber instance. The `configure` closure can be used to
+configure any mocked service the subscriber may use.
 
-### Methods
-
-In order to create the correct event instance, use one of the following methods:
+Depending on the subscriber, it is necessary to create the right event, use one of the following methods:
 
 ```php
 final protected function createPostLoadEvent(TestEntityManager $manager, object $object): Event\PostLoadEventArgs;
@@ -72,4 +153,55 @@ final protected function createPreFlushEvent(TestEntityManager $manager): Event\
 final protected function createOnFlushEvent(TestEntityManager $manager): Event\OnFlushEventArgs;
 final protected function createPostFlushEvent(TestEntityManager $manager): Event\PostFlushEventArgs;
 final protected function createOnClearEvent(TestEntityManager $manager): Event\OnClearEventArgs;
+```
+
+Example:
+
+```php
+use Doctrine\ORM\Configuration;
+use Doctrine\ORM\Mapping\Driver\AttributeDriver;
+use Doctrine\ORM\Mapping\UnderscoreNamingStrategy;
+
+final class MyClassTest extends AbstractEventSubscriberTestCase
+{
+    public function testSubscriber(): void
+    {
+        $subscriber = $this->createSubscriber(null);
+        $manager    = $this->createEntityManager();
+        $event      = $this->createOnFlushEvent($manager);
+
+        $subscriber->onFlush($event);
+
+        // ... assertions ...
+    }
+
+    protected function createSubscriber(?callable $configure): MySubscriber
+    {
+        $service = $this->createMock(MyService::class);
+
+        $configure && $configure($service);
+
+        return new MySubscriber($service);
+    }
+}
+
+final class MySubscriber implements EventSubscriber
+{
+    public function __construct(
+        private readonly MyService $service,
+    ) {
+    }
+
+    public function getSubscribedEvents()
+    {
+        return [
+            Events::onFlush,
+        ];
+    }
+
+    public function onFlush(OnFlushEventArgs $event): void
+    {
+        // ... event logic ...
+    }
+}
 ```

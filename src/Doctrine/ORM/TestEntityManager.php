@@ -12,6 +12,11 @@ final class TestEntityManager extends EntityManagerDecorator
 {
     public function getConnection(): TestDBALConnection
     {
-        return parent::getConnection();
+        $connection = parent::getConnection();
+        if (!$connection instanceof TestDBALConnection) {
+            throw new \LogicException('Invalid configured connection.');
+        }
+
+        return $connection;
     }
 }
