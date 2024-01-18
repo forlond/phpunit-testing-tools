@@ -21,10 +21,26 @@ final protected function createConnection(
 
 Creates a new `TestDBALConnection` instance which extends from `Doctrine\DBAL\Connection`.
 
-It is possible to pass a custom `Doctrine\DBAL\Configuration`, otherwise the `createConnection` method will be used.
+It is possible to pass a custom `Doctrine\DBAL\Configuration`, otherwise the `createConfiguration` method will be used.
 
 It is possible to pass a custom `Doctrine\DBAL\Platforms\AbstractPlatform`, otherwise the `createPlatform` method will
 be used.
+
+---
+
+```php
+protected function createConfiguration(): AbstractPlatform
+```
+
+Override this method if the class test needs the same configuration for all the test cases.
+
+---
+
+```php
+protected function createPlatform(): AbstractPlatform
+```
+
+Override this method if the class test needs the same platform for all the test cases.
 
 > [!IMPORTANT]
 > The `TestDBALConnection` has limited functionalities, but it is possible to configure the result of any statement.
@@ -47,25 +63,10 @@ final class MyClassTest extends AbstractDBALTestCase
 }
 ```
 
----
-
-```php
-protected function createConfiguration(): AbstractPlatform
-```
-
-Override this method if the class test needs the same configuration for all the test cases.
-
----
-
-```php
-protected function createPlatform(): AbstractPlatform
-```
-
-Override this method if the class test needs the same platform for all the test cases.
-
 ## AbstractEntityManagerTestCase
 
-Provides a base for any test that uses `EntityManagerInterface`. It extends `AbstractDBALTestCase` to be able to create
+Provides a base for any test that uses `Doctrine\ORM\EntityManagerInterface`. It extends `AbstractDBALTestCase` to be
+able to create
 DBAL connections.
 
 ```php
@@ -161,12 +162,18 @@ Example:
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\Mapping\Driver\AttributeDriver;
 use Doctrine\ORM\Mapping\UnderscoreNamingStrategy;
+use PHPUnit\Framework\MockObject\MockObject;
 
 final class MyClassTest extends AbstractEventSubscriberTestCase
 {
     public function testSubscriber(): void
     {
-        $subscriber = $this->createSubscriber(null);
+        $subscriber = $this->createSubscriber(function(MockObject $service) {
+            $service
+                ->expects(self::never())
+                ->method('calculate')
+            ;
+        });
         $manager    = $this->createEntityManager();
         $event      = $this->createOnFlushEvent($manager);
 
