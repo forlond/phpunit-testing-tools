@@ -20,11 +20,15 @@
     "phpunit/phpunit": "^9.5 || ^10"
   },
   "require-dev": {
+    "doctrine/orm": "^2.0",
+    "jms/serializer": "^3.0",
     "psr/log": "^1.0 || ^2.0 || ^3.0",
-    "jms/serializer": "3.x-dev",
-    "symfony/expression-language": "5.4.x-dev || 6.4.x-dev",
-    "symfony/form": "5.4.x-dev || 6.4.x-dev",
-    "symfony/validator": "5.4.x-dev || 6.4.x-dev"
+    "symfony/expression-language": "^5.4 || ^6.4",
+    "symfony/form": "^5.4 || ^6.4",
+    "symfony/validator": "^5.4 || ^6.4"
+  },
+  "config": {
+    "sort-packages": true
   },
   "conflict": {
   },
