@@ -42,9 +42,4 @@ final class TestStatement implements Statement
     {
         return new ArrayResult($this->results);
     }
-
-    public function reset(): void
-    {
-        $this->bindings = [];
-    }
 }
