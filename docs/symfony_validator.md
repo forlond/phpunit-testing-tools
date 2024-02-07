@@ -261,7 +261,7 @@ The `validate`, `validateProperty` and `validatePropertyValue` methods return a 
 The `TestConstraintViolationList` class allows to define expectations against the `ConstraintViolationListInterface`
 returned by the validator.
 
-Use the `expect` method to start a expectation definition.
+Use the `expect` method to start an expectation definition.
 
 ```php
 public function expect(Constraint|string $message): self

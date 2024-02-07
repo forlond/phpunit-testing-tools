@@ -16,32 +16,64 @@ abstract class AbstractTestGroup extends AbstractTest
 
     private int $current = 0;
 
+    private bool $strictOrder = true;
+
+    private bool $strictCount = true;
+
+    final public function disableStrictOrder(): self
+    {
+        $this->strictOrder = false;
+
+        return $this;
+    }
+
+    final public function disableStrictCount(): self
+    {
+        $this->strictCount = false;
+
+        return $this;
+    }
+
     /**
      * @inheritDoc
      */
-    public function assert(bool $strict = true): void
+    public function assert(): void
     {
         $failed = [];
         $group  = $this->getValue();
 
-        foreach ($this->getConstraints() as $constraint) {
+        foreach ($this->getConstraints() as $i => $constraint) {
             assert($constraint instanceof TestConstraintGroup);
-            foreach ($group as $index => $element) {
-                if ($constraint->evaluate($element, true)) {
-                    unset($group[$index]);
-                    continue 2;
+            if ($this->strictOrder) {
+                $element = $group[$i] ?? null;
+                if (null === $element || !$constraint->evaluate($element, true)) {
+                    $failed[] = new ExpectationFailedException(
+                        sprintf(
+                            "Failed asserting that the %s contains an element at index %d that matches the following constraint:\n%s",
+                            static::GROUP_NAME,
+                            $i,
+                            $constraint->toString()
+                        )
+                    );
                 }
+            } else {
+                foreach ($group as $index => $element) {
+                    if ($constraint->evaluate($element, true)) {
+                        unset($group[$index]);
+                        continue 2;
+                    }
+                }
+                $failed[] = new ExpectationFailedException(
+                    sprintf(
+                        "Failed asserting that the %s contains an element that matches the following constraint:\n%s",
+                        static::GROUP_NAME,
+                        $constraint->toString()
+                    )
+                );
             }
-            $failed[] = new ExpectationFailedException(
-                sprintf(
-                    "Failed asserting that the %s contains an element that matches the following constraints:\n%s",
-                    static::GROUP_NAME,
-                    $constraint->toString()
-                )
-            );
         }
 
-        if ($strict && !empty($group)) {
+        if ($this->strictCount && !empty($group)) {
             $failed[] = new ExpectationFailedException(
                 sprintf(
                     "Failed asserting that the %s does not contain the following elements:\n%s",

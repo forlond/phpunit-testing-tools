@@ -491,7 +491,7 @@ public function assert(bool $strict = true): void
 
 Finally, when all the expectations are in place, the `assert` method needs to be used. There are two modalities:
 
-- When the `strict` mode is `true`, all the form children should have a expectation. For example, if the form has more
+- When the `strict` mode is `true`, all the form children should have an expectation. For example, if the form has more
   children than the ones expected, then the test will fail.
 - When the `strict` mode is `false`, the test will not fail if some existing child has no an expectation.
 

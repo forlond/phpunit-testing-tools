@@ -22,6 +22,8 @@ final class TestForm extends AbstractTest
 
     private bool $childAssertion = true;
 
+    private bool $strictChild = true;
+
     private ?TestFormErrors $errors = null;
 
     public function __construct(
@@ -32,6 +34,13 @@ final class TestForm extends AbstractTest
     public function disableChildAssertion(): self
     {
         $this->childAssertion = false;
+
+        return $this;
+    }
+
+    public function disableStrictChild(): self
+    {
+        $this->strictChild = false;
 
         return $this;
     }
@@ -174,14 +183,14 @@ final class TestForm extends AbstractTest
         return $this;
     }
 
-    public function assert(bool $strict = true): void
+    public function assert(): void
     {
-        parent::assert($strict);
+        parent::assert();
 
         $errors = [];
 
         try {
-            $this->errors?->assert($strict);
+            $this->errors?->assert();
         } catch (TestFailedException $e) {
             $errors[] = new ExpectationFailedException(
                 sprintf("%s\nerrors\n%s", $this->failureDescription(), $e->getMessage())
@@ -213,7 +222,7 @@ final class TestForm extends AbstractTest
             }
             if ($test instanceof self) {
                 try {
-                    $test->assert($strict);
+                    $test->assert();
                 } catch (TestFailedException $e) {
                     $errors[] = new ExpectationFailedException($e->getMessage());
                 }
@@ -221,7 +230,7 @@ final class TestForm extends AbstractTest
             $visited[] = $child;
         }
 
-        if ($strict && $this->childAssertion && count($visited) !== $this->form->count()) {
+        if ($this->strictChild && $this->childAssertion && count($visited) !== $this->form->count()) {
             $names = array_map(static fn(FormInterface $form) => $form->getName(), iterator_to_array($this->form));
             $names = array_diff($names, $visited);
 
