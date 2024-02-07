@@ -5,6 +5,7 @@
 Use one of the following abstract test cases:
 
 - `AbstractValidatorTestCase` for general validation purposes.
+- `TestConstraintViolationList` to perform expectations to any `ConstraintViolationListInterface` instance.
 
 ## AbstractValidatorTestCase
 
@@ -254,20 +255,25 @@ final class MyTestValidation extends AbstractValidatorTestCase
 }
 ```
 
-### Assert violations
+## TestConstraintViolationList
 
 The `validate`, `validateProperty` and `validatePropertyValue` methods return a `TestConstraintViolationList` instance.
 
 The `TestConstraintViolationList` class allows to define expectations against the `ConstraintViolationListInterface`
 returned by the validator.
 
-Use the `expect` method to start an expectation definition.
-
 ```php
 public function expect(Constraint|string $message): self
 ```
 
+Use the `expect` method to start an expectation definition. The `expect` order invocation is relevant,
+but it can be disabled by using the method `disableStrictSequence`.
+
+Also, it is possible to continue defining the expectation with the following methods.
+
 It is possible to continue defining the expectation with the following methods.
+
+---
 
 ```php
 public function path(Constraint|string $value): self
@@ -400,7 +406,8 @@ final class MyTestValidation extends AbstractValidatorTestCase
         // Assert the violation list has one violation although the list may have more violations.
         $violations
             ->expect('foo.bar.message')
-            ->assert(false)
+            ->disableStrictSize()
+            ->assert()
         ;
     }
 }

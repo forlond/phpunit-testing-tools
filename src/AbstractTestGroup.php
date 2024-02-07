@@ -16,20 +16,20 @@ abstract class AbstractTestGroup extends AbstractTest
 
     private int $current = 0;
 
-    private bool $strictOrder = true;
+    private bool $strictSequence = true;
 
-    private bool $strictCount = true;
+    private bool $strictSize = true;
 
-    final public function disableStrictOrder(): self
+    final public function disableStrictSequence(): self
     {
-        $this->strictOrder = false;
+        $this->strictSequence = false;
 
         return $this;
     }
 
-    final public function disableStrictCount(): self
+    final public function disableStrictSize(): self
     {
-        $this->strictCount = false;
+        $this->strictSize = false;
 
         return $this;
     }
@@ -44,9 +44,11 @@ abstract class AbstractTestGroup extends AbstractTest
 
         foreach ($this->getConstraints() as $i => $constraint) {
             assert($constraint instanceof TestConstraintGroup);
-            if ($this->strictOrder) {
+            if ($this->strictSequence) {
                 $element = $group[$i] ?? null;
-                if (null === $element || !$constraint->evaluate($element, true)) {
+                if (null !== $element && $constraint->evaluate($element, true)) {
+                    unset($group[$i]);
+                } else {
                     $failed[] = new ExpectationFailedException(
                         sprintf(
                             "Failed asserting that the %s contains an element at index %d that matches the following constraint:\n%s",
@@ -73,7 +75,7 @@ abstract class AbstractTestGroup extends AbstractTest
             }
         }
 
-        if ($this->strictCount && !empty($group)) {
+        if ($this->strictSize && !empty($group)) {
             $failed[] = new ExpectationFailedException(
                 sprintf(
                     "Failed asserting that the %s does not contain the following elements:\n%s",

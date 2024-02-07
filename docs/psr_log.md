@@ -19,35 +19,34 @@ The `TestLogger` collects all log messages when using the `LoggerInterface` meth
 
 ## Assertions
 
-Use the method `expect` to indicate that a log message is expected to be collected. The `expect` order invocation is not
-relevant, so it is not necessary to have the same order in which the log messages are collected.
-
 ```php
 public function expect(string $level, Constraint|\Stringable|string $message, Constraint|array|null $context): self
 ```
 
-Finally, when all the expectations are in place, the `assert` method needs be used. There are two modalities:
+Use the method `expect` to expect that a log message will be collected. The `expect` order invocation is relevant,
+but it can be disabled by using the method `disableStrictSequence`.
+
+---
 
 ```php
-public function assert(bool $strict = true): void
+public function assert(): void
 ```
 
-- When the `strict` mode is `true`, there must be an expectation for all the log messages, otherwise the test will fail.
-- When the `strict` mode is `false`, only the expected logs will be checked against the collected log messages,
-  regardless of any unchecked log messages.
+Finally, when all the expectations are in place, call the `assert` method.
 
-The default behaviour for the `strict` mode is `true`.
+In case the number of expectations do not match the number of collected events, then the entire expection will fail.
+This is the default behaviour but it can be disabled by using the `disableStrictSize` method.
 
 > [!NOTE]
-> When a log message matches something expected, that log message is not considered again for the remaining
-> expectations. The test fails if the same expectation is added more than once.
+> For the non-strict sequence mode when a log message matches a constraint, then that log message is excluded for the
+> remaining constraints. The test fails if the same expectation is added more than once.
 
 > [!NOTE]
 > When a log message is not found for an expectation, then the test fails.
 
 ### Examples
 
-Example: The test will pass (strict mode)
+Example: strict sequence and strict size, one log and one expectation at same position.
 
 ```php
 $logger = new TestLogger();
@@ -59,7 +58,7 @@ $logger
 ;
 ```
 
-Example: The test will pass because the expectation is found in the collected logs (non-strict mode)
+Example: strict sequence and non-strict size, two logs and one expectation at the same position.
 
 ```php
 $logger = new TestLogger();
@@ -67,12 +66,13 @@ $logger->info('message', ['foobar' => true]);
 $logger->info('other');
 
 $logger
+    ->disableStrictSize()
     ->expect('info', 'message', ['foobar' => true])
-    ->assert(false)
+    ->assert()
 ;
 ```
 
-Example: The test will fail because two logs were collected, but there was only one expectation (strict mode)
+Example: non-strict sequence and strict size, two logs and two expectation at any position.
 
 ```php
 $logger = new TestLogger();
@@ -80,36 +80,41 @@ $logger->info('message', ['foobar' => true]);
 $logger->info('other');
 
 $logger
+    ->disableStrictSequence()
+    ->expect('info', 'other', null)
     ->expect('info', 'message', ['foobar' => true])
     ->assert()
 ;
 ```
 
-Example: The test will fail because the expectation cannot be found in the collected logs (strict mode)
+Example: non-strict sequence and non-strict size, two logs and one expectation at any position.
 
 ```php
 $logger = new TestLogger();
+$logger->info('other');
 $logger->info('message', ['foobar' => true]);
 
 $logger
-    ->expect('warning', 'other')
+    ->disableStrictSequence()
+    ->disableStrictSize()
+    ->expect('info', 'message', ['foobar' => true])
     ->assert()
 ;
 ```
 
-Example: The test will fail because the expectation cannot be found in the collected logs (non-strict mode)
+Example: The test will fail because the expectation cannot be found in the collected logs.
 
 ```php
 $logger = new TestLogger();
 $logger->info('message', ['foobar' => true]);
 
 $logger
-    ->expect('warning', 'other')
-    ->assert(false)
+    ->expect('warning', 'other', null)
+    ->assert()
 ;
 ```
 
-Example: The test will fail because there is the same expectation more than once (non-strict mode)
+Example: The test will fail because the same expectation was added more than once.
 
 ```php
 $logger = new TestLogger();
@@ -118,7 +123,7 @@ $logger->info('message', ['foobar' => true]);
 $logger
     ->expect('info', 'message', ['foobar' => true])
     ->expect('info', 'message', ['foobar' => true])
-    ->assert(false)
+    ->assert()
 ;
 ```
 
@@ -133,7 +138,7 @@ $logger = new TestLogger();
 $logger->info('There was a problem the day: 2023-10-10');
 
 $logger
-    ->expect('info', 'There was a problem the day: 2023-10-10'), null)
+    ->expect('info', 'There was a problem the day: 2023-10-10', null)
     ->assert()
 ;
 ```

@@ -6,19 +6,42 @@
 
 ## TestEventDispatcher
 
-Use the `expect` method to start an expectation definition.
-
 ```php
 public function expect(Constraint|string $event): self
 ```
 
-It is possible to continue defining the expectation with the following methods.
+Use the `expect` method to start an expectation definition.
+
+The `expect` order invocation is relevant, but it can be disabled by using the method `disableStrictSequence`.
+
+Also, it is possible to continue defining the expectation with the following methods.
+
+---
 
 ```php
 public function name(Constraint|string $name): self
 ```
 
 Assert the event name.
+
+---
+
+```php
+public function assert(): void
+```
+
+Finally, when all the expectations are in place, call the `assert` method.
+
+In case the number of expectations do not match the number of collected logs, then the entire expection will fail.
+This is the default behaviour but it can be disabled by using the `disableStrictSize` method.
+
+> [!NOTE]
+> For the non-strict sequence mode when a event matches a constraint, then that event is excluded for the remaining
+> constraints. The test fails if the same expectation is added more than once.
+
+> [!NOTE]
+> When a log message is not found for an expectation, then the test fails.
+
 
 Example: Assert an event class is dispatched.
 

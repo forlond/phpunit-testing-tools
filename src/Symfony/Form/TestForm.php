@@ -22,7 +22,7 @@ final class TestForm extends AbstractTest
 
     private bool $childAssertion = true;
 
-    private bool $strictChild = true;
+    private bool $strictChildren = true;
 
     private ?TestFormErrors $errors = null;
 
@@ -38,9 +38,9 @@ final class TestForm extends AbstractTest
         return $this;
     }
 
-    public function disableStrictChild(): self
+    public function disableStrictChildren(): self
     {
-        $this->strictChild = false;
+        $this->strictChildren = false;
 
         return $this;
     }
@@ -201,7 +201,7 @@ final class TestForm extends AbstractTest
         $name    = $this->form->getName();
 
         if (!$this->childAssertion && !empty($this->children)) {
-            throw new \RuntimeException('Cannot disable child assertions when declaring children expectations');
+            throw new \RuntimeException('Cannot disable child assertions when declaring children expectations.');
         }
 
         foreach ($this->children as $child => $test) {
@@ -230,7 +230,7 @@ final class TestForm extends AbstractTest
             $visited[] = $child;
         }
 
-        if ($this->strictChild && $this->childAssertion && count($visited) !== $this->form->count()) {
+        if ($this->strictChildren && $this->childAssertion && count($visited) !== $this->form->count()) {
             $names = array_map(static fn(FormInterface $form) => $form->getName(), iterator_to_array($this->form));
             $names = array_diff($names, $visited);
 
