@@ -564,7 +564,7 @@ $test
 public function parameters(Constraint|array $value): self
 ```
 
-Use the method `parameters` to indicate the paratemers for the current form error.
+Use the method `parameters` to indicate the parameters for the current form error.
 
 Example: Assert the error parameters.
 
@@ -634,12 +634,12 @@ public function assert(): void
 
 Finally, when all the expectations are in place, call the `assert` method. There are two modalities:
 
-In case the number of expectations do not match the number of collected errors, then the entire expection will fail.
-This is the default behaviour but it can be disabled by using the `disableStrictSize` method.
+In case the number of expectations do not match the number of collected errors, then the entire expectation will fail.
+This is the default behaviour, but it can be disabled by using the `disableStrictSize` method.
 
 > [!NOTE]
-> For the non-strict sequence mode when a form error matches a constraint, then that form error is excluded for the
-> remaining constraints. The test fails if the same expectation is added more than once.
+> For the non-strict sequence mode when a form error matches a constraint, then that expectation is not considered again
+> for the remaining form errors.
 
 > [!NOTE]
 > When a form error is not found for an expectation, then the test fails.

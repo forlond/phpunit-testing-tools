@@ -34,12 +34,12 @@ public function assert(): void
 
 Finally, when all the expectations are in place, call the `assert` method.
 
-In case the number of expectations do not match the number of collected events, then the entire expection will fail.
-This is the default behaviour but it can be disabled by using the `disableStrictSize` method.
+In case the number of expectations do not match the number of collected events, then the entire expectation will fail.
+This is the default behaviour, but it can be disabled by using the `disableStrictSize` method.
 
 > [!NOTE]
-> For the non-strict sequence mode when a log message matches a constraint, then that log message is excluded for the
-> remaining constraints. The test fails if the same expectation is added more than once.
+> For the non-strict sequence mode when a log message matches an expectation, then that expectation is not considered
+> again for the remaining log messages.
 
 > [!NOTE]
 > When a log message is not found for an expectation, then the test fails.

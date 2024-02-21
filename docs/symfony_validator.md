@@ -417,7 +417,7 @@ final class MyTestValidation extends AbstractValidatorTestCase
 
 > [!IMPORTANT]
 > Use this option when it is necessary to register constraint validators with dependencies.
-> Constraint validators without dependecies (i.e.: NotNull, Expression) do not need to be registered explicitly.
+> Constraint validators without dependencies (i.e.: NotNull, Expression) do not need to be registered explicitly.
 
 If the validation logic requires custom `ConstraintValidatorInterface` instances, it is possible to configure them.
 The `TestConstraintValidatorFactory` allows to set any `ConstraintValidatorInterface` instance.
@@ -453,7 +453,7 @@ class CustomValidator extends ConstraintValidator
 ```
 
 When the object is validated, the validator will try to execute the `CustomValidator`. However, the `CustomValidator`
-class cannot be instantiaded automatically because it requires dependencies.
+class cannot be instantiated automatically because it requires dependencies.
 
 In order to execute the validator without runtime errors, it is necessary to register the `CustomValidator` in the
 `TestConstraintValidatorFactory`.

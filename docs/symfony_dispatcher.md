@@ -32,15 +32,15 @@ public function assert(): void
 
 Finally, when all the expectations are in place, call the `assert` method.
 
-In case the number of expectations do not match the number of collected logs, then the entire expection will fail.
-This is the default behaviour but it can be disabled by using the `disableStrictSize` method.
+In case the number of expectations do not match the number of collected logs, then the entire expectation will fail.
+This is the default behaviour, but it can be disabled by using the `disableStrictSize` method.
 
 > [!NOTE]
-> For the non-strict sequence mode when a event matches a constraint, then that event is excluded for the remaining
-> constraints. The test fails if the same expectation is added more than once.
+> For the non-strict sequence mode when an event matches a constraint, then that expectation is not considered again
+> for the remaining events.
 
 > [!NOTE]
-> When a log message is not found for an expectation, then the test fails.
+> When a event is not found for an expectation, then the test fails.
 
 
 Example: Assert an event class is dispatched.
@@ -62,21 +62,6 @@ $test = new TestEventDispatcher();
 $test
     ->expect(MyEvent::class)
     ->name('app.event_name')
-    ->assert()
-;
-```
-
-Example: Assert an event is dispatched but using a custom constraint.
-
-```php
-$test = new TestEventDispatcher();
-
-$test
-    ->expect(
-        new Callback(static function(MyEvent $event) {
-            self::assertSame('foobar', $event->getValue())
-        })
-    )
     ->assert()
 ;
 ```
