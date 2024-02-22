@@ -11,7 +11,7 @@
 > It is not possible to register listeners/subscribers to this instance.
 
 > [!NOTE]
-> The `TestEventDispatcher` can be used as the third argument for any listener/subscriber methods.
+> The `TestEventDispatcher` can be used as the third argument for any listener/subscriber method.
 
 ```php
 public function expect(Constraint|string $event, Constraint|array|null $name): self
@@ -20,7 +20,7 @@ public function expect(Constraint|string $event, Constraint|array|null $name): s
 Use the method `expect` to assert that a event will be dispatched. The `expect` order invocation is relevant,
 but it can be disabled by using the method `disableStrictSequence`.
 
-The `name` argument is optional, use a `null` value to disable name assertions.
+The `name` argument is optional, use a `null` value to disable the `name` assertion.
 
 ---
 

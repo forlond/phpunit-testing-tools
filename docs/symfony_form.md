@@ -442,7 +442,7 @@ Use the method `child` to perform assertions about form children.
 The callable will be called with a new `TestForm` instance for that child, all the `TestForm` methods ara available.
 
 > [!NOTE]
-> It is not necessary to call `TestForm::assert` for the child, the `TestForm::assert` will do it.
+> It is not necessary to call `TestForm::assert` for the child, the parent `TestForm::assert` will do it.
 
 > [!NOTE]
 > The use of this method will assert about the existence of the child, so if the child does not exist the test will
