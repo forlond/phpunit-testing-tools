@@ -16,7 +16,7 @@ final class TestAuthenticator extends AbstractAuthenticator
 {
     public ?Request $request = null;
 
-    public ?TestPassport $passport = null;
+    public ?Passport $passport = null;
 
     public ?TokenInterface $token = null;
 

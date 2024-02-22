@@ -2,8 +2,8 @@
 
 ## Integration
 
-- Use the `TestForm` to perform expectations to any `FormInterface` instance.
-- Use the `TestFormErrors` to perform expectations to any `FormErrorIterator` instance.
+- Use the `TestForm` to perform assertions to any `FormInterface` instance.
+- Use the `TestFormErrors` to perform assertions to any `FormErrorIterator` instance.
 
 ## TestForm
 
@@ -223,13 +223,13 @@ $test
 public function errors(callable $expect): self
 ```
 
-Use the method `errors` to perform expectations about the form errors.
+Use the method `errors` to perform assertions about the form errors.
 
 > [!NOTE]
 > It is not necessary to call `TestFormErrors::assert`, the `TestForm::assert` will do it.
 
 > [!NOTE]
-> Child errors are not included. Use the `child` method to make errors expectations about child errors.
+> Child errors are not included. Use the `child` method to make errors assertions about child errors.
 
 The callable will be called with a `TestFormErrors` instance. Read more about `TestFormErrors`.
 
@@ -437,7 +437,7 @@ $test
 public function child(string $child, callable|bool $expect): self
 ```
 
-Use the method `child` to perform expectations about form children.
+Use the method `child` to perform assertions about form children.
 
 The callable will be called with a new `TestForm` instance for that child, all the `TestForm` methods ara available.
 
@@ -495,18 +495,18 @@ $test
 public function assert(): void
 ```
 
-Finally, when all the expectations are in place, call the `assert` method.
+Finally, when all the assertions are in place, call the `assert` method.
 
-By default, every child in the form should have its own expectation, otherwise the test will fail. This behaviour can be
-disabled by using `disableStrictChildren`. For example, if the form has more children than the expected ones, then the
-test will fail.
+By default, every child in the form should have their own assertions, otherwise the test will fail. This behaviour can
+be disabled by using `disableStrictChildren`. For example, if the form has more children than the expected ones, then
+the test will fail.
 
 However, it is possible to disable entirely the children assertion by using `disableChildAssertion` but ensure
 the `child` method is not called.
 
 > [!NOTE]
-> If you use `TestForm` within a `TestForm::child` expectation, it is not necessary to call `assert` for the child
-> expectation, the parent `TestForm::assert` will call it.
+> If you use `TestForm` within a `TestForm::child` assertion, it is not necessary to call `assert` for the child
+> assertions, the parent `TestForm::assert` will call it.
 
 ## TestFormErrors
 
@@ -632,14 +632,14 @@ $test
 public function assert(): void
 ```
 
-Finally, when all the expectations are in place, call the `assert` method. There are two modalities:
+Finally, when all the assertions are in place, call the `assert` method.
 
-In case the number of expectations do not match the number of collected errors, then the entire expectation will fail.
+In case the number of assertions do not match the number of collected form errors, then the test will fail.
 This is the default behaviour, but it can be disabled by using the `disableStrictSize` method.
 
 > [!NOTE]
-> For the non-strict sequence mode when a form error matches a constraint, then that expectation is not considered again
-> for the remaining form errors.
+> For the non-strict sequence mode when a form error matches an assertion, then that assertion is not considered
+> again for the remaining form errors.
 
 > [!NOTE]
-> When a form error is not found for an expectation, then the test fails.
+> When a form error is not found for an assertion, then the test fails.

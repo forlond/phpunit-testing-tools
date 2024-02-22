@@ -14,7 +14,7 @@ final class TestEventDispatcher extends AbstractTestGroup implements EventDispat
 
     private array $events = [];
 
-    public function expect(Constraint|string $event): self
+    public function expect(Constraint|string $event, Constraint|string|null $name): self
     {
         $this->next();
 
@@ -23,13 +23,9 @@ final class TestEventDispatcher extends AbstractTestGroup implements EventDispat
         }
 
         $this->set('event', $event, static fn(array $expect) => $expect['event']);
-
-        return $this;
-    }
-
-    public function name(Constraint|string $name): self
-    {
-        $this->set('name', $name, static fn(array $expect) => $expect['name']);
+        if (null !== $name) {
+            $this->set('name', $name, static fn(array $expect) => $expect['name']);
+        }
 
         return $this;
     }

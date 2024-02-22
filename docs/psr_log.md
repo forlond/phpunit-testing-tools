@@ -17,13 +17,13 @@ $service->setLogger($logger);
 
 The `TestLogger` collects all log messages when using the `LoggerInterface` methods.
 
-## Assertions
+## TestLogger
 
 ```php
 public function expect(string $level, Constraint|\Stringable|string $message, Constraint|array|null $context): self
 ```
 
-Use the method `expect` to expect that a log message will be collected. The `expect` order invocation is relevant,
+Use the method `expect` to assert that a log message will be collected. The `expect` order invocation is relevant,
 but it can be disabled by using the method `disableStrictSequence`.
 
 ---
@@ -32,21 +32,21 @@ but it can be disabled by using the method `disableStrictSequence`.
 public function assert(): void
 ```
 
-Finally, when all the expectations are in place, call the `assert` method.
+Finally, when all the assertions are in place, call the `assert` method.
 
-In case the number of expectations do not match the number of collected events, then the entire expectation will fail.
+In case the number of assertions do not match the number of collected logs, then the test will fail.
 This is the default behaviour, but it can be disabled by using the `disableStrictSize` method.
 
 > [!NOTE]
-> For the non-strict sequence mode when a log message matches an expectation, then that expectation is not considered
+> For the non-strict sequence mode when a log message matches an assertion, then that assertion is not considered
 > again for the remaining log messages.
 
 > [!NOTE]
-> When a log message is not found for an expectation, then the test fails.
+> When a log message is not found for an assertion, then the test fails.
 
 ### Examples
 
-Example: strict sequence and strict size, one log and one expectation at same position.
+Example: strict sequence and strict size, one log and one assertion at same position.
 
 ```php
 $logger = new TestLogger();
@@ -58,7 +58,7 @@ $logger
 ;
 ```
 
-Example: strict sequence and non-strict size, two logs and one expectation at the same position.
+Example: strict sequence and non-strict size, two logs and one assertion at the same position.
 
 ```php
 $logger = new TestLogger();
@@ -72,7 +72,7 @@ $logger
 ;
 ```
 
-Example: non-strict sequence and strict size, two logs and two expectation at any position.
+Example: non-strict sequence and strict size, two logs and two assertions at any position.
 
 ```php
 $logger = new TestLogger();
@@ -87,7 +87,7 @@ $logger
 ;
 ```
 
-Example: non-strict sequence and non-strict size, two logs and one expectation at any position.
+Example: non-strict sequence and non-strict size, two logs and one assertions at any position.
 
 ```php
 $logger = new TestLogger();
@@ -102,7 +102,7 @@ $logger
 ;
 ```
 
-Example: The test will fail because the expectation cannot be found in the collected logs.
+Example: The test will fail because the assertion cannot be found in the collected logs.
 
 ```php
 $logger = new TestLogger();
@@ -114,7 +114,7 @@ $logger
 ;
 ```
 
-Example: The test will fail because the same expectation was added more than once.
+Example: The test will fail because the same assertion was added more than once.
 
 ```php
 $logger = new TestLogger();
@@ -129,7 +129,7 @@ $logger
 
 ### Message Constraints
 
-The `message` expectation can be either a `string` or a PHPUnit `Constraint`.
+The `message` assertion can be either a `string` or a PHPUnit `Constraint`.
 
 Example: Assert that the message is identical.
 
@@ -157,7 +157,7 @@ $logger
 
 ### Context Constraints
 
-The `context` expectation can be either an `array` or a PHPUnit `Constraint`. To disable the `context` assertion, just
+The `context` assertion can be either an `array` or a PHPUnit `Constraint`. To disable the `context` assertion, just
 use a `null` value.
 
 When using an `array`, that `array` must be identical at all levels, otherwise the test will fail.

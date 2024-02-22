@@ -5,7 +5,7 @@
 Use one of the following abstract test cases:
 
 - `AbstractValidatorTestCase` for general validation purposes.
-- `TestConstraintViolationList` to perform expectations to any `ConstraintViolationListInterface` instance.
+- `TestConstraintViolationList` to perform assertions to any `ConstraintViolationListInterface` instance.
 
 ## AbstractValidatorTestCase
 
@@ -259,7 +259,7 @@ final class MyTestValidation extends AbstractValidatorTestCase
 
 The `validate`, `validateProperty` and `validatePropertyValue` methods return a `TestConstraintViolationList` instance.
 
-The `TestConstraintViolationList` class allows to define expectations against the `ConstraintViolationListInterface`
+The `TestConstraintViolationList` class allows to define assertions against the `ConstraintViolationListInterface`
 returned by the validator.
 
 ```php
@@ -345,7 +345,7 @@ Assert the violation root value.
 
 Once a violation expectation is defined, it is possible to define another one by using again the `expect` method.
 
-When there are no more expectations to define, use the `assert` method.
+When there are no more assertions to define, use the `assert` method.
 
 ```php
 final class MyTestValidation extends AbstractValidatorTestCase

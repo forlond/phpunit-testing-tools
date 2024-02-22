@@ -133,11 +133,11 @@ trait TestSecuritySubscriberTrait
 
     private function createSwitchUserEvent(?callable $configure): SwitchUserEvent
     {
-        $request       = Request::create('');
         $authenticator = new TestAuthenticator();
 
         $configure && $configure($authenticator);
 
+        $request      = $authenticator->request ?? Request::create('');
         $passport     = $authenticator->authenticate($request);
         $impersonator = new InMemoryUser('impersonator', null);
         $user         = $passport->getUser();
@@ -149,11 +149,11 @@ trait TestSecuritySubscriberTrait
 
     private function createExitSwitchUserEvent(?callable $configure): SwitchUserEvent
     {
-        $request       = Request::create('');
         $authenticator = new TestAuthenticator();
 
         $configure && $configure($authenticator);
 
+        $request      = $authenticator->request ?? Request::create('');
         $impersonator = new InMemoryUser('impersonator', null);
         $token        = new PostAuthenticationToken($impersonator, $authenticator->firewall, []);
 
