@@ -20,6 +20,8 @@ abstract class AbstractTestGroup extends AbstractTest
 
     private bool $strictSize = true;
 
+    private ?Exporter $exporter = null;
+
     final public function disableStrictSequence(): self
     {
         $this->strictSequence = false;
@@ -49,10 +51,11 @@ abstract class AbstractTestGroup extends AbstractTest
                 if (null === $element || !$constraint->evaluate($element, true)) {
                     $failed[] = new ExpectationFailedException(
                         sprintf(
-                            "Failed asserting that the %s contains an element at index %d that matches the following constraint:\n%s",
+                            "Failed asserting that the %s contains an element at index %d that matches the following constraint:\n%s\nElement: %s",
                             static::GROUP_NAME,
                             $i,
-                            $constraint->toString()
+                            $constraint->toString(),
+                            $this->getExporter()->export($element)
                         )
                     );
                 }
@@ -78,7 +81,7 @@ abstract class AbstractTestGroup extends AbstractTest
                 sprintf(
                     "Failed asserting that the %s does not contain the following elements:\n%s",
                     static::GROUP_NAME,
-                    (new Exporter())->export($group)
+                    $this->getExporter()->export($group)
                 )
             );
         }
@@ -113,5 +116,14 @@ abstract class AbstractTestGroup extends AbstractTest
         }
 
         return array_map(static fn(array $constraints) => new TestConstraintGroup($constraints), $groups);
+    }
+
+    private function getExporter(): Exporter
+    {
+        if (null === $this->exporter) {
+            $this->exporter = new Exporter();
+        }
+
+        return $this->exporter;
     }
 }
