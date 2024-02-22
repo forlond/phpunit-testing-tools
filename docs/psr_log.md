@@ -17,37 +17,36 @@ $service->setLogger($logger);
 
 The `TestLogger` collects all log messages when using the `LoggerInterface` methods.
 
-## Assertions
-
-Use the method `expect` to indicate that a log message is expected to be collected. The `expect` order invocation is not
-relevant, so it is not necessary to have the same order in which the log messages are collected.
+## TestLogger
 
 ```php
 public function expect(string $level, Constraint|\Stringable|string $message, Constraint|array|null $context): self
 ```
 
-Finally, when all the expectations are in place, the `assert` method needs be used. There are two modalities:
+Use the method `expect` to assert that a log message will be collected. The `expect` order invocation is relevant,
+but it can be disabled by using the method `disableStrictSequence`.
+
+---
 
 ```php
-public function assert(bool $strict = true): void
+public function assert(): void
 ```
 
-- When the `strict` mode is `true`, there must be an expectation for all the log messages, otherwise the test will fail.
-- When the `strict` mode is `false`, only the expected logs will be checked against the collected log messages,
-  regardless of any unchecked log messages.
+Finally, when all the assertions are in place, call the `assert` method.
 
-The default behaviour for the `strict` mode is `true`.
-
-> [!NOTE]
-> When a log message matches something expected, that log message is not considered again for the remaining
-> expectations. The test fails if the same expectation is added more than once.
+In case the number of assertions do not match the number of collected logs, then the test will fail.
+This is the default behaviour, but it can be disabled by using the `disableStrictSize` method.
 
 > [!NOTE]
-> When a log message is not found for an expectation, then the test fails.
+> For the non-strict sequence mode when a log message matches an assertion, then that assertion is not considered
+> again for the remaining log messages.
+
+> [!NOTE]
+> When a log message is not found for an assertion, then the test fails.
 
 ### Examples
 
-Example: The test will pass (strict mode)
+Example: strict sequence and strict size, one log and one assertion at same position.
 
 ```php
 $logger = new TestLogger();
@@ -59,7 +58,7 @@ $logger
 ;
 ```
 
-Example: The test will pass because the expectation is found in the collected logs (non-strict mode)
+Example: strict sequence and non-strict size, two logs and one assertion at the same position.
 
 ```php
 $logger = new TestLogger();
@@ -67,12 +66,13 @@ $logger->info('message', ['foobar' => true]);
 $logger->info('other');
 
 $logger
+    ->disableStrictSize()
     ->expect('info', 'message', ['foobar' => true])
-    ->assert(false)
+    ->assert()
 ;
 ```
 
-Example: The test will fail because two logs were collected, but there was only one expectation (strict mode)
+Example: non-strict sequence and strict size, two logs and two assertions at any position.
 
 ```php
 $logger = new TestLogger();
@@ -80,36 +80,41 @@ $logger->info('message', ['foobar' => true]);
 $logger->info('other');
 
 $logger
+    ->disableStrictSequence()
+    ->expect('info', 'other', null)
     ->expect('info', 'message', ['foobar' => true])
     ->assert()
 ;
 ```
 
-Example: The test will fail because the expectation cannot be found in the collected logs (strict mode)
+Example: non-strict sequence and non-strict size, two logs and one assertions at any position.
 
 ```php
 $logger = new TestLogger();
+$logger->info('other');
 $logger->info('message', ['foobar' => true]);
 
 $logger
-    ->expect('warning', 'other')
+    ->disableStrictSequence()
+    ->disableStrictSize()
+    ->expect('info', 'message', ['foobar' => true])
     ->assert()
 ;
 ```
 
-Example: The test will fail because the expectation cannot be found in the collected logs (non-strict mode)
+Example: The test will fail because the assertion cannot be found in the collected logs.
 
 ```php
 $logger = new TestLogger();
 $logger->info('message', ['foobar' => true]);
 
 $logger
-    ->expect('warning', 'other')
-    ->assert(false)
+    ->expect('warning', 'other', null)
+    ->assert()
 ;
 ```
 
-Example: The test will fail because there is the same expectation more than once (non-strict mode)
+Example: The test will fail because the same assertion was added more than once.
 
 ```php
 $logger = new TestLogger();
@@ -118,13 +123,13 @@ $logger->info('message', ['foobar' => true]);
 $logger
     ->expect('info', 'message', ['foobar' => true])
     ->expect('info', 'message', ['foobar' => true])
-    ->assert(false)
+    ->assert()
 ;
 ```
 
 ### Message Constraints
 
-The `message` expectation can be either a `string` or a PHPUnit `Constraint`.
+The `message` assertion can be either a `string` or a PHPUnit `Constraint`.
 
 Example: Assert that the message is identical.
 
@@ -133,7 +138,7 @@ $logger = new TestLogger();
 $logger->info('There was a problem the day: 2023-10-10');
 
 $logger
-    ->expect('info', 'There was a problem the day: 2023-10-10'), null)
+    ->expect('info', 'There was a problem the day: 2023-10-10', null)
     ->assert()
 ;
 ```
@@ -152,7 +157,7 @@ $logger
 
 ### Context Constraints
 
-The `context` expectation can be either an `array` or a PHPUnit `Constraint`. To disable the `context` assertion, just
+The `context` assertion can be either an `array` or a PHPUnit `Constraint`. To disable the `context` assertion, just
 use a `null` value.
 
 When using an `array`, that `array` must be identical at all levels, otherwise the test will fail.

@@ -5,6 +5,7 @@
 Use one of the following abstract test cases:
 
 - `AbstractValidatorTestCase` for general validation purposes.
+- `TestConstraintViolationList` to perform assertions to any `ConstraintViolationListInterface` instance.
 
 ## AbstractValidatorTestCase
 
@@ -254,20 +255,25 @@ final class MyTestValidation extends AbstractValidatorTestCase
 }
 ```
 
-### Assert violations
+## TestConstraintViolationList
 
 The `validate`, `validateProperty` and `validatePropertyValue` methods return a `TestConstraintViolationList` instance.
 
-The `TestConstraintViolationList` class allows to define expectations against the `ConstraintViolationListInterface`
+The `TestConstraintViolationList` class allows to define assertions against the `ConstraintViolationListInterface`
 returned by the validator.
-
-Use the `expect` method to start a expectation definition.
 
 ```php
 public function expect(Constraint|string $message): self
 ```
 
+Use the `expect` method to start an expectation definition. The `expect` order invocation is relevant,
+but it can be disabled by using the method `disableStrictSequence`.
+
+Also, it is possible to continue defining the expectation with the following methods.
+
 It is possible to continue defining the expectation with the following methods.
+
+---
 
 ```php
 public function path(Constraint|string $value): self
@@ -339,7 +345,7 @@ Assert the violation root value.
 
 Once a violation expectation is defined, it is possible to define another one by using again the `expect` method.
 
-When there are no more expectations to define, use the `assert` method.
+When there are no more assertions to define, use the `assert` method.
 
 ```php
 final class MyTestValidation extends AbstractValidatorTestCase
@@ -400,7 +406,8 @@ final class MyTestValidation extends AbstractValidatorTestCase
         // Assert the violation list has one violation although the list may have more violations.
         $violations
             ->expect('foo.bar.message')
-            ->assert(false)
+            ->disableStrictSize()
+            ->assert()
         ;
     }
 }
@@ -410,7 +417,7 @@ final class MyTestValidation extends AbstractValidatorTestCase
 
 > [!IMPORTANT]
 > Use this option when it is necessary to register constraint validators with dependencies.
-> Constraint validators without dependecies (i.e.: NotNull, Expression) do not need to be registered explicitly.
+> Constraint validators without dependencies (i.e.: NotNull, Expression) do not need to be registered explicitly.
 
 If the validation logic requires custom `ConstraintValidatorInterface` instances, it is possible to configure them.
 The `TestConstraintValidatorFactory` allows to set any `ConstraintValidatorInterface` instance.
@@ -446,7 +453,7 @@ class CustomValidator extends ConstraintValidator
 ```
 
 When the object is validated, the validator will try to execute the `CustomValidator`. However, the `CustomValidator`
-class cannot be instantiaded automatically because it requires dependencies.
+class cannot be instantiated automatically because it requires dependencies.
 
 In order to execute the validator without runtime errors, it is necessary to register the `CustomValidator` in the
 `TestConstraintValidatorFactory`.

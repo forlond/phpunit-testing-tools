@@ -2,8 +2,8 @@
 
 ## Integration
 
-- Use the `TestForm` to perform expectations to any `FormInterface` instance.
-- Use the `TestFormErrors` to perform expectations to any `FormErrorIterator` instance.
+- Use the `TestForm` to perform assertions to any `FormInterface` instance.
+- Use the `TestFormErrors` to perform assertions to any `FormErrorIterator` instance.
 
 ## TestForm
 
@@ -13,8 +13,8 @@ public function type(Constraint|string $value): self
 
 Use the method `type` to indicate the form type.
 
-Example: Assert the form type is an instance of the specified class (the value is transformed in
-an `IsInstanceOf` constraint internally)
+Example: Assert the form type is an instance of the specified class (the value is transformed in an `IsInstanceOf`
+constraint internally)
 
 ```php
 $test = new TestForm($form);
@@ -223,10 +223,13 @@ $test
 public function errors(callable $expect): self
 ```
 
-Use the method `errors` to perform expectations about the form errors.
+Use the method `errors` to perform assertions about the form errors.
 
 > [!NOTE]
-> Child errors are not included. Use the `child` method to make errors expectations about child errors.
+> It is not necessary to call `TestFormErrors::assert`, the `TestForm::assert` will do it.
+
+> [!NOTE]
+> Child errors are not included. Use the `child` method to make errors assertions about child errors.
 
 The callable will be called with a `TestFormErrors` instance. Read more about `TestFormErrors`.
 
@@ -434,9 +437,12 @@ $test
 public function child(string $child, callable|bool $expect): self
 ```
 
-Use the method `child` to perform expectations about form children.
+Use the method `child` to perform assertions about form children.
 
 The callable will be called with a new `TestForm` instance for that child, all the `TestForm` methods ara available.
+
+> [!NOTE]
+> It is not necessary to call `TestForm::assert` for the child, the parent `TestForm::assert` will do it.
 
 > [!NOTE]
 > The use of this method will assert about the existence of the child, so if the child does not exist the test will
@@ -486,20 +492,21 @@ $test
 ---
 
 ```php
-public function assert(bool $strict = true): void
+public function assert(): void
 ```
 
-Finally, when all the expectations are in place, the `assert` method needs to be used. There are two modalities:
+Finally, when all the assertions are in place, call the `assert` method.
 
-- When the `strict` mode is `true`, all the form children should have a expectation. For example, if the form has more
-  children than the ones expected, then the test will fail.
-- When the `strict` mode is `false`, the test will not fail if some existing child has no an expectation.
+By default, every child in the form should have their own assertions, otherwise the test will fail. This behaviour can
+be disabled by using `disableStrictChildren`. For example, if the form has more children than the expected ones, then
+the test will fail.
 
-The default behaviour for the `strict` mode is `true`.
+However, it is possible to disable entirely the children assertion by using `disableChildAssertion` but ensure
+the `child` method is not called.
 
 > [!NOTE]
-> If you are using `TestForm` within a `TestForm::child` call, then it is not necessary to call `assert`,
-> the parent `TestForm::assert` will call it.
+> If you use `TestForm` within a `TestForm::child` assertion, it is not necessary to call `assert` for the child
+> assertions, the parent `TestForm::assert` will call it.
 
 ## TestFormErrors
 
@@ -507,7 +514,8 @@ The default behaviour for the `strict` mode is `true`.
 public function expect(Constraint|string $message): self
 ```
 
-Use the method `expect` to indicate the existence of a form error message.
+Use the method `expect` to indicate the existence of a form error message. The `expect` order invocation is relevant,
+but it can be disabled by using the method `disableStrictSequence`.
 
 Example: Assert the form errors have an exact message.
 
@@ -556,7 +564,7 @@ $test
 public function parameters(Constraint|array $value): self
 ```
 
-Use the method `parameters` to indicate the paratemers for the current form error.
+Use the method `parameters` to indicate the parameters for the current form error.
 
 Example: Assert the error parameters.
 
@@ -621,24 +629,17 @@ $test
 ---
 
 ```php
-public function assert(bool $strict = true): void
+public function assert(): void
 ```
 
-Finally, when all the expectations are in place, the `assert` method needs to be used. There are two modalities:
+Finally, when all the assertions are in place, call the `assert` method.
 
-- When the `strict` mode is `true`, there must be an expectation for all the form errors, otherwise the test will fail.
-- When the `strict` mode is `false`, only the expected form errors will be checked against the form error list,
-  regardless of any unchecked form error.
-
-The default behaviour for the `strict` mode is `true`.
+In case the number of assertions do not match the number of collected form errors, then the test will fail.
+This is the default behaviour, but it can be disabled by using the `disableStrictSize` method.
 
 > [!NOTE]
-> If you are using `TestFormErrors` within a `TestForm::errors` call, then it is not necessary to call `assert`,
-> the `TestForm::assert` will call it.
+> For the non-strict sequence mode when a form error matches an assertion, then that assertion is not considered
+> again for the remaining form errors.
 
 > [!NOTE]
-> When a form error matches something expected, that form error is not considered again for the remaining
-> expectations. The test fails if the same expectation is added more than once.
-
-> [!NOTE]
-> When a form error is not found for an expectation, then the test fails.
+> When a form error is not found for an assertion, then the test fails.

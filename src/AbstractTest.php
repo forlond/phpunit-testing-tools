@@ -21,7 +21,7 @@ abstract class AbstractTest implements TestInterface
     /**
      * @inheritDoc
      */
-    public function assert(bool $strict = true): void
+    public function assert(): void
     {
         $failed = [];
         $value  = $this->getValue();

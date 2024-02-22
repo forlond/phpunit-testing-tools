@@ -12,5 +12,5 @@ interface TestInterface
     /**
      * @throws TestFailedException
      */
-    public function assert(bool $strict = true): void;
+    public function assert(): void;
 }
