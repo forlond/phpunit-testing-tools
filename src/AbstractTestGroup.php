@@ -45,10 +45,8 @@ abstract class AbstractTestGroup extends AbstractTest
         foreach ($this->getConstraints() as $i => $constraint) {
             assert($constraint instanceof TestConstraintGroup);
             if ($this->strictSequence) {
-                $element = $group[$i] ?? null;
-                if (null !== $element && $constraint->evaluate($element, true)) {
-                    unset($group[$i]);
-                } else {
+                $element = array_shift($group);
+                if (null === $element || !$constraint->evaluate($element, true)) {
                     $failed[] = new ExpectationFailedException(
                         sprintf(
                             "Failed asserting that the %s contains an element at index %d that matches the following constraint:\n%s",
