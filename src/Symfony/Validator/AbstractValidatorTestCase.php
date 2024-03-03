@@ -27,6 +27,7 @@ abstract class AbstractValidatorTestCase extends TestCase
     ): TestConstraintViolationList {
         $builder = $this->configureBuilder();
         if ($configure) {
+            $configure = \Closure::bind($configure, $this);
             $configure($builder);
         }
 
@@ -46,6 +47,7 @@ abstract class AbstractValidatorTestCase extends TestCase
     ): TestConstraintViolationList {
         $builder = $this->configureBuilder();
         if ($configure) {
+            $configure = \Closure::bind($configure, $this);
             $configure($builder);
         }
 
@@ -66,6 +68,7 @@ abstract class AbstractValidatorTestCase extends TestCase
     ): TestConstraintViolationList {
         $builder = $this->configureBuilder();
         if ($configure) {
+            $configure = \Closure::bind($configure, $this);
             $configure($builder);
         }
 
@@ -84,6 +87,7 @@ abstract class AbstractValidatorTestCase extends TestCase
         $builder = $this->configureBuilder();
         $factory = new TestExecutionContextFactory();
         if ($configure) {
+            $configure = \Closure::bind($configure, $this);
             $configure($factory, $builder);
         }
 
