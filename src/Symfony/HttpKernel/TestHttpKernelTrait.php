@@ -12,6 +12,7 @@ use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\Event\TerminateEvent;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
+use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Security\Http\Event\LazyResponseEvent;
 
 trait TestHttpKernelTrait
@@ -50,9 +51,15 @@ trait TestHttpKernelTrait
     ): ControllerArgumentsEvent {
         $event ??= $this->createControllerEvent(null);
 
+        $controller = $event;
+        if (version_compare(Kernel::VERSION, '6.3', '<')) {
+            // BC Symfony 6.3 downwards
+            $controller = static fn() => $event->getController();
+        }
+
         return new ControllerArgumentsEvent(
             $event->getKernel(),
-            $event,
+            $controller,
             $arguments,
             $event->getRequest(),
             $event->getRequestType()
