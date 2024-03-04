@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Tests\Tools\Symfony\Security;
+namespace Forlond\TestTools\Symfony\Security;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\SwitchUserToken;
