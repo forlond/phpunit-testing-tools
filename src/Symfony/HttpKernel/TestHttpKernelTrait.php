@@ -17,7 +17,7 @@ use Symfony\Component\Security\Http\Event\LazyResponseEvent;
 
 trait TestHttpKernelTrait
 {
-    private function createRequestEvent(?callable $configure): RequestEvent
+    protected function createRequestEvent(?callable $configure): RequestEvent
     {
         $kernel = new TestHttpKernel();
 
@@ -26,12 +26,12 @@ trait TestHttpKernelTrait
         return new RequestEvent($kernel, $kernel->request ?? Request::create(''), $kernel->type);
     }
 
-    private function createLazyResponseEvent(RequestEvent $event): LazyResponseEvent
+    protected function createLazyResponseEvent(RequestEvent $event): LazyResponseEvent
     {
         return new LazyResponseEvent($event);
     }
 
-    private function createControllerEvent(?callable $configure, ?callable $controller = null): ControllerEvent
+    protected function createControllerEvent(?callable $configure, ?callable $controller = null): ControllerEvent
     {
         $kernel = new TestHttpKernel();
 
@@ -45,7 +45,7 @@ trait TestHttpKernelTrait
         );
     }
 
-    private function createControllerArgumentsEvent(
+    protected function createControllerArgumentsEvent(
         array            $arguments,
         ?ControllerEvent $event = null,
     ): ControllerArgumentsEvent {
@@ -66,7 +66,7 @@ trait TestHttpKernelTrait
         );
     }
 
-    private function createResponseEvent(?callable $configure): ResponseEvent
+    protected function createResponseEvent(?callable $configure): ResponseEvent
     {
         $kernel = new TestHttpKernel();
 
@@ -80,7 +80,7 @@ trait TestHttpKernelTrait
         );
     }
 
-    private function createViewEvent(
+    protected function createViewEvent(
         ?callable                 $configure,
         mixed                     $controllerResult = null,
         ?ControllerArgumentsEvent $event = null,
@@ -98,7 +98,7 @@ trait TestHttpKernelTrait
         );
     }
 
-    private function createFinishRequest(?callable $configure): FinishRequestEvent
+    protected function createFinishRequest(?callable $configure): FinishRequestEvent
     {
         $kernel = new TestHttpKernel();
 
@@ -107,7 +107,7 @@ trait TestHttpKernelTrait
         return new FinishRequestEvent($kernel, $kernel->request ?? Request::create(''), $kernel->type);
     }
 
-    private function createTerminateEvent(?callable $configure): TerminateEvent
+    protected function createTerminateEvent(?callable $configure): TerminateEvent
     {
         $kernel = new TestHttpKernel();
 
@@ -120,7 +120,7 @@ trait TestHttpKernelTrait
         );
     }
 
-    private function createExceptionEvent(?callable $configure, ?\Throwable $exception = null): ExceptionEvent
+    protected function createExceptionEvent(?callable $configure, ?\Throwable $exception = null): ExceptionEvent
     {
         $kernel = new TestHttpKernel();
 

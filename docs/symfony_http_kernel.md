@@ -27,7 +27,7 @@ returned instead.
 ---
 
 ```php
-private function createRequestEvent(?callable $configure): RequestEvent
+protected function createRequestEvent(?callable $configure): RequestEvent
 ```
 
 Creates a `RequestEvent` object. The event can be configured by using the `$configure` closure.
@@ -44,7 +44,7 @@ $event = $this->createRequestEvent(static function(TestHttpKernel $kernel) {
 ---
 
 ```php
-private function createLazyResponseEvent(RequestEvent $event): LazyResponseEvent
+protected function createLazyResponseEvent(RequestEvent $event): LazyResponseEvent
 ```
 
 Creates a `LazyResponseEvent` object.
@@ -60,7 +60,7 @@ $event = $this->createLazyResponseEvent(
 ---
 
 ```php
-private function createControllerEvent(?callable $configure, ?callable $controller = null): ControllerEvent
+protected function createControllerEvent(?callable $configure, ?callable $controller = null): ControllerEvent
 ```
 
 Creates a `ControllerEvent` object. The event can be configured by using the `$configure` closure.
@@ -89,7 +89,7 @@ $event = $this->createControllerEvent(
 ---
 
 ```php
-private function createControllerArgumentsEvent(
+protected function createControllerArgumentsEvent(
     array $arguments,
     ?ControllerEvent $event = null
 ): ControllerArgumentsEvent
@@ -115,7 +115,7 @@ $event = $this->createControllerArgumentsEvent(
 ---
 
 ```php
-private function createResponseEvent(?callable $configure): ResponseEvent
+protected function createResponseEvent(?callable $configure): ResponseEvent
 ```
 
 Creates a `ResponseEvent` object. The event can be configured by using the `$configure` closure.
@@ -132,7 +132,11 @@ $event = $this->createResponseEvent(static function(TestHttpKernel $kernel) {
 ---
 
 ```php
-private function createViewEvent(?callable $configure, mixed $controllerResult = null, ?ControllerArgumentsEvent $event = null): ViewEvent
+protected function createViewEvent(
+    ?callable $configure,
+    mixed $controllerResult = null,
+    ?ControllerArgumentsEvent $event = null,
+): ViewEvent
 ```
 
 Creates a `ViewEvent` object. The event can be configured by using the `$configure` closure.
@@ -174,7 +178,7 @@ $event = $this->createViewEvent(
 ---
 
 ```php
-private function createFinishRequest(?callable $configure): FinishRequestEvent
+protected function createFinishRequest(?callable $configure): FinishRequestEvent
 ```
 
 Creates a `FinishRequestEvent` object. The event can be configured by using the `$configure` closure.
@@ -190,7 +194,7 @@ $event = $this->createFinishRequest(static function(TestHttpKernel $kernel) use 
 ---
 
 ```php
-private function createTerminateEvent(?callable $configure): TerminateEvent
+protected function createTerminateEvent(?callable $configure): TerminateEvent
 ```
 
 Creates a `TerminateEvent` object. The event can be configured by using the `$configure` closure.
@@ -207,7 +211,7 @@ $event = $this->createTerminateEvent(static function(TestHttpKernel $kernel) use
 ---
 
 ```php
-private function createExceptionEvent(?callable $configure, ?\Throwable $exception = null): ExceptionEvent
+protected function createExceptionEvent(?callable $configure, ?\Throwable $exception = null): ExceptionEvent
 ```
 
 Creates an `ExceptionEvent` object. The event can be configured by using the `$configure` closure.

@@ -22,7 +22,7 @@ use Symfony\Component\Security\Http\Event\SwitchUserEvent;
  */
 trait TestSecuritySubscriberTrait
 {
-    private function createAuthenticationTokenCreatedEvent(?callable $configure): AuthenticationTokenCreatedEvent
+    protected function createAuthenticationTokenCreatedEvent(?callable $configure): AuthenticationTokenCreatedEvent
     {
         $authenticator = new TestAuthenticator();
 
@@ -35,7 +35,7 @@ trait TestSecuritySubscriberTrait
         return new AuthenticationTokenCreatedEvent($token, $passport);
     }
 
-    private function createCheckPassportEvent(?callable $configure): CheckPassportEvent
+    protected function createCheckPassportEvent(?callable $configure): CheckPassportEvent
     {
         $authenticator = new TestAuthenticator();
 
@@ -47,7 +47,7 @@ trait TestSecuritySubscriberTrait
         return new CheckPassportEvent($authenticator, $passport);
     }
 
-    private function createAuthenticationSuccessEvent(?callable $configure): AuthenticationSuccessEvent
+    protected function createAuthenticationSuccessEvent(?callable $configure): AuthenticationSuccessEvent
     {
         $authenticator = new TestAuthenticator();
 
@@ -60,7 +60,7 @@ trait TestSecuritySubscriberTrait
         return new AuthenticationSuccessEvent($token);
     }
 
-    private function createInteractiveLoginEvent(?callable $configure): InteractiveLoginEvent
+    protected function createInteractiveLoginEvent(?callable $configure): InteractiveLoginEvent
     {
         $authenticator = new TestAuthenticator();
 
@@ -73,7 +73,7 @@ trait TestSecuritySubscriberTrait
         return new InteractiveLoginEvent($request, $token);
     }
 
-    private function createLoginSuccessEvent(?callable $configure): LoginSuccessEvent
+    protected function createLoginSuccessEvent(?callable $configure): LoginSuccessEvent
     {
         $authenticator = new TestAuthenticator();
 
@@ -93,7 +93,7 @@ trait TestSecuritySubscriberTrait
         );
     }
 
-    private function createLoginFailureEvent(
+    protected function createLoginFailureEvent(
         ?callable                $configure,
         ?AuthenticationException $exception = null,
     ): LoginFailureEvent {
@@ -118,7 +118,7 @@ trait TestSecuritySubscriberTrait
         );
     }
 
-    private function createLogoutEvent(?callable $configure): LogoutEvent
+    protected function createLogoutEvent(?callable $configure): LogoutEvent
     {
         $authenticator = new TestAuthenticator();
 
@@ -131,7 +131,7 @@ trait TestSecuritySubscriberTrait
         return new LogoutEvent($request, $token);
     }
 
-    private function createSwitchUserEvent(?callable $configure): SwitchUserEvent
+    protected function createSwitchUserEvent(?callable $configure): SwitchUserEvent
     {
         $authenticator = new TestAuthenticator();
 
@@ -147,7 +147,7 @@ trait TestSecuritySubscriberTrait
         return new SwitchUserEvent($request, $user, $token);
     }
 
-    private function createExitSwitchUserEvent(?callable $configure): SwitchUserEvent
+    protected function createExitSwitchUserEvent(?callable $configure): SwitchUserEvent
     {
         $authenticator = new TestAuthenticator();
 
