@@ -30,14 +30,15 @@ trait TestWorkflowTrait
         return new Transition($name, (array) $from, (array) $to);
     }
 
-    protected function createMarking(Transition $transition): Marking
+    protected function createMarking(?Transition $transition): Marking
     {
-        $from = $transition->getFroms();
-        if (1 === count($from)) {
-            return new Marking([$from[0] => 1]);
+        $froms = $transition?->getFroms() ?? null;
+
+        if (empty($froms)) {
+            return new Marking();
         }
 
-        return new Marking(array_fill_keys($from, 1));
+        return new Marking(array_fill_keys($froms, 1));
     }
 
     protected function createGuardEvent(
@@ -103,20 +104,24 @@ trait TestWorkflowTrait
     }
 
     protected function createEnteredEvent(
-        object     $object,
-        Transition $transition,
-        array      $context = [],
-        ?callable  $configure = null,
+        object      $object,
+        ?Transition $transition,
+        array       $context = [],
+        ?callable   $configure = null,
     ): EnteredEvent {
-        $workflow = $this->createWorkflow(static function(TestWorkflowBuilder $builder) use ($configure, $transition) {
-            $configure && $configure($builder);
-            $builder
-                ->definition
-                ->addPlaces($transition->getFroms())
-                ->addPlaces($transition->getTos())
-                ->addTransition($transition)
-            ;
-        });
+        $workflow = $this->createWorkflow(
+            static function(TestWorkflowBuilder $builder) use ($configure, $transition) {
+                $configure && $configure($builder);
+                if ($transition) {
+                    $builder
+                        ->definition
+                        ->addPlaces($transition->getFroms())
+                        ->addPlaces($transition->getTos())
+                        ->addTransition($transition)
+                    ;
+                }
+            }
+        );
         $marking  = $this->createMarking($transition);
         $workflow->getMarkingStore()->setMarking($object, $marking);
 

@@ -101,10 +101,10 @@ protected function createCompletedEvent(
 
 ```php
 protected function createEnteredEvent(
-    object     $object,
-    Transition $transition,
-    array      $context = [],
-    ?callable  $configure = null,
+    object      $object,
+    ?Transition $transition,
+    array       $context = [],
+    ?callable   $configure = null,
 ): EnteredEvent
 ```
 
