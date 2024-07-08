@@ -32,7 +32,7 @@ trait TestWorkflowTrait
 
     protected function createMarking(?Transition $transition): Marking
     {
-        $froms = $transition?->getFroms() ?? null;
+        $froms = $transition?->getFroms();
 
         if (empty($froms)) {
             return new Marking();
