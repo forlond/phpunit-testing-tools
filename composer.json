@@ -27,7 +27,8 @@
     "symfony/expression-language": "^5.4 || ^6.4",
     "symfony/form": "^5.4 || ^6.4",
     "symfony/security-http": "^5.4 || ^6.4",
-    "symfony/validator": "^5.4 || ^6.4"
+    "symfony/validator": "^5.4 || ^6.4",
+    "symfony/workflow": "^5.4 || ^6.4"
   },
   "config": {
     "sort-packages": true
