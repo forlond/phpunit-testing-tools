@@ -185,9 +185,13 @@ final class TestForm extends AbstractTest
 
     public function assert(): void
     {
-        parent::assert();
-
         $errors = [];
+
+        try {
+            parent::assert();
+        } catch (TestFailedException $e) {
+            $errors[] = new ExpectationFailedException($e->getMessage());
+        }
 
         try {
             $this->errors?->assert();
