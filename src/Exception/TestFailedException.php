@@ -5,6 +5,9 @@ namespace Forlond\TestTools\Exception;
 use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\ExpectationFailedException;
 
+/**
+ * @author Carlos Dominguez <ixarlie@gmail.com>
+ */
 final class TestFailedException extends AssertionFailedError
 {
     public function __construct(

@@ -7,6 +7,8 @@ use PHPUnit\Framework\Constraint\Constraint;
 use PHPUnit\Framework\Constraint\IsIdentical;
 
 /**
+ * @deprecated use ArrayContains instead.
+ *
  * @author Carlos Dominguez <ixarlie@gmail.com>
  */
 final class AssociativeArrayContains extends Constraint

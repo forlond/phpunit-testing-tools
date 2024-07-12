@@ -48,16 +48,27 @@ abstract class AbstractTestGroup extends AbstractTest
             assert($constraint instanceof TestConstraintGroup);
             if ($this->strictSequence) {
                 $element = array_shift($group);
-                if (null === $element || !$constraint->evaluate($element, true)) {
+                if (null === $element) {
                     $failed[] = new ExpectationFailedException(
                         sprintf(
-                            "Failed asserting that the %s contains an element at index %d that matches the following constraint:\n%s\nElement: %s",
+                            'Failed asserting that the %s contains an element at index %d.',
                             static::GROUP_NAME,
                             $i,
-                            $constraint->toString(),
-                            $this->getExporter()->export($element)
                         )
                     );
+                } else {
+                    try {
+                        $constraint->evaluate($element);
+                    } catch (ExpectationFailedException $e) {
+                        $failed[] = new ExpectationFailedException(
+                            sprintf(
+                                "Failed asserting that the %s contains an element at index %d that matches the following constraint(s):\n%s",
+                                static::GROUP_NAME,
+                                $i,
+                                $e->getMessage(),
+                            )
+                        );
+                    }
                 }
             } else {
                 foreach ($group as $index => $element) {

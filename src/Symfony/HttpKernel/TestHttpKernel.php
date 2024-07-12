@@ -6,6 +6,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
+/**
+ * @author Carlos Dominguez <ixarlie@gmail.com>
+ */
 final class TestHttpKernel implements HttpKernelInterface
 {
     public ?Request $request = null;

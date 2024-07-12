@@ -8,6 +8,9 @@ use Symfony\Component\Workflow\MarkingStore\MarkingStoreInterface;
 use Symfony\Component\Workflow\Workflow;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
+/**
+ * @author Carlos Dominguez <ixarlie@gmail.com>
+ */
 final class TestWorkflow extends Workflow
 {
     private readonly EventDispatcherInterface $dispatcher;
