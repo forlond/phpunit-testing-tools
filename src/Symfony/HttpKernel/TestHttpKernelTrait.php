@@ -15,6 +15,9 @@ use Symfony\Component\HttpKernel\Event\ViewEvent;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Security\Http\Event\LazyResponseEvent;
 
+/**
+ * @author Carlos Dominguez <ixarlie@gmail.com>
+ */
 trait TestHttpKernelTrait
 {
     protected function createRequestEvent(?callable $configure): RequestEvent

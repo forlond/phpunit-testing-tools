@@ -5,6 +5,9 @@ namespace Forlond\TestTools\Symfony\Workflow;
 use Symfony\Component\Workflow\Marking;
 use Symfony\Component\Workflow\MarkingStore\MarkingStoreInterface;
 
+/**
+ * @author Carlos Dominguez <ixarlie@gmail.com>
+ */
 final class TestMarkingStorage implements MarkingStoreInterface
 {
     private \SplObjectStorage $storage;
