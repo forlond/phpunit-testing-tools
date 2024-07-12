@@ -51,7 +51,7 @@ abstract class AbstractTestGroup extends AbstractTest
                 if (null === $element) {
                     $failed[] = new ExpectationFailedException(
                         sprintf(
-                            "Failed asserting that the %s contains an element at index %d.",
+                            'Failed asserting that the %s contains an element at index %d.',
                             static::GROUP_NAME,
                             $i,
                         )
