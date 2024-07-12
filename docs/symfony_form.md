@@ -62,7 +62,7 @@ Example: Assert the form options is an options subset.
 $test = new TestForm($form);
 
 $test
-    ->options(new AssociativeArrayContains(['foo' => 'bar'], false))
+    ->options(new ArrayContains(['foo' => 'bar'], false))
     ->assert()
 ;
 ```

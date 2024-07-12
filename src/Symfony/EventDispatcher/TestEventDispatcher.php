@@ -8,6 +8,9 @@ use PHPUnit\Framework\Constraint\IsInstanceOf;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
+/**
+ * @author Carlos Dominguez <ixarlie@gmail.com>
+ */
 final class TestEventDispatcher extends AbstractTestGroup implements EventDispatcherInterface
 {
     protected const GROUP_NAME = 'event dispatcher';

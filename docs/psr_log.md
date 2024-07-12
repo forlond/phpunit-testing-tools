@@ -191,7 +191,7 @@ $logger
 Using an `array` may be not very flexible when you only want to check part of the context or when the values are not
 easy to assert. In this case, it is recommended to use PHPUnit constraints.
 
-This repository provides `AssociativeArrayContains`, a versatile constraint suitable for several use cases.
+This repository provides `ArrayContains`, a versatile constraint suitable for several use cases.
 
 This constraint allows to declare an array shape. When the `strict` mode is `true`, then the array shape must match all
 the keys from the original array. The `strict` mode can be disabled to assert partial associative arrays.
@@ -206,7 +206,7 @@ $logger
     ->expect(
         'info',
         'message',
-        new AssociativeArrayContains(['one' => 1, 'two' => 2])
+        new ArrayContains(['one' => 1, 'two' => 2])
     )
     ->assert()
 ;
@@ -222,13 +222,13 @@ $logger
     ->expect(
         'info',
         'message',
-        new AssociativeArrayContains(['one' => 1], false)
+        new ArrayContains(['one' => 1], false)
     )
     ->assert()
 ;
 ```
 
-The `AssociativeArrayContains` allows to assert the array values with any PHPUnit constraint.
+The `ArrayContains` allows to assert the array values with any PHPUnit constraint.
 
 Example: Value is added internally, so cannot use the same instance.
 
@@ -244,13 +244,13 @@ $logger
     ->expect(
         'info',
         'message',
-        new AssociativeArrayContains(['one' => self::assertInstanceOf(\stdClass::class)])
+        new ArrayContains(['one' => self::assertInstanceOf(\stdClass::class)])
     )
     ->assert()
 ;
 ```
 
-The `AssociativeArrayContains` can be used at any array level with the same previous features.
+The `ArrayContains` can be used at any array level with the same previous features.
 
 Example: Nested array, first level strict mode, second level non-strict mode.
 
@@ -262,8 +262,8 @@ $logger
     ->expect(
         'info',
         'message',
-        new AssociativeArrayContains([
-            'one' => new AssociativeArrayContains(['es' => 'uno'], false),
+        new ArrayContains([
+            'one' => new ArrayContains(['es' => 'uno'], false),
         ])
     )
     ->assert()

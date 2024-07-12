@@ -5,6 +5,9 @@ namespace Forlond\TestTools\Symfony\Workflow;
 use Symfony\Component\Workflow\DefinitionBuilder;
 use Symfony\Component\Workflow\MarkingStore\MarkingStoreInterface;
 
+/**
+ * @author Carlos Dominguez <ixarlie@gmail.com>
+ */
 final class TestWorkflowBuilder
 {
     public string $name = 'unnamed';

@@ -5,6 +5,9 @@ namespace Forlond\TestTools\Doctrine\DBAL;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Types;
 
+/**
+ * @author Carlos Dominguez <ixarlie@gmail.com>
+ */
 final class TestPlatform extends AbstractPlatform
 {
     public function getBooleanTypeDeclarationSQL(array $column)
