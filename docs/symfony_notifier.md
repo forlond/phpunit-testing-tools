@@ -176,7 +176,7 @@ Example: Assert the notification exception is equal or contains a message.
 
 ```php
 $notification = new Notification();
-$notification->exception(new \LogicException('Error', 100))
+$notification->exception(new \LogicException('Error', 100));
 
 $test = new TestNotifier();
 $test->send($notification);
