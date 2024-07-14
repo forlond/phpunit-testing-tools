@@ -34,7 +34,7 @@ This is the default behaviour, but it can be disabled by using the `disableStric
 
 > [!NOTE]
 > For the non-strict sequence mode when a message matches a constraint, then that expectation is not considered
-> again for the remaining sent messages.
+> again for the remaining messages.
 
 > [!NOTE]
 > When a message is not found for an assertion, then the test fails.
