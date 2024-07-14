@@ -7,6 +7,9 @@ use PHPUnit\Framework\Constraint\Constraint;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormErrorIterator;
 
+/**
+ * @author Carlos Dominguez <ixarlie@gmail.com>
+ */
 class TestFormErrors extends AbstractTestGroup
 {
     protected const GROUP_NAME = 'form errors';

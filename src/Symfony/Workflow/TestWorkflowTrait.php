@@ -12,6 +12,9 @@ use Symfony\Component\Workflow\Event\TransitionEvent;
 use Symfony\Component\Workflow\Marking;
 use Symfony\Component\Workflow\Transition;
 
+/**
+ * @author Carlos Dominguez <ixarlie@gmail.com>
+ */
 trait TestWorkflowTrait
 {
     protected function createWorkflow(?callable $configure): TestWorkflow

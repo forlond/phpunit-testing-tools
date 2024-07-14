@@ -6,6 +6,9 @@ use PHPUnit\Framework\Constraint\Constraint;
 use PHPUnit\Framework\Constraint\IsInstanceOf;
 use Symfony\Component\Form\ResolvedFormType;
 
+/**
+ * @author Carlos Dominguez <ixarlie@gmail.com>
+ */
 final class IsResolvedFormType extends Constraint
 {
     private readonly IsInstanceOf $delegate;
