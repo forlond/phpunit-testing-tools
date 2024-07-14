@@ -19,11 +19,11 @@ final class TestNotifier extends AbstractTestGroup implements NotifierInterface
 {
     protected const GROUP_NAME = 'notifier';
 
-    private array $notifications = [];
+    private array $data = [];
 
     public function send(Notification $notification, RecipientInterface ...$recipients): void
     {
-        $this->notifications[] = ['notification' => $notification, 'recipients' => $recipients];
+        $this->data[] = ['notification' => $notification, 'recipients' => $recipients];
     }
 
     public function expect(Constraint|string $subject): self
@@ -32,8 +32,8 @@ final class TestNotifier extends AbstractTestGroup implements NotifierInterface
         $this->set(
             'notification_subject',
             $subject,
-            /** @param array{'notification': Notification} $notification */
-            static fn(array $notification) => $notification['notification']->getSubject()
+            /** @param array{'notification': Notification} $data */
+            static fn(array $data) => $data['notification']->getSubject()
         );
 
         return $this;
@@ -44,8 +44,8 @@ final class TestNotifier extends AbstractTestGroup implements NotifierInterface
         $this->set(
             'notification_content',
             $content,
-            /** @param array{'notification': Notification} $notification */
-            static fn(array $notification) => $notification['notification']->getContent()
+            /** @param array{'notification': Notification} $data */
+            static fn(array $data) => $data['notification']->getContent()
         );
 
         return $this;
@@ -56,8 +56,8 @@ final class TestNotifier extends AbstractTestGroup implements NotifierInterface
         $this->set(
             'notification_importance',
             $importance,
-            /** @param array{'notification': Notification} $notification */
-            static fn(array $notification) => $notification['notification']->getImportance()
+            /** @param array{'notification': Notification} $data */
+            static fn(array $data) => $data['notification']->getImportance()
         );
 
         return $this;
@@ -68,38 +68,38 @@ final class TestNotifier extends AbstractTestGroup implements NotifierInterface
         $this->set(
             'notification_emoji',
             $emoji,
-            /** @param array{'notification': Notification} $notification */
-            static fn(array $notification) => $notification['notification']->getEmoji()
+            /** @param array{'notification': Notification} $data */
+            static fn(array $data) => $data['notification']->getEmoji()
         );
 
         return $this;
     }
 
     public function exception(
-        string                 $class,
+        string $class,
         Constraint|string|null $mesage = null,
-        Constraint|int|null    $code = null,
+        Constraint|int|null $code = null,
     ): self {
         $this->set(
             'notification_exception_class',
             $class,
-            /** @param array{'notification': Notification} $notification */
-            static fn(array $notification) => $notification['notification']->getException()?->getClass()
+            /** @param array{'notification': Notification} $data */
+            static fn(array $data) => $data['notification']->getException()?->getClass()
         );
         if ($mesage) {
             $this->set(
                 'notification_exception_message',
                 $mesage,
-                /** @param array{'notification': Notification} $notification */
-                static fn(array $notification) => $notification['notification']->getException()?->getMessage()
+                /** @param array{'notification': Notification} $data */
+                static fn(array $data) => $data['notification']->getException()?->getMessage()
             );
         }
         if ($code) {
             $this->set(
                 'notification_exception_code',
                 $code,
-                /** @param array{'notification': Notification} $notification */
-                static fn(array $notification) => $notification['notification']->getException()?->getCode()
+                /** @param array{'notification': Notification} $data */
+                static fn(array $data) => $data['notification']->getException()?->getCode()
             );
         }
 
@@ -111,8 +111,8 @@ final class TestNotifier extends AbstractTestGroup implements NotifierInterface
         $this->set(
             'notification_channels',
             $channels,
-            /** @param array{'notification': Notification} $notification */
-            static fn(array $notification) => $notification['notification']->getChannels(new NoRecipient())
+            /** @param array{'notification': Notification} $data */
+            static fn(array $data) => $data['notification']->getChannels(new NoRecipient())
         );
 
         return $this;
@@ -122,7 +122,7 @@ final class TestNotifier extends AbstractTestGroup implements NotifierInterface
     {
         $constraint = new Callback($callback);
 
-        $this->set('notification_custom', $constraint, static fn(array $notification) => $notification['notification']);
+        $this->set('notification_custom', $constraint, static fn(array $data) => $data['notification']);
 
         return $this;
     }
@@ -135,13 +135,13 @@ final class TestNotifier extends AbstractTestGroup implements NotifierInterface
             $constraint = new ArrayContains($recipients);
         }
 
-        $this->set('recipients', $constraint, static fn(array $notification) => $notification['recipients']);
+        $this->set('recipients', $constraint, static fn(array $data) => $data['recipients']);
 
         return $this;
     }
 
     protected function getValue(): array
     {
-        return $this->notifications;
+        return $this->data;
     }
 }
