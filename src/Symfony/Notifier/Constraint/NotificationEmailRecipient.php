@@ -10,7 +10,7 @@ use Symfony\Component\Notifier\Recipient\EmailRecipientInterface;
 /**
  * @author Carlos Dominguez <ixarlie@gmail.com>
  */
-class NotificationEmailRecipient extends Constraint
+final class NotificationEmailRecipient extends Constraint
 {
     private readonly Constraint $email;
 
