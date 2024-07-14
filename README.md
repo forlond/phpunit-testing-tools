@@ -20,6 +20,7 @@ composer require --dev forlond/phpunit-testing-tools
 | [Symfony/Form](https://github.com/symfony/form)              | 5.x, 6.x           | [Readme](./docs/symfony_form.md)        |
 | [Symfony/HttpKernel](https://github.com/symfony/http-kernel) | 5.x, 6.x           | [Readme](./docs/symfony_http_kernel.md) |
 | [Symfony/Mailer](https://github.com/symfony/mailer)          | 5.x, 6.x           | [Readme](./docs/symfony_mailer.md)      |
+| [Symfony/Notifier](https://github.com/symfony/notifier)      | 5.x, 6.x           | [Readme](./docs/symfony_notifier.md)    |
 | [Symfony/Security](https://github.com/symfony/security)      | 5.x, 6.x           | [Readme](./docs/symfony_security.md)    |
 | [Symfony/Validator](https://github.com/symfony/validator)    | 5.x, 6.x           | [Readme](./docs/symfony_validator.md)   |
 | [Symfony/Workflow](https://github.com/symfony/workflow)      | 5.x, 6.x           | [Readme](./docs/symfony_workflow.md)    |
