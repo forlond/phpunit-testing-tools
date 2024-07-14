@@ -13,11 +13,11 @@ final class TestMailer extends AbstractTestGroup implements MailerInterface
 {
     protected const GROUP_NAME = 'mailer';
 
-    private array $messages = [];
+    private array $data = [];
 
     public function send(RawMessage $message, ?Envelope $envelope = null): void
     {
-        $this->messages[] = ['message' => $message, 'envelope' => $envelope];
+        $this->data[] = ['message' => $message, 'envelope' => $envelope];
     }
 
     public function expect(Constraint|string $message): self
@@ -27,20 +27,20 @@ final class TestMailer extends AbstractTestGroup implements MailerInterface
         }
 
         $this->next();
-        $this->set('message', $message, static fn(array $message) => $message['message']);
+        $this->set('message', $message, static fn(array $data) => $data['message']);
 
         return $this;
     }
 
     public function envelope(Constraint $envelope): self
     {
-        $this->set('envelope', $envelope, static fn(array $message) => $message['envelope']);
+        $this->set('envelope', $envelope, static fn(array $data) => $data['envelope']);
 
         return $this;
     }
 
     protected function getValue(): array
     {
-        return $this->messages;
+        return $this->data;
     }
 }
