@@ -29,15 +29,15 @@ public function assert(): void
 
 Finally, when all the expectations are in place, call the `assert` method.
 
-In case the number of assertions do not match the number of sent messages, then the test will fail.
+In case the number of assertions do not match the number of messages, then the test will fail.
 This is the default behaviour, but it can be disabled by using the `disableStrictSize` method.
 
 > [!NOTE]
-> For the non-strict sequence mode when a sent message matches a constraint, then that expectation is not considered
+> For the non-strict sequence mode when a message matches a constraint, then that expectation is not considered
 > again for the remaining sent messages.
 
 > [!NOTE]
-> When a sent message is not found for an assertion, then the test fails.
+> When a message is not found for an assertion, then the test fails.
 
 ### Constraints
 
@@ -66,13 +66,14 @@ This integration also provides the following PHPUnit constraints:
 > The `EmailTextBodyContains` is used internally in `MessageBodyContains` when the message instance is `Email`.
 
 > [!NOTE]
-> More than constraint can be used to assert different message properties.
+> More than one constraint can be used to assert different message properties.
 > Use `LogicalAnd` or `LogicalOr` PHPUnit constraints to combine several constraints.
 
 Example: Assert a message is sent.
 
 ```php
 $test = new TestMailer();
+$test->send(new RawMessage('Hello!'));
 
 $test
     ->expect('Hello!')
@@ -80,13 +81,14 @@ $test
 ;
 ```
 
-Example: Assert a `Message` is sent, and the message contains some body **AND** some header.
+Example: Assert a `Message` contains some body **AND** some header.
 
 ```php
 $test = new TestMailer();
+$test->send(new Message(new Headers(new UnstructuredHeader('my-header', 'value')), new TextPart('Hello!')));
 
 $test
-    ->expect(LogicalAnd::fromConstraints(
+    ->expect(self::logicalAnd(
         new MessageBodyContains('Hello!'),
         new EmailHeaderSame('my-header', 'value')
     ))
@@ -94,14 +96,15 @@ $test
 ;
 ```
 
-Example: Assert a `Message` is sent, and the message contains some body **OR** some header.
+Example: Assert a `Message` contains body **OR** some header.
 
 ```php
 $test = new TestMailer();
+$test->send(new Message(new Headers(new UnstructuredHeader('my-header', 'value')), new TextPart('Hello!')));
 
 $test
-    ->expect(LogicalOr::fromConstraints(
-        new MessageBodyContains('Hello!'),
+    ->expect(self::logicalOr(
+        new MessageBodyContains('Hel'),
         new EmailHeaderSame('my-header', 'value')
     ))
     ->assert()
@@ -111,11 +114,14 @@ $test
 Example: Assert a `Message` is sent with an `Envelope` with a sender and recipient
 
 ```php
+$envelope = new Envelope(new Address('sender@example.com'), [new Address('foobar@example.com')]);
+
 $test = new TestMailer();
+$test->send(new RawMessage('Hello!'), $envelope);
 
 $test
     ->expect('Hello!')
-    ->envelope(LogicalAnd::fromConstraints(
+    ->envelope(self::logicalAnd(
         new EnvelopeSenderSame('sender@example.com'),
         new EmailHasRecipient('foobar@example.com'),
         new EmailRecipientCount(1)
