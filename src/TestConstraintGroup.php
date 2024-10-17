@@ -32,11 +32,12 @@ final class TestConstraintGroup implements TestConstraintInterface
             }
         }
 
+        $hasFailed = !empty($failed);
         if ($returnResult) {
-            return empty($failed);
+            return !$hasFailed;
         }
 
-        if (!empty($failed)) {
+        if ($hasFailed) {
             throw new ExpectationFailedException((new TestFailedException($failed))->getMessage());
         }
 

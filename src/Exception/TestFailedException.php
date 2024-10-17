@@ -17,17 +17,14 @@ final class TestFailedException extends AssertionFailedError
         $exceptions = [];
         foreach ($this->exceptions as $exception) {
             assert($exception instanceof ExpectationFailedException);
-            $value = sprintf(
-                '%s %s',
-                $exception->toString(),
-                $exception->getComparisonFailure()?->toString()
-            );
+            $value = $exception->toString();
+            $value .= $exception->getComparisonFailure()?->toString() ?? "\n";
             if ($this->description) {
                 $value = $this->description . "\n" . $value;
             }
             $exceptions[] = $value;
         }
 
-        parent::__construct(implode("\n\n", $exceptions));
+        parent::__construct(trim(implode("\n\n", $exceptions)));
     }
 }
