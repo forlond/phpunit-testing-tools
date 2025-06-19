@@ -6,7 +6,13 @@ Use the `TestHttpClient` to perform assertions to any `HttpClientInterface` inst
 
 ## TestHttpClient
 
-The `TestHttpClient` uses `MockHttpClient` internally, so the assertions will be made against `MockResponse` instances.
+The `TestHttpClient` uses the `MockHttpClient` internally, so the assertions will be made against `MockResponse`
+instances.
+
+> [!NOTE]
+> The `TestHttpClient` has the same `MockHttpClient` constructor signature so you can provide a response factory and
+> a base uri.
+
 
 ```php
 public function expect(string $method, Constraint|\Stringable|string $uri): self
