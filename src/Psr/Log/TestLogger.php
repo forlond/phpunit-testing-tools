@@ -3,6 +3,7 @@
 namespace Forlond\TestTools\Psr\Log;
 
 use Forlond\TestTools\AbstractTestGroup;
+use Forlond\TestTools\TestResettable;
 use PHPUnit\Framework\Constraint\Constraint;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LoggerTrait;
@@ -10,7 +11,7 @@ use Psr\Log\LoggerTrait;
 /**
  * @author Carlos Dominguez <ixarlie@gmail.com>
  */
-final class TestLogger extends AbstractTestGroup implements LoggerInterface
+final class TestLogger extends AbstractTestGroup implements TestResettable, LoggerInterface
 {
     use LoggerTrait;
 
