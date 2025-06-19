@@ -12,16 +12,17 @@ composer require --dev forlond/phpunit-testing-tools
 
 ## Integrations
 
-| Name                                                         | Supported Versions | Documentation                           |
-|--------------------------------------------------------------|--------------------|-----------------------------------------|
-| [Doctrine/ORM](https://github.com/doctrine/orm)              | 2.x                | [Readme](./docs/doctrine_orm.md)        |
-| [JMS/Serializer](https://github.com/schmittjoh/serializer)   | 3.x                | [Readme](./docs/jms_serializer.md)      |
-| [Psr/Log](https://github.com/php-fig/log)                    | 1.x, 2.x, 3.x      | [Readme](./docs/psr_log.md)             |
-| [Symfony/Form](https://github.com/symfony/form)              | 5.x, 6.x           | [Readme](./docs/symfony_form.md)        |
-| [Symfony/HttpKernel](https://github.com/symfony/http-kernel) | 5.x, 6.x           | [Readme](./docs/symfony_http_kernel.md) |
-| [Symfony/HttpClient](https://github.com/symfony/http-client) | 5.x, 6.x           | [Readme](./docs/symfony_http_client.md) |
-| [Symfony/Mailer](https://github.com/symfony/mailer)          | 5.x, 6.x           | [Readme](./docs/symfony_mailer.md)      |
-| [Symfony/Notifier](https://github.com/symfony/notifier)      | 5.x, 6.x           | [Readme](./docs/symfony_notifier.md)    |
-| [Symfony/Security](https://github.com/symfony/security)      | 5.x, 6.x           | [Readme](./docs/symfony_security.md)    |
-| [Symfony/Validator](https://github.com/symfony/validator)    | 5.x, 6.x           | [Readme](./docs/symfony_validator.md)   |
-| [Symfony/Workflow](https://github.com/symfony/workflow)      | 5.x, 6.x           | [Readme](./docs/symfony_workflow.md)    |
+| Name                                                          | Supported Versions | Documentation                           |
+|---------------------------------------------------------------|--------------------|-----------------------------------------|
+| [Doctrine/ORM](https://github.com/doctrine/orm)               | 2.x                | [Readme](./docs/doctrine_orm.md)        |
+| [JMS/Serializer](https://github.com/schmittjoh/serializer)    | 3.x                | [Readme](./docs/jms_serializer.md)      |
+| [Psr/Log](https://github.com/php-fig/log)                     | 1.x, 2.x, 3.x      | [Readme](./docs/psr_log.md)             |
+| [Symfony/Form](https://github.com/symfony/form)               | 5.x, 6.x           | [Readme](./docs/symfony_form.md)        |
+| [Symfony/HttpClient](https://github.com/symfony/http-client)  | 5.x, 6.x           | [Readme](./docs/symfony_http_client.md) |
+| [Symfony/HttpKernel](https://github.com/symfony/http-kernel)  | 5.x, 6.x           | [Readme](./docs/symfony_http_kernel.md) |
+| [Symfony/Mailer](https://github.com/symfony/mailer)           | 5.x, 6.x           | [Readme](./docs/symfony_mailer.md)      |
+| [Symfony/Notifier](https://github.com/symfony/notifier)       | 5.x, 6.x           | [Readme](./docs/symfony_notifier.md)    |
+| [Symfony/Security](https://github.com/symfony/security)       | 5.x, 6.x           | [Readme](./docs/symfony_security.md)    |
+| [Symfony/Translation](https://github.com/symfony/translation) | 5.x, 6.x           | [Readme](./docs/symfony_translation.md) |
+| [Symfony/Validator](https://github.com/symfony/validator)     | 5.x, 6.x           | [Readme](./docs/symfony_validator.md)   |
+| [Symfony/Workflow](https://github.com/symfony/workflow)       | 5.x, 6.x           | [Readme](./docs/symfony_workflow.md)    |
