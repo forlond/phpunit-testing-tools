@@ -106,7 +106,7 @@ $test
 ;
 ```
 
-Example: Assert the form option `foo` matches a constraint.
+Example: Assert the request option `foo` matches a constraint.
 
 ```php
 $test = new TestHttpClient();

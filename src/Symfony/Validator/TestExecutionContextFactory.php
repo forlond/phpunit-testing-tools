@@ -2,13 +2,12 @@
 
 namespace Forlond\TestTools\Symfony\Validator;
 
+use Forlond\TestTools\Symfony\Translation\TestTranslator;
 use Symfony\Component\Validator\Context\ExecutionContext;
 use Symfony\Component\Validator\Context\ExecutionContextFactoryInterface;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-use Symfony\Contracts\Translation\LocaleAwareInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Symfony\Contracts\Translation\TranslatorTrait;
 
 /**
  * @author Carlos Dominguez <ixarlie@gmail.com>
@@ -23,9 +22,7 @@ final class TestExecutionContextFactory implements ExecutionContextFactoryInterf
     {
         $translator = $this->translator;
         if (null === $translator) {
-            $translator = new class() implements TranslatorInterface, LocaleAwareInterface {
-                use TranslatorTrait;
-            };
+            $translator = new TestTranslator();
             $translator->setLocale('en');
         }
 
