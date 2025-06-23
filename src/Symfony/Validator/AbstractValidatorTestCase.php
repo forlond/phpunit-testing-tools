@@ -20,10 +20,10 @@ abstract class AbstractValidatorTestCase extends TestCase
     }
 
     final protected function validate(
-        mixed                      $value,
-        Constraint|array|null      $constraints = null,
-        GroupSequence|array|string $groups = null,
-        ?callable                  $configure = null,
+        mixed                           $value,
+        Constraint|array|null           $constraints = null,
+        GroupSequence|array|string|null $groups = null,
+        ?callable                       $configure = null,
     ): TestConstraintViolationList {
         $builder = $this->configureBuilder();
         if ($configure) {
