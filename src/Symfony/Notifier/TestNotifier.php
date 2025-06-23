@@ -77,7 +77,7 @@ final class TestNotifier extends AbstractTestGroup implements NotifierInterface
 
     public function exception(
         string $class,
-        Constraint|string|null $mesage = null,
+        Constraint|string|null $message = null,
         Constraint|int|null $code = null,
     ): self {
         $this->set(
@@ -86,10 +86,10 @@ final class TestNotifier extends AbstractTestGroup implements NotifierInterface
             /** @param array{'notification': Notification} $data */
             static fn(array $data) => $data['notification']->getException()?->getClass()
         );
-        if ($mesage) {
+        if ($message) {
             $this->set(
                 'notification_exception_message',
-                $mesage,
+                $message,
                 /** @param array{'notification': Notification} $data */
                 static fn(array $data) => $data['notification']->getException()?->getMessage()
             );

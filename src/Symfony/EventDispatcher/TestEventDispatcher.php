@@ -33,7 +33,7 @@ final class TestEventDispatcher extends AbstractTestGroup implements EventDispat
         return $this;
     }
 
-    public function dispatch(object $event, string $eventName = null): object
+    public function dispatch(object $event, ?string $eventName = null): object
     {
         $this->events[] = ['event' => $event, 'name' => $eventName ?? $event::class];
 
@@ -60,7 +60,7 @@ final class TestEventDispatcher extends AbstractTestGroup implements EventDispat
         throw new \BadMethodCallException('Unmodifiable event dispatchers must not be modified.');
     }
 
-    public function getListeners(string $eventName = null): array
+    public function getListeners(?string $eventName = null): array
     {
         return [];
     }
@@ -70,7 +70,7 @@ final class TestEventDispatcher extends AbstractTestGroup implements EventDispat
         return null;
     }
 
-    public function hasListeners(string $eventName = null): bool
+    public function hasListeners(?string $eventName = null): bool
     {
         return false;
     }

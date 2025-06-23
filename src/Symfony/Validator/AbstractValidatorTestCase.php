@@ -21,7 +21,7 @@ abstract class AbstractValidatorTestCase extends TestCase
 
     final protected function validate(
         mixed                      $value,
-        Constraint|array           $constraints = null,
+        Constraint|array|null      $constraints = null,
         GroupSequence|array|string $groups = null,
         ?callable                  $configure = null,
     ): TestConstraintViolationList {
@@ -40,10 +40,10 @@ abstract class AbstractValidatorTestCase extends TestCase
     }
 
     final protected function validateProperty(
-        object                     $object,
-        string                     $propertyName,
-        GroupSequence|array|string $groups = null,
-        ?callable                  $configure = null,
+        object                          $object,
+        string                          $propertyName,
+        GroupSequence|array|string|null $groups = null,
+        ?callable                       $configure = null,
     ): TestConstraintViolationList {
         $builder = $this->configureBuilder();
         if ($configure) {
@@ -60,11 +60,11 @@ abstract class AbstractValidatorTestCase extends TestCase
     }
 
     final protected function validatePropertyValue(
-        object|string              $objectOrClass,
-        string                     $propertyName,
-        mixed                      $value,
-        GroupSequence|array|string $groups = null,
-        ?callable                  $configure = null,
+        object|string                   $objectOrClass,
+        string                          $propertyName,
+        mixed                           $value,
+        GroupSequence|array|string|null $groups = null,
+        ?callable                       $configure = null,
     ): TestConstraintViolationList {
         $builder = $this->configureBuilder();
         if ($configure) {
