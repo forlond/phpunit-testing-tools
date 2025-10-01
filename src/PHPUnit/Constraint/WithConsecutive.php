@@ -39,7 +39,7 @@ final class WithConsecutive extends Constraint
     public function evaluate(mixed $other, string $description = '', bool $returnResult = false): ?bool
     {
         $this->invocation++;
-        if ([] === $this->arguments ||self::class === ($argument = array_shift($this->arguments))) {
+        if ([] === $this->arguments || self::class === ($argument = array_shift($this->arguments))) {
             throw new ExpectationFailedException(
                 sprintf("%s\n%s\nMethod expected parameter but none was provided.", $this->toString(), $description)
             );
