@@ -20,17 +20,18 @@ final class WithConsecutive extends Constraint
 
     public static function from(array ...$calls): array
     {
-        if (count($calls) < 2) {
-            throw new \InvalidArgumentException('At least two consecutive arguments must be provided.');
+        $count = count($calls);
+        if ($count < 2) {
+            throw new \InvalidArgumentException('At least two argument groups must be provided.');
         }
 
-        $count = count(max($calls));
-        if (0 === $count) {
-            return array_fill(0, count($calls), new self([]));
+        $max = count(max($calls));
+        if (0 === $max) {
+            return array_fill(0, $count, new self([]));
         }
 
         foreach ($calls as $i => $arguments) {
-            $calls[$i] = array_pad($arguments, $count, self::class);
+            $calls[$i] = array_pad($arguments, $max, self::class);
         }
 
         return array_map(static fn(array $tuple) => new self($tuple), array_map(null, ...$calls));
