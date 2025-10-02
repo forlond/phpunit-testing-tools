@@ -40,6 +40,8 @@ jobs:
                         phpunit-version: "^12"
                     -   php-version: "8.2"
                         phpunit-version: "^12"
+                    -   php-version: "8.1"
+                        symfony-version: "7.3.*"
 
         steps:
             -   name: "Checkout"
@@ -55,7 +57,7 @@ jobs:
                 run: composer config minimum-stability ${{ matrix.stability }}
 
             -   name: "Set up PHPUnit version"
-                run: composer require phpunit/phpunit:^10.5 --no-update
+                run: composer require phpunit/phpunit:${{ matrix.phpunit-version }} --no-update
 
             -   name: "Install dependencies with Composer"
                 uses: ramsey/composer-install@v3
