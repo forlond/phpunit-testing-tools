@@ -16,12 +16,6 @@ jobs:
                 phpunit: ["^10.5", "^11.5", "^12.3"]
                 dependencies: [ "lowest", "highest" ]
                 exclude:
-                    - phpunit: "^10.5"
-                      dependencies: "lowest"
-                    - phpunit: "^11.5"
-                      dependencies: "lowest"
-                    - phpunit: "^12.3"
-                      dependencies: "lowest"
                     - php: 8.1
                       phpunit: "^11"
                     - php: 8.1
@@ -47,9 +41,6 @@ jobs:
                 uses: ramsey/composer-install@v3
                 with:
                     dependency-versions: "${{ matrix.dependencies }}"
-
-            -   name: Migrate PHPUnit config
-                run: vendor/bin/phpunit --migrate-configuration
 
             -   name: Run tests
                 run: vendor/bin/phpunit
