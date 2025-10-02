@@ -1,0 +1,65 @@
+name: PHP Tests (PHPUnit 10)
+
+on:
+    push:
+        branches:
+            - "master"
+    pull_request:
+
+jobs:
+    tests:
+        runs-on: "${{ matrix.os }}"
+        env:
+            SYMFONY_REQUIRE: ${{ maxtrix.symfony-version }}
+        strategy:
+            fail-fast: false
+            matrix:
+                os:
+                    - "ubuntu-24.04"
+                php-version:
+                    - "8.1"
+                    - "8.2"
+                    - "8.3"
+                    - "8.4"
+                stability:
+                    - "stable"
+                dependencies:
+                    - "highest"
+                symfony-version:
+                    - "6.4.*"
+                    - "7.3.*"
+                phpunit-version:
+                    - "^10"
+                    - "^11"
+                    - "^12"
+                exclude:
+                    -   php-version: "8.1"
+                        phpunit-version: "^11"
+                    -   php-version: "8.1"
+                        phpunit-version: "^12"
+                    -   php-version: "8.2"
+                        phpunit-version: "^12"
+
+        steps:
+            -   name: "Checkout"
+                uses: "actions/checkout@v5"
+
+            -   name: "Install PHP"
+                uses: "shivammathur/setup-php@v2"
+                with:
+                    php-version: ${{ matrix.php-version }}
+                    coverage: none
+
+            -   name: "Set minimum-stability to stable in Composer"
+                run: composer config minimum-stability ${{ matrix.stability }}
+
+            -   name: "Set up PHPUnit version"
+                run: composer require phpunit/phpunit:^10.5 --no-update
+
+            -   name: "Install dependencies with Composer"
+                uses: ramsey/composer-install@v3
+                with:
+                    dependency-versions: "${{ matrix.dependencies }}"
+
+            -   name: "Run tests"
+                run: vendor/bin/phpunit
