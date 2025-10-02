@@ -1,4 +1,4 @@
-name: PHP Tests (PHPUnit 10)
+name: PHP Tests
 
 on:
     push:
@@ -8,6 +8,7 @@ on:
 
 jobs:
     tests:
+        name: "PHPUnit"
         runs-on: "${{ matrix.os }}"
         env:
             SYMFONY_REQUIRE: ${{ maxtrix.symfony-version }}
