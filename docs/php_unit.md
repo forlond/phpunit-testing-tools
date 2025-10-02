@@ -54,7 +54,5 @@ $this
 > `WithConsecutive` will throw an exception if the number of argument groups is less than two. In that case, use `with`
 > instead.
 
-- For more details about the `withConsecutive` discussion, see
-  this [PHPUnit GitHub issue](https://github.com/sebastianbergmann/phpunit/issues/402)
 - You can also explore additional approaches in
   this [StackOverflow discussion](https://stackoverflow.com/questions/75389000/replace-phpunit-method-withconsecutive-abandoned-in-phpunit-10)
