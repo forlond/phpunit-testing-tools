@@ -13,9 +13,15 @@ jobs:
             fail-fast: false
             matrix:
                 php: [ 8.1, 8.2, 8.3, 8.4 ]
-                phpunit: ["^10", "^11", "^12"]
+                phpunit: ["^10.5", "^11.5", "^12.3"]
                 dependencies: [ "lowest", "highest" ]
                 exclude:
+                    - phpunit: "^10.5"
+                      dependencies: "lowest"
+                    - phpunit: "^11.5"
+                      dependencies: "lowest"
+                    - phpunit: "^12.3"
+                      dependencies: "lowest"
                     - php: 8.1
                       phpunit: "^11"
                     - php: 8.1
@@ -34,13 +40,16 @@ jobs:
                     php-version: ${{ matrix.php }}
                     coverage: none
 
-            -   name: Set up PHPUnit
+            -   name: Set up PHPUnit version
                 run: composer require phpunit/phpunit:${{ matrix.phpunit }} --no-update
 
             -   name: Install dependencies with Composer
                 uses: ramsey/composer-install@v3
                 with:
                     dependency-versions: "${{ matrix.dependencies }}"
+
+            -   name: Migrate PHPUnit config
+                run: vendor/bin/phpunit --migrate-configuration
 
             -   name: Run tests
                 run: vendor/bin/phpunit
