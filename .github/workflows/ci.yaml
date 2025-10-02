@@ -11,7 +11,7 @@ jobs:
         name: "PHPUnit"
         runs-on: "${{ matrix.os }}"
         env:
-            SYMFONY_REQUIRE: ${{ maxtrix.symfony-version }}
+            SYMFONY_REQUIRE: ${{ matrix.symfony-version }}
         strategy:
             fail-fast: false
             matrix:
