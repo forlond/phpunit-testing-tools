@@ -26,7 +26,7 @@ final class TestMarkingStorage implements MarkingStoreInterface
         return new Marking();
     }
 
-    public function setMarking(object $subject, Marking $marking, array $context = [])
+    public function setMarking(object $subject, Marking $marking, array $context = []): void
     {
         $this->storage->attach($subject, $marking);
     }

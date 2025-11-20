@@ -244,7 +244,7 @@ $logger
     ->expect(
         'info',
         'message',
-        new ArrayContains(['one' => self::assertInstanceOf(\stdClass::class)])
+        new ArrayContains(['one' => self::isInstanceOf(\stdClass::class)])
     )
     ->assert()
 ;
