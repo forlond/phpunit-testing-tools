@@ -20,19 +20,19 @@
     "phpunit/phpunit": "^10 || ^11 || ^12"
   },
   "require-dev": {
-    "doctrine/orm": "^2.0",
+    "doctrine/orm": "^2.0 || ^3.0",
     "jms/serializer": "^3.0",
     "psr/log": "^1.0 || ^2.0 || ^3.0",
-    "symfony/event-dispatcher": "^6.4 || ^7.3",
-    "symfony/expression-language": "^6.4 || ^7.3",
-    "symfony/form": "^6.4 || ^7.3",
-    "symfony/http-client": "^6.4 || ^7.3",
-    "symfony/mailer": "^6.4 || ^7.3",
-    "symfony/notifier": "^6.4 || ^7.3",
-    "symfony/security-http": "^6.4 || ^7.3",
-    "symfony/translation": "^6.4 || ^7.3",
-    "symfony/validator": "^6.4 || ^7.3",
-    "symfony/workflow": "^6.4 || ^7.3"
+    "symfony/event-dispatcher": "^6.4 || ^7.4",
+    "symfony/expression-language": "^6.4 || ^7.4",
+    "symfony/form": "^6.4 || ^7.4",
+    "symfony/http-client": "^6.4 || ^7.4",
+    "symfony/mailer": "^6.4 || ^7.4",
+    "symfony/notifier": "^6.4 || ^7.4",
+    "symfony/security-http": "^6.4 || ^7.4",
+    "symfony/translation": "^6.4 || ^7.4",
+    "symfony/validator": "^6.4 || ^7.4",
+    "symfony/workflow": "^6.4 || ^7.4"
   },
   "config": {
     "sort-packages": true
@@ -53,7 +53,7 @@
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "2.x-dev"
+      "dev-master": "3.x-dev"
     }
   }
 }
