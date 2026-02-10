@@ -86,7 +86,7 @@ final class TestNotifier extends AbstractTestGroup implements NotifierInterface
             /** @param array{'notification': Notification} $data */
             static fn(array $data) => $data['notification']->getException()?->getClass()
         );
-        if ($message) {
+        if (null !== $message) {
             $this->set(
                 'notification_exception_message',
                 $message,
@@ -94,7 +94,7 @@ final class TestNotifier extends AbstractTestGroup implements NotifierInterface
                 static fn(array $data) => $data['notification']->getException()?->getMessage()
             );
         }
-        if ($code) {
+        if (null !== $code) {
             $this->set(
                 'notification_exception_code',
                 $code,
@@ -129,7 +129,7 @@ final class TestNotifier extends AbstractTestGroup implements NotifierInterface
 
     public function recipients(Constraint ...$recipients): self
     {
-        if (empty($recipients)) {
+        if (0 === count($recipients)) {
             $constraint = new Count(0);
         } else {
             $constraint = new ArrayContains($recipients);

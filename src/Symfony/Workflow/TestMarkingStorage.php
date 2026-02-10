@@ -10,6 +10,9 @@ use Symfony\Component\Workflow\MarkingStore\MarkingStoreInterface;
  */
 final class TestMarkingStorage implements MarkingStoreInterface
 {
+    /**
+     * @var \SplObjectStorage<object, Marking>
+     */
     private \SplObjectStorage $storage;
 
     public function __construct()

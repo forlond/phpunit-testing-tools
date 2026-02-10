@@ -25,34 +25,3 @@ new ArrayContains([
     'one' => new ArrayContains(['es' => 'uno'], false),
 ])
 ```
-
-### WithConsecutive
-
-This constraint should be used to replace the `withConsecutive` method starting with PhpUnit 10 or higher.
-
-```php
-// Before
-$this
-    ->createMock(CalculatorInterface::class)
-    ->expects($this->exactly(2))
-    ->method('sum')
-    ->withConsecutive([1, 2], [4, 5])
-    ->willReturnOnConsecutiveCalls(3, 9)
-;
-
-// After
-$this
-    ->createMock(CalculatorInterface::class)
-    ->expects($this->exactly(2))
-    ->method('sum')
-    ->with(...WithConsecutive::from([1, 2], [4, 5]))
-    ->willReturnOnConsecutiveCalls(3, 9)
-;
-```
-
-> [!NOTE]
-> `WithConsecutive` will throw an exception if the number of argument groups is less than two. In that case, use `with`
-> instead.
-
-- You can also explore additional approaches in
-  this [StackOverflow discussion](https://stackoverflow.com/questions/75389000/replace-phpunit-method-withconsecutive-abandoned-in-phpunit-10)

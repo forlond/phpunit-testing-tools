@@ -22,7 +22,12 @@
   "require-dev": {
     "doctrine/orm": "^2.0 || ^3.0",
     "jms/serializer": "^3.0",
+    "nunomaduro/phpinsights": "^2.13",
+    "phpstan/extension-installer": "^1.4",
+    "phpstan/phpstan": "^2.1",
+    "phpstan/phpstan-strict-rules": "^2.0",
     "psr/log": "^1.0 || ^2.0 || ^3.0",
+    "roave/security-advisories": "dev-latest",
     "symfony/event-dispatcher": "^6.4 || ^7.4",
     "symfony/expression-language": "^6.4 || ^7.4",
     "symfony/form": "^6.4 || ^7.4",
@@ -35,7 +40,11 @@
     "symfony/workflow": "^6.4 || ^7.4"
   },
   "config": {
-    "sort-packages": true
+    "sort-packages": true,
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true,
+      "phpstan/extension-installer": true
+    }
   },
   "conflict": {
   },

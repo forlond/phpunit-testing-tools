@@ -34,7 +34,7 @@ abstract class AbstractTest implements TestInterface
             }
         }
 
-        if (!empty($failed)) {
+        if (0 !== count($failed)) {
             throw new TestFailedException($failed, $this->failureDescription());
         }
 

@@ -44,7 +44,7 @@ final class ArrayContains extends Constraint
             unset($other[$key]);
         }
 
-        if ($this->strict && !empty($other)) {
+        if ($this->strict && 0 !== count($other)) {
             foreach ($other as $key => $value) {
                 $errors[] = new ExpectationFailedException(
                     sprintf('Failed asserting that key/index "%s" does not exist.', $key)
@@ -52,11 +52,12 @@ final class ArrayContains extends Constraint
             }
         }
 
+        $hasErrors = 0 !== count($errors);
         if ($returnResult) {
-            return empty($errors);
+            return $hasErrors;
         }
 
-        if (!empty($errors)) {
+        if ($hasErrors) {
             throw new ExpectationFailedException((new TestFailedException($errors, $description))->getMessage());
         }
 

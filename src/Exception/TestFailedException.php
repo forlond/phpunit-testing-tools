@@ -22,7 +22,7 @@ final class TestFailedException extends AssertionFailedError
                 $exception->toString(),
                 $exception->getComparisonFailure()?->toString()
             );
-            if ($this->description) {
+            if (null !== $this->description) {
                 $value = $this->description . "\n" . $value;
             }
             $exceptions[] = $value;

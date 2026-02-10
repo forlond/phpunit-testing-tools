@@ -72,7 +72,7 @@ abstract class AbstractTestGroup extends AbstractTest
                 }
             } else {
                 foreach ($group as $index => $element) {
-                    if ($constraint->evaluate($element, true)) {
+                    if (true === $constraint->evaluate($element, true)) {
                         unset($group[$index]);
                         continue 2;
                     }
@@ -87,7 +87,7 @@ abstract class AbstractTestGroup extends AbstractTest
             }
         }
 
-        if ($this->strictSize && !empty($group)) {
+        if ($this->strictSize && 0 !== count($group)) {
             $failed[] = new ExpectationFailedException(
                 sprintf(
                     "Failed asserting that the %s does not contain the following elements:\n%s",
@@ -97,7 +97,7 @@ abstract class AbstractTestGroup extends AbstractTest
             );
         }
 
-        if (!empty($failed)) {
+        if (0 !== count($failed)) {
             throw new TestFailedException($failed, $this->failureDescription());
         }
 

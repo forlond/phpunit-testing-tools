@@ -5,11 +5,11 @@ namespace Forlond\TestTools\JMS\Serializer;
 use JMS\Serializer\Context;
 use JMS\Serializer\GraphNavigator\Factory\GraphNavigatorFactoryInterface;
 use JMS\Serializer\GraphNavigatorInterface;
+use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Metadata\Driver\AttributeDriver;
 use JMS\Serializer\Naming\IdenticalPropertyNamingStrategy;
-use JMS\Serializer\Visitor\Factory\DeserializationVisitorFactory;
-use JMS\Serializer\Visitor\Factory\SerializationVisitorFactory;
-use JMS\Serializer\VisitorInterface;
+use JMS\Serializer\Visitor\DeserializationVisitorInterface;
+use JMS\Serializer\Visitor\SerializationVisitorInterface;
 use Metadata\ClassHierarchyMetadata;
 use Metadata\MetadataFactory;
 use Metadata\MetadataFactoryInterface;
@@ -22,11 +22,6 @@ abstract class AbstractTestContextFactory
     public string $format = 'json';
 
     public MetadataFactoryInterface $metadataFactory;
-
-    /**
-     * @var SerializationVisitorFactory[]|DeserializationVisitorFactory[]
-     */
-    protected array $visitorFactories = [];
 
     protected array $initialGraph = [];
 
@@ -49,17 +44,16 @@ abstract class AbstractTestContextFactory
 
     abstract protected function startInitialVisiting(Context $context, object $object): void;
 
-    abstract protected function getContext(): Context;
+    abstract protected function getVisitor(): SerializationVisitorInterface|DeserializationVisitorInterface;
 
     protected function getNavigator(): GraphNavigatorInterface
     {
         return $this->graphNavigatorFactory->getGraphNavigator();
     }
 
-    final protected function createContext(): Context
+    final protected function createContext(Context $context): void
     {
-        $context   = clone $this->getContext();
-        $visitor   = $this->getVisitor()->getVisitor();
+        $visitor   = $this->getVisitor();
         $navigator = $this->getNavigator();
 
         $context->initialize($this->format, $visitor, $navigator, $this->metadataFactory);
@@ -67,19 +61,18 @@ abstract class AbstractTestContextFactory
         $navigator->initialize($visitor, $context);
 
         $this->buildInitialGraph($context, $visitor);
-
-        return $context;
     }
 
-    private function getVisitor(): SerializationVisitorFactory|DeserializationVisitorFactory
-    {
-        return $this->visitorFactories[$this->format];
-    }
-
-    private function buildInitialGraph(Context $context, VisitorInterface $visitor): void
-    {
+    private function buildInitialGraph(
+        Context                                                       $context,
+        SerializationVisitorInterface|DeserializationVisitorInterface $visitor,
+    ): void {
         foreach ($this->initialGraph as [$object, $propertyName]) {
-            $metadata = $this->metadataFactory->getMetadataForClass(get_class($object));
+            $metadata = $this->metadataFactory->getMetadataForClass($object::class);
+            if (!$metadata instanceof ClassMetadata) {
+                throw new \RuntimeException('Cannot get valid metadata for class: ' . $object::class);
+            }
+
             $this->startInitialVisiting($context, $object);
             $context->pushClassMetadata($metadata);
             $property = $metadata->propertyMetadata[$propertyName] ?? null;
@@ -87,7 +80,7 @@ abstract class AbstractTestContextFactory
                 throw new \RuntimeException('Cannot find property in class metadata');
             }
 
-            $visitor->startVisitingObject($metadata, $object, ['name' => $metadata->name]);
+            $visitor->startVisitingObject($metadata, $object, ['name' => $metadata->name, 'params' => []]);
             $context->pushPropertyMetadata($property);
         }
     }

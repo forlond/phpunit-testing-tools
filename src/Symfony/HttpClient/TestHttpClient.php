@@ -35,6 +35,7 @@ final class TestHttpClient extends AbstractTestGroup implements HttpClientInterf
     public function request(string $method, string $url, array $options = []): ResponseInterface
     {
         $response = $this->delegate->request($method, $url, $options);
+        assert($response instanceof MockResponse);
 
         $this->responses[] = $response;
 

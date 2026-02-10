@@ -9,5 +9,5 @@ use JMS\Serializer\Construction\ObjectConstructorInterface;
  */
 abstract class AbstractObjectConstructorTestCase extends AbstractSerializerTestCase
 {
-    abstract protected function createConstructor(?callable $configure): ObjectConstructorInterface;
+    abstract protected function createConstructor(?\Closure $configure): ObjectConstructorInterface;
 }

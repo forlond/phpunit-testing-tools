@@ -9,6 +9,7 @@ use JMS\Serializer\SerializationContext;
 use JMS\Serializer\Visitor\Factory\JsonSerializationVisitorFactory;
 use JMS\Serializer\Visitor\Factory\SerializationVisitorFactory;
 use JMS\Serializer\Visitor\Factory\XmlSerializationVisitorFactory;
+use JMS\Serializer\Visitor\SerializationVisitorInterface;
 
 /**
  * @author Carlos Dominguez <ixarlie@gmail.com>
@@ -16,6 +17,11 @@ use JMS\Serializer\Visitor\Factory\XmlSerializationVisitorFactory;
 class TestSerializationContextFactory extends AbstractTestContextFactory implements SerializationContextFactoryInterface
 {
     public readonly SerializationContext $context;
+
+    /**
+     * @var array<SerializationVisitorFactory>
+     */
+    protected array $visitorFactories = [];
 
     public function __construct()
     {
@@ -27,7 +33,10 @@ class TestSerializationContextFactory extends AbstractTestContextFactory impleme
 
     public function createSerializationContext(): SerializationContext
     {
-        return $this->createContext();
+        $context = clone $this->context;
+        $this->createContext($context);
+
+        return $context;
     }
 
     public function getVisitorFactory(string $format): SerializationVisitorFactory
@@ -40,9 +49,9 @@ class TestSerializationContextFactory extends AbstractTestContextFactory impleme
         $this->visitorFactories[$format] = $factory;
     }
 
-    protected function getContext(): Context
+    protected function getVisitor(): SerializationVisitorInterface
     {
-        return $this->context;
+        return $this->getVisitorFactory($this->format)->getVisitor();
     }
 
     protected function getNavigator(): GraphNavigatorInterface
@@ -56,6 +65,10 @@ class TestSerializationContextFactory extends AbstractTestContextFactory impleme
 
     protected function startInitialVisiting(Context $context, object $object): void
     {
+        if (!$context instanceof SerializationContext) {
+            throw new \RuntimeException('The context factory expects a SerializationContext instance.');
+        }
+
         $context->startVisiting($object);
     }
 }
