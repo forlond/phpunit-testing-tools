@@ -17,7 +17,7 @@
   ],
   "require": {
     "php": ">=8.1",
-    "phpunit/phpunit": "^10 || ^11 || ^12"
+    "phpunit/phpunit": "^9 || ^10 || ^11 || ^12"
   },
   "require-dev": {
     "doctrine/orm": "^2.10 || ^3.0",

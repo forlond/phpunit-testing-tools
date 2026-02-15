@@ -16,7 +16,7 @@ trait TestORMEventsTrait
     }
 
     /**
-     * @param ClassMetadata<object>     $classMetadata
+     * @param ClassMetadata<object> $classMetadata
      */
     final protected function createLoadClassMetadataEvent(
         TestEntityManager $manager,
