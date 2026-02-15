@@ -2,9 +2,7 @@
 
 namespace Forlond\TestTools\Doctrine\DBAL;
 
-use Doctrine\DBAL\Cache\ArrayResult;
 use Doctrine\DBAL\Driver\Connection;
-use Doctrine\DBAL\Driver\Result;
 use Doctrine\DBAL\ParameterType;
 
 /**
@@ -12,19 +10,22 @@ use Doctrine\DBAL\ParameterType;
  */
 final class TestDBALDriverConnection implements Connection
 {
+    /**
+     * @var list<array<string,mixed>>
+     */
     public array $results = [];
 
     public function prepare(string $sql): TestStatement
     {
-        return new TestStatement($this->results);
+        return new TestStatement($sql, $this->results);
     }
 
-    public function query(string $sql): Result
+    public function query(string $sql): TestResult
     {
-        return new ArrayResult($this->results);
+        return new TestResult($this->results, $sql);
     }
 
-    public function quote($value, $type = ParameterType::STRING)
+    public function quote($value, $type = ParameterType::STRING): string
     {
         return $value;
     }
@@ -34,27 +35,27 @@ final class TestDBALDriverConnection implements Connection
         return 1;
     }
 
-    public function lastInsertId($name = null)
+    public function lastInsertId($name = null): int
     {
         return 1;
     }
 
-    public function beginTransaction()
+    public function beginTransaction(): bool
     {
         return true;
     }
 
-    public function commit()
+    public function commit(): bool
     {
         return true;
     }
 
-    public function rollBack()
+    public function rollBack(): bool
     {
         return true;
     }
 
-    public function getNativeConnection()
+    public function getNativeConnection(): object
     {
         return $this;
     }

@@ -22,11 +22,13 @@ use Symfony\Component\Security\Http\Event\SwitchUserEvent;
  */
 trait TestSecuritySubscriberTrait
 {
-    protected function createAuthenticationTokenCreatedEvent(?callable $configure): AuthenticationTokenCreatedEvent
+    protected function createAuthenticationTokenCreatedEvent(?\Closure $configure): AuthenticationTokenCreatedEvent
     {
         $authenticator = new TestAuthenticator();
 
-        $configure && $configure($authenticator);
+        if (null !== $configure) {
+            $configure($authenticator);
+        }
 
         $request  = $authenticator->request ?? Request::create('');
         $passport = $authenticator->authenticate($request);
@@ -35,11 +37,13 @@ trait TestSecuritySubscriberTrait
         return new AuthenticationTokenCreatedEvent($token, $passport);
     }
 
-    protected function createCheckPassportEvent(?callable $configure): CheckPassportEvent
+    protected function createCheckPassportEvent(?\Closure $configure): CheckPassportEvent
     {
         $authenticator = new TestAuthenticator();
 
-        $configure && $configure($authenticator);
+        if (null !== $configure) {
+            $configure($authenticator);
+        }
 
         $request  = $authenticator->request ?? Request::create('');
         $passport = $authenticator->authenticate($request);
@@ -47,11 +51,13 @@ trait TestSecuritySubscriberTrait
         return new CheckPassportEvent($authenticator, $passport);
     }
 
-    protected function createAuthenticationSuccessEvent(?callable $configure): AuthenticationSuccessEvent
+    protected function createAuthenticationSuccessEvent(?\Closure $configure): AuthenticationSuccessEvent
     {
         $authenticator = new TestAuthenticator();
 
-        $configure && $configure($authenticator);
+        if (null !== $configure) {
+            $configure($authenticator);
+        }
 
         $request  = $authenticator->request ?? Request::create('');
         $passport = $authenticator->authenticate($request);
@@ -60,11 +66,13 @@ trait TestSecuritySubscriberTrait
         return new AuthenticationSuccessEvent($token);
     }
 
-    protected function createInteractiveLoginEvent(?callable $configure): InteractiveLoginEvent
+    protected function createInteractiveLoginEvent(?\Closure $configure): InteractiveLoginEvent
     {
         $authenticator = new TestAuthenticator();
 
-        $configure && $configure($authenticator);
+        if (null !== $configure) {
+            $configure($authenticator);
+        }
 
         $request  = $authenticator->request ?? Request::create('');
         $passport = $authenticator->authenticate($request);
@@ -73,11 +81,13 @@ trait TestSecuritySubscriberTrait
         return new InteractiveLoginEvent($request, $token);
     }
 
-    protected function createLoginSuccessEvent(?callable $configure): LoginSuccessEvent
+    protected function createLoginSuccessEvent(?\Closure $configure): LoginSuccessEvent
     {
         $authenticator = new TestAuthenticator();
 
-        $configure && $configure($authenticator);
+        if (null !== $configure) {
+            $configure($authenticator);
+        }
 
         $request  = $authenticator->request ?? Request::create('');
         $passport = $authenticator->authenticate($request);
@@ -94,12 +104,14 @@ trait TestSecuritySubscriberTrait
     }
 
     protected function createLoginFailureEvent(
-        ?callable                $configure,
+        ?\Closure                $configure,
         ?AuthenticationException $exception = null,
     ): LoginFailureEvent {
         $authenticator = new TestAuthenticator();
 
-        $configure && $configure($authenticator);
+        if (null !== $configure) {
+            $configure($authenticator);
+        }
 
         $request  = $authenticator->request ?? Request::create('');
         $passport = $authenticator->authenticate($request);
@@ -118,11 +130,13 @@ trait TestSecuritySubscriberTrait
         );
     }
 
-    protected function createLogoutEvent(?callable $configure): LogoutEvent
+    protected function createLogoutEvent(?\Closure $configure): LogoutEvent
     {
         $authenticator = new TestAuthenticator();
 
-        $configure && $configure($authenticator);
+        if (null !== $configure) {
+            $configure($authenticator);
+        }
 
         $request  = $authenticator->request ?? Request::create('');
         $passport = $authenticator->authenticate($request);
@@ -131,11 +145,13 @@ trait TestSecuritySubscriberTrait
         return new LogoutEvent($request, $token);
     }
 
-    protected function createSwitchUserEvent(?callable $configure): SwitchUserEvent
+    protected function createSwitchUserEvent(?\Closure $configure): SwitchUserEvent
     {
         $authenticator = new TestAuthenticator();
 
-        $configure && $configure($authenticator);
+        if (null !== $configure) {
+            $configure($authenticator);
+        }
 
         $request      = $authenticator->request ?? Request::create('');
         $passport     = $authenticator->authenticate($request);
@@ -147,11 +163,13 @@ trait TestSecuritySubscriberTrait
         return new SwitchUserEvent($request, $user, $token);
     }
 
-    protected function createExitSwitchUserEvent(?callable $configure): SwitchUserEvent
+    protected function createExitSwitchUserEvent(?\Closure $configure): SwitchUserEvent
     {
         $authenticator = new TestAuthenticator();
 
-        $configure && $configure($authenticator);
+        if (null !== $configure) {
+            $configure($authenticator);
+        }
 
         $request      = $authenticator->request ?? Request::create('');
         $impersonator = new InMemoryUser('impersonator', null);

@@ -6,14 +6,13 @@ use Forlond\TestTools\Symfony\EventDispatcher\TestEventDispatcher;
 use Symfony\Component\Workflow\Definition;
 use Symfony\Component\Workflow\MarkingStore\MarkingStoreInterface;
 use Symfony\Component\Workflow\Workflow;
-use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
  * @author Carlos Dominguez <ixarlie@gmail.com>
  */
 final class TestWorkflow extends Workflow
 {
-    private readonly EventDispatcherInterface $dispatcher;
+    public readonly TestEventDispatcher $dispatcher;
 
     public function __construct(
         Definition            $definition,
@@ -23,10 +22,5 @@ final class TestWorkflow extends Workflow
     ) {
         $this->dispatcher = new TestEventDispatcher();
         parent::__construct($definition, $markingStore, $this->dispatcher, $name, $eventsToDispatch);
-    }
-
-    public function getEventDispatcher(): TestEventDispatcher
-    {
-        return $this->dispatcher;
     }
 }

@@ -38,12 +38,12 @@ abstract class AbstractTest implements TestInterface
             throw new TestFailedException($failed, $this->failureDescription());
         }
 
-        Assert::assertEmpty($failed);
+        Assert::assertCount(0, $failed);
     }
 
     abstract protected function getValue(): mixed;
 
-    protected function set(string $name, mixed $expected, callable $actual): void
+    protected function set(string $name, mixed $expected, \Closure $actual): void
     {
         if (isset($this->constraints[$name])) {
             throw new \RuntimeException('Cannot redefine ' . $name);

@@ -16,7 +16,8 @@ abstract class AbstractDBALTestCase extends TestCase
         ?AbstractPlatform $platform = null,
     ): TestDBALConnection {
         return new TestDBALConnection(
-            new TestDBALDriver(new TestDBALDriverConnection(), $platform ?? $this->createPlatform()),
+            [],
+            new TestDBALDriver($platform ?? $this->createPlatform()),
             $configuration ?? $this->createConfiguration()
         );
     }

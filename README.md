@@ -2,7 +2,7 @@
 
 A set of utilities to facilitate the creation of unit tests for other libraries in PHPUnit.
 
-Requires a PHP version `^8.1` and a PHPUnit version `^9.5 || ^10`
+Requires a PHP version `^8.1` and a PHPUnit version `^9 || ^10 || ^11 || ^12`
 
 ## Installation
 
@@ -12,20 +12,14 @@ composer require --dev forlond/phpunit-testing-tools
 
 ## PhpUnit
 
-> [!IMPORTANT]
-> If you plan to upgrade to PHPUnit 10 or higher, note that the `withConsecutive` method has been removed.
-> The `WithConsecutive` constraint provides a clean alternative to replace it.
->
-> [How to replace withConsecutive](docs/php_unit.md#withconsecutive)
->
-
 This package provides some useful PHPUnit constraints. [Readme](docs/php_unit.md)
 
 ## Integrations
 
 | Name                                                          | Supported Versions | Documentation                           |
 |---------------------------------------------------------------|--------------------|-----------------------------------------|
-| [Doctrine/ORM](https://github.com/doctrine/orm)               | 2.x                | [Readme](./docs/doctrine_orm.md)        |
+| [Doctrine/DBAL](https://github.com/doctrine/orm)              | 3.x                | [Readme](./docs/doctrine_dbal.md)       |
+| [Doctrine/ORM](https://github.com/doctrine/orm)               | 2.x, 3.x           | [Readme](./docs/doctrine_orm.md)        |
 | [JMS/Serializer](https://github.com/schmittjoh/serializer)    | 3.x                | [Readme](./docs/jms_serializer.md)      |
 | [Psr/Log](https://github.com/php-fig/log)                     | 1.x, 2.x, 3.x      | [Readme](./docs/psr_log.md)             |
 | [Symfony/Form](https://github.com/symfony/form)               | 5.x, 6.x           | [Readme](./docs/symfony_form.md)        |

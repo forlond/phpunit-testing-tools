@@ -2,9 +2,7 @@
 
 namespace Forlond\TestTools\Doctrine\DBAL;
 
-use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Exception;
 
 /**
  * @author Carlos Dominguez <ixarlie@gmail.com>
@@ -13,34 +11,18 @@ final class TestDBALConnection extends Connection
 {
     public string $database = 'test_database';
 
+    public function getDatabase(): string
+    {
+        return $this->database;
+    }
+
     /**
+     * @param array<string,mixed> ...$results
      */
-    public function __construct(
-        private readonly TestDBALDriver $driver,
-        ?Configuration                  $configuration = null,
-    ) {
-        try {
-            parent::__construct(['serverVersion' => 'test'], $driver, $configuration);
-            $this->setNestTransactionsWithSavepoints(true);
-        } catch (Exception) {
-        }
-    }
-
-    public function getDatabase()
+    public function setResult(array ...$results): void
     {
-        try {
-            $this->setResults([$this->database]);
-
-            return parent::getDatabase();
-        } catch (Exception) {
-            return null;
-        } finally {
-            $this->setResults();
-        }
-    }
-
-    public function setResults(...$results): void
-    {
-        $this->driver->connection->results = [...$results];
+        $driver = $this->getDriver();
+        assert($driver instanceof TestDBALDriver);
+        $driver->connection->results = array_values($results);
     }
 }

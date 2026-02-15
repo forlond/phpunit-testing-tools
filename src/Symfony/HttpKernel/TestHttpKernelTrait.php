@@ -20,11 +20,13 @@ use Symfony\Component\Security\Http\Event\LazyResponseEvent;
  */
 trait TestHttpKernelTrait
 {
-    protected function createRequestEvent(?callable $configure): RequestEvent
+    protected function createRequestEvent(?\Closure $configure): RequestEvent
     {
         $kernel = new TestHttpKernel();
 
-        $configure && $configure($kernel);
+        if (null !== $configure) {
+            $configure($kernel);
+        }
 
         return new RequestEvent($kernel, $kernel->request ?? Request::create(''), $kernel->type);
     }
@@ -34,11 +36,13 @@ trait TestHttpKernelTrait
         return new LazyResponseEvent($event);
     }
 
-    protected function createControllerEvent(?callable $configure, ?callable $controller = null): ControllerEvent
+    protected function createControllerEvent(?\Closure $configure, ?callable $controller = null): ControllerEvent
     {
         $kernel = new TestHttpKernel();
 
-        $configure && $configure($kernel);
+        if (null !== $configure) {
+            $configure($kernel);
+        }
 
         return new ControllerEvent(
             $kernel,
@@ -69,11 +73,13 @@ trait TestHttpKernelTrait
         );
     }
 
-    protected function createResponseEvent(?callable $configure): ResponseEvent
+    protected function createResponseEvent(?\Closure $configure): ResponseEvent
     {
         $kernel = new TestHttpKernel();
 
-        $configure && $configure($kernel);
+        if (null !== $configure) {
+            $configure($kernel);
+        }
 
         return new ResponseEvent(
             $kernel,
@@ -84,13 +90,15 @@ trait TestHttpKernelTrait
     }
 
     protected function createViewEvent(
-        ?callable                 $configure,
+        ?\Closure                 $configure,
         mixed                     $controllerResult = null,
         ?ControllerArgumentsEvent $event = null,
     ): ViewEvent {
         $kernel = new TestHttpKernel();
 
-        $configure && $configure($kernel);
+        if (null !== $configure) {
+            $configure($kernel);
+        }
 
         return new ViewEvent(
             $kernel,
@@ -101,20 +109,24 @@ trait TestHttpKernelTrait
         );
     }
 
-    protected function createFinishRequest(?callable $configure): FinishRequestEvent
+    protected function createFinishRequest(?\Closure $configure): FinishRequestEvent
     {
         $kernel = new TestHttpKernel();
 
-        $configure && $configure($kernel);
+        if (null !== $configure) {
+            $configure($kernel);
+        }
 
         return new FinishRequestEvent($kernel, $kernel->request ?? Request::create(''), $kernel->type);
     }
 
-    protected function createTerminateEvent(?callable $configure): TerminateEvent
+    protected function createTerminateEvent(?\Closure $configure): TerminateEvent
     {
         $kernel = new TestHttpKernel();
 
-        $configure && $configure($kernel);
+        if (null !== $configure) {
+            $configure($kernel);
+        }
 
         return new TerminateEvent(
             $kernel,
@@ -123,11 +135,13 @@ trait TestHttpKernelTrait
         );
     }
 
-    protected function createExceptionEvent(?callable $configure, ?\Throwable $exception = null): ExceptionEvent
+    protected function createExceptionEvent(?\Closure $configure, ?\Throwable $exception = null): ExceptionEvent
     {
         $kernel = new TestHttpKernel();
 
-        $configure && $configure($kernel);
+        if (null !== $configure) {
+            $configure($kernel);
+        }
 
         return new ExceptionEvent(
             $kernel,

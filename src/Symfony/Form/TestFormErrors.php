@@ -14,6 +14,9 @@ class TestFormErrors extends AbstractTestGroup
 {
     protected const GROUP_NAME = 'form errors';
 
+    /**
+     * @param FormErrorIterator<FormError> $errors
+     */
     public function __construct(
         private readonly FormErrorIterator $errors,
     ) {

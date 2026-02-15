@@ -101,12 +101,12 @@ abstract class AbstractTestGroup extends AbstractTest
             throw new TestFailedException($failed, $this->failureDescription());
         }
 
-        Assert::assertEmpty($failed);
+        Assert::assertCount(0, $failed);
     }
 
     abstract protected function getValue(): array;
 
-    protected function set(string $name, mixed $expected, callable $actual): void
+    protected function set(string $name, mixed $expected, \Closure $actual): void
     {
         parent::set(sprintf('%d.%s', $this->current, $name), $expected, $actual);
     }

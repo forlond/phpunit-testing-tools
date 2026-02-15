@@ -18,9 +18,10 @@ abstract class AbstractEntityManagerTestCase extends AbstractDBALTestCase
         ?AbstractPlatform $platform = null,
     ): TestEntityManager {
         $configuration = $configuration ?? $this->createConfiguration();
-        $connection    = $this->createConnection($configuration, $platform);
 
-        return new TestEntityManager(new EntityManager($connection, $configuration));
+        return new TestEntityManager(
+            new EntityManager($this->createConnection($configuration, $platform), $configuration)
+        );
     }
 
     protected function createConfiguration(): Configuration
