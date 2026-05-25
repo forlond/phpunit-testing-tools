@@ -37,7 +37,7 @@ final class TestDBALConnectionTest extends TestCase
     public function testFetchAssociative(): void
     {
         $connection = $this->createConnection();
-        $connection->setResult(['id' => 1, 'name' => 'John']);
+        $connection->setResults(['id' => 1, 'name' => 'John']);
 
         $result = $connection->fetchAssociative('SELECT * FROM test WHERE id = ?', [1], [ParameterType::INTEGER]);
 
@@ -47,7 +47,7 @@ final class TestDBALConnectionTest extends TestCase
     public function testFetchNumeric(): void
     {
         $connection = $this->createConnection();
-        $connection->setResult(['id' => 1, 'name' => 'John']);
+        $connection->setResults(['id' => 1, 'name' => 'John']);
 
         $result = $connection->fetchNumeric('SELECT * FROM test WHERE id = ?', [1], [ParameterType::INTEGER]);
 
@@ -57,7 +57,7 @@ final class TestDBALConnectionTest extends TestCase
     public function testFetchOne(): void
     {
         $connection = $this->createConnection();
-        $connection->setResult(['id' => 1, 'name' => 'John']);
+        $connection->setResults(['id' => 1, 'name' => 'John']);
 
         $result = $connection->fetchOne('SELECT * FROM test WHERE id = ?', [1], [ParameterType::INTEGER]);
 
@@ -67,7 +67,7 @@ final class TestDBALConnectionTest extends TestCase
     public function testFetchAllNumeric(): void
     {
         $connection = $this->createConnection();
-        $connection->setResult(['id' => 1, 'name' => 'John']);
+        $connection->setResults(['id' => 1, 'name' => 'John']);
 
         $result = $connection->fetchAllNumeric('SELECT * FROM test WHERE id = ?', [1], [ParameterType::INTEGER]);
 
@@ -77,7 +77,7 @@ final class TestDBALConnectionTest extends TestCase
     public function testFetchAllAssociative(): void
     {
         $connection = $this->createConnection();
-        $connection->setResult(['id' => 1, 'name' => 'John']);
+        $connection->setResults(['id' => 1, 'name' => 'John']);
 
         $result = $connection->fetchAllAssociative('SELECT * FROM test WHERE id = ?', [1], [ParameterType::INTEGER]);
 
@@ -87,7 +87,7 @@ final class TestDBALConnectionTest extends TestCase
     public function testFetchAllKeyValue(): void
     {
         $connection = $this->createConnection();
-        $connection->setResult(['id' => 1, 'name' => 'John']);
+        $connection->setResults(['id' => 1, 'name' => 'John']);
 
         $result = $connection->fetchAllKeyValue('SELECT * FROM test WHERE id = ?', [1], [ParameterType::INTEGER]);
 
@@ -97,7 +97,7 @@ final class TestDBALConnectionTest extends TestCase
     public function testFetchAllAssociativeIndexed(): void
     {
         $connection = $this->createConnection();
-        $connection->setResult(['id' => 1, 'name' => 'John']);
+        $connection->setResults(['id' => 1, 'name' => 'John']);
 
         $result = $connection->fetchAllAssociativeIndexed(
             'SELECT * FROM test WHERE id = ?',
@@ -111,7 +111,7 @@ final class TestDBALConnectionTest extends TestCase
     public function testFetchFirstColumn(): void
     {
         $connection = $this->createConnection();
-        $connection->setResult(['id' => 1, 'name' => 'John']);
+        $connection->setResults(['id' => 1, 'name' => 'John']);
 
         $result = $connection->fetchFirstColumn('SELECT * FROM test WHERE id = ?', [1], [ParameterType::INTEGER]);
 
@@ -121,7 +121,7 @@ final class TestDBALConnectionTest extends TestCase
     public function testExecuteQuery(): void
     {
         $connection = $this->createConnection();
-        $connection->setResult(['id' => 1, 'name' => 'John']);
+        $connection->setResults(['id' => 1, 'name' => 'John']);
 
         $result = $connection->executeQuery('DELETE FROM test WHERE id = ?', [1], [ParameterType::INTEGER]);
 
@@ -131,7 +131,7 @@ final class TestDBALConnectionTest extends TestCase
     public function testExecuteStatement(): void
     {
         $connection = $this->createConnection();
-        $connection->setResult(['id' => 1, 'name' => 'John']);
+        $connection->setResults(['id' => 1, 'name' => 'John']);
 
         $result = $connection->executeStatement('DELETE FROM test WHERE id = ?', [1], [ParameterType::INTEGER]);
 
@@ -165,7 +165,7 @@ final class TestDBALConnectionTest extends TestCase
             ['id' => 2, 'name' => 'Jane'],
         ];
 
-        $connection->setResult(...$results);
+        $connection->setResults(...$results);
 
         self::assertSame($results, $connection->getDriver()->connection->results);
     }

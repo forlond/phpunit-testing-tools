@@ -11,6 +11,8 @@ final class TestResult implements Result
 {
     private int $pointer = 0;
 
+    private bool $free = false;
+
     /**
      * @param list<array<string,mixed>> $data
      */
@@ -39,7 +41,9 @@ final class TestResult implements Result
      */
     public function fetchAssociative(): array|false
     {
-        return $this->data[$this->pointer++] ?? false;
+        $data = $this->fetchAllAssociative();
+
+        return $data[$this->pointer++] ?? false;
     }
 
     /**
@@ -60,7 +64,7 @@ final class TestResult implements Result
      */
     public function fetchAllNumeric(): array
     {
-        return array_map(array_values(...), $this->data);
+        return array_map(array_values(...), $this->fetchAllAssociative());
     }
 
     /**
@@ -68,6 +72,10 @@ final class TestResult implements Result
      */
     public function fetchAllAssociative(): array
     {
+        if (true === $this->free) {
+            return [];
+        }
+
         return $this->data;
     }
 
@@ -76,7 +84,7 @@ final class TestResult implements Result
      */
     public function fetchFirstColumn(): array
     {
-        return array_map(static fn(array $row) => reset($row), $this->data);
+        return array_map(static fn(array $row) => reset($row), $this->fetchAllAssociative());
     }
 
     /**
@@ -84,7 +92,7 @@ final class TestResult implements Result
      */
     public function rowCount(): int
     {
-        return count($this->data);
+        return count($this->fetchAllAssociative());
     }
 
     /**
@@ -92,7 +100,8 @@ final class TestResult implements Result
      */
     public function columnCount(): int
     {
-        $row = $this->data[0] ?? null;
+        $data = $this->fetchAllAssociative();
+        $row  = $data[0] ?? null;
 
         return null !== $row ? count($row) : 0;
     }
@@ -102,6 +111,6 @@ final class TestResult implements Result
      */
     public function free(): void
     {
-        $this->pointer = count($this->data);
+        $this->free = true;
     }
 }

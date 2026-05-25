@@ -21,7 +21,7 @@ Creates a new `TestDBALConnection` instance which extends from `Doctrine\DBAL\Co
 
 > [!IMPORTANT]
 > The `TestDBALConnection` has limited functionalities, but it is possible to configure the result of any statement.
-> Use `TestDBALConnection::setResult` before using any other method that returns results.
+> Use `TestDBALConnection::setResults` before using any other method that returns results.
 
 It is possible to pass a custom `Doctrine\DBAL\Configuration`, otherwise the `createConfiguration` method will be used.
 
@@ -56,7 +56,7 @@ final class MyClassTest extends AbstractDBALTestCase
     {
         $connection = $this->createConnection();
 
-        $connection->setResult(['id' => 1, 'name' => 'John'], ['id' => 2, 'name' => 'Jane']);
+        $connection->setResults(['id' => 1, 'name' => 'John'], ['id' => 2, 'name' => 'Jane']);
         $value = $connection->fetchFirstColumn('SELECT * FROM foobar');
 
         self::assertSame([1, 2], $value);

@@ -48,7 +48,7 @@ final class TestDBALConnection extends Connection
     /**
      * @param array<string,mixed> ...$results
      */
-    public function setResult(array ...$results): void
+    public function setResults(array ...$results): void
     {
         $this->getDriver()->connection->results = array_values($results);
     }

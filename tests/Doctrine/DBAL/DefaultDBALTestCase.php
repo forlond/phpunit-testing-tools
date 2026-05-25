@@ -7,7 +7,6 @@ use Doctrine\DBAL\Driver\Exception\UnknownParameterType;
 use Doctrine\DBAL\Driver\PDO\Exception as PDOException;
 use Doctrine\DBAL\Exception\ConnectionLost;
 use Forlond\TestTools\Doctrine\DBAL\AbstractDBALTestCase;
-use Forlond\TestTools\Doctrine\DBAL\TestDBALDriver;
 use Forlond\TestTools\Doctrine\DBAL\TestPlatform;
 
 /**
@@ -53,7 +52,7 @@ final class DefaultDBALTestCase extends AbstractDBALTestCase
     {
         $connection = $this->createConnection();
 
-        $connection->setResult(
+        $connection->setResults(
             ['id' => 1, 'name' => 'John'],
             ['id' => 2, 'name' => 'Jane']
         );
