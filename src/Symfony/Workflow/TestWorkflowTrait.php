@@ -20,7 +20,10 @@ trait TestWorkflowTrait
     protected function createWorkflow(?callable $configure): TestWorkflow
     {
         $builder = new TestWorkflowBuilder();
-        $configure && $configure($builder);
+
+        if (null !== $configure) {
+            $configure($builder);
+        }
 
         return $builder->build();
     }
@@ -50,7 +53,9 @@ trait TestWorkflowTrait
         ?callable  $configure = null,
     ): GuardEvent {
         $workflow = $this->createWorkflow(static function(TestWorkflowBuilder $builder) use ($configure, $transition) {
-            $configure && $configure($builder);
+            if (null !== $configure) {
+                $configure($builder);
+            }
             $builder
                 ->definition
                 ->addPlaces($transition->getFroms())
@@ -71,7 +76,9 @@ trait TestWorkflowTrait
         ?callable  $configure = null,
     ): AnnounceEvent {
         $workflow = $this->createWorkflow(static function(TestWorkflowBuilder $builder) use ($configure, $transition) {
-            $configure && $configure($builder);
+            if (null !== $configure) {
+                $configure($builder);
+            }
             $builder
                 ->definition
                 ->addPlaces($transition->getFroms())
@@ -92,7 +99,9 @@ trait TestWorkflowTrait
         ?callable  $configure = null,
     ): CompletedEvent {
         $workflow = $this->createWorkflow(static function(TestWorkflowBuilder $builder) use ($configure, $transition) {
-            $configure && $configure($builder);
+            if (null !== $configure) {
+                $configure($builder);
+            }
             $builder
                 ->definition
                 ->addPlaces($transition->getFroms())
@@ -114,7 +123,9 @@ trait TestWorkflowTrait
     ): EnteredEvent {
         $workflow = $this->createWorkflow(
             static function(TestWorkflowBuilder $builder) use ($configure, $transition) {
-                $configure && $configure($builder);
+                if (null !== $configure) {
+                    $configure($builder);
+                }
                 if ($transition) {
                     $builder
                         ->definition
@@ -138,7 +149,9 @@ trait TestWorkflowTrait
         ?callable  $configure = null,
     ): EnterEvent {
         $workflow = $this->createWorkflow(static function(TestWorkflowBuilder $builder) use ($configure, $transition) {
-            $configure && $configure($builder);
+            if (null !== $configure) {
+                $configure($builder);
+            }
             $builder
                 ->definition
                 ->addPlaces($transition->getFroms())
@@ -159,7 +172,9 @@ trait TestWorkflowTrait
         ?callable  $configure = null,
     ): LeaveEvent {
         $workflow = $this->createWorkflow(static function(TestWorkflowBuilder $builder) use ($configure, $transition) {
-            $configure && $configure($builder);
+            if (null !== $configure) {
+                $configure($builder);
+            }
             $builder
                 ->definition
                 ->addPlaces($transition->getFroms())
@@ -180,7 +195,9 @@ trait TestWorkflowTrait
         ?callable  $configure = null,
     ): TransitionEvent {
         $workflow = $this->createWorkflow(static function(TestWorkflowBuilder $builder) use ($configure, $transition) {
-            $configure && $configure($builder);
+            if (null !== $configure) {
+                $configure($builder);
+            }
             $builder
                 ->definition
                 ->addPlaces($transition->getFroms())

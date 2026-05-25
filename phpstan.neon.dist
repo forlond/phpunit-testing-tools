@@ -1,0 +1,15 @@
+parameters:
+    level: 8
+    ignoreErrors:
+        - identifier: missingType.iterableValue
+        - identifier: trait.unused
+    paths:
+        - src
+        - tests
+    excludePaths:
+        - tests/Fixtures/*
+    reportUnmatchedIgnoredErrors: false
+    treatPhpDocTypesAsCertain: false
+# https://github.com/phpstan/phpstan-strict-rules
+    strictRules:
+        allRules: true

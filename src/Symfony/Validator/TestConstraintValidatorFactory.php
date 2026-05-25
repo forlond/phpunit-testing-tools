@@ -22,11 +22,11 @@ final class TestConstraintValidatorFactory extends ConstraintValidatorFactory
     public function setNoopInstance(string $name): self
     {
         $validator = new class implements ConstraintValidatorInterface {
-            public function initialize(ExecutionContextInterface $context)
+            public function initialize(ExecutionContextInterface $context): void
             {
             }
 
-            public function validate(mixed $value, Constraint $constraint)
+            public function validate(mixed $value, Constraint $constraint): void
             {
             }
         };

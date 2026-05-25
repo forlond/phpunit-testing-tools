@@ -27,6 +27,7 @@ final class TestLogger extends AbstractTestGroup implements TestResettable, Logg
     public function log($level, $message, array $context = []): void
     {
         // Backward compatibility for $message as a non type-hinted argument in v1.x
+        // @phpstan-ignore-next-line instanceof.alwaysTrue
         if (!is_string($message) && !$message instanceof \Stringable) {
             throw new \InvalidArgumentException('Invalid message value. Use string or Stringable instance.');
         }

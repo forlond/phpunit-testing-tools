@@ -18,9 +18,10 @@ abstract class AbstractEntityManagerTestCase extends AbstractDBALTestCase
         ?AbstractPlatform $platform = null,
     ): TestEntityManager {
         $configuration = $configuration ?? $this->createConfiguration();
-        $connection    = $this->createConnection($configuration, $platform);
 
-        return new TestEntityManager(new EntityManager($connection, $configuration));
+        return new TestEntityManager(
+            new EntityManager($this->createConnection($configuration, $platform), $configuration)
+        );
     }
 
     protected function createConfiguration(): Configuration
@@ -28,8 +29,13 @@ abstract class AbstractEntityManagerTestCase extends AbstractDBALTestCase
         $configuration = new Configuration();
         // Apply default values, the user can modify this.
         $configuration->setMetadataDriverImpl(new AttributeDriver([]));
-        $configuration->setProxyDir(sys_get_temp_dir());
-        $configuration->setProxyNamespace('DoctrineTest');
+        // @phpstan-ignore function.alreadyNarrowedType
+        if (method_exists($configuration, 'enableNativeLazyObjects')) {
+            $configuration->enableNativeLazyObjects(true);
+        } else {
+            $configuration->setProxyDir(sys_get_temp_dir());
+            $configuration->setProxyNamespace('DoctrineTest');
+        }
 
         return $configuration;
     }

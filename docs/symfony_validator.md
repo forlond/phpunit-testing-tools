@@ -59,7 +59,7 @@ final protected function validateProperty(
     object                     $object,
     string                     $propertyName,
     GroupSequence|array|string $groups = null,
-    ?callable                  $configure = null,
+    ?\Closure                  $configure = null,
 ): TestConstraintViolationList
 ```
 

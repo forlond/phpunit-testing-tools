@@ -40,22 +40,22 @@ final class TestEventDispatcher extends AbstractTestGroup implements EventDispat
         return $event;
     }
 
-    public function addListener(string $eventName, callable $listener, int $priority = 0)
+    public function addListener(string $eventName, callable $listener, int $priority = 0): void
     {
         throw new \BadMethodCallException('Unmodifiable event dispatchers must not be modified.');
     }
 
-    public function addSubscriber(EventSubscriberInterface $subscriber)
+    public function addSubscriber(EventSubscriberInterface $subscriber): void
     {
         throw new \BadMethodCallException('Unmodifiable event dispatchers must not be modified.');
     }
 
-    public function removeListener(string $eventName, callable $listener)
+    public function removeListener(string $eventName, callable $listener): void
     {
         throw new \BadMethodCallException('Unmodifiable event dispatchers must not be modified.');
     }
 
-    public function removeSubscriber(EventSubscriberInterface $subscriber)
+    public function removeSubscriber(EventSubscriberInterface $subscriber): void
     {
         throw new \BadMethodCallException('Unmodifiable event dispatchers must not be modified.');
     }

@@ -6,6 +6,7 @@ use JMS\Serializer\Context;
 use JMS\Serializer\ContextFactory\DeserializationContextFactoryInterface;
 use JMS\Serializer\DeserializationContext;
 use JMS\Serializer\GraphNavigatorInterface;
+use JMS\Serializer\Visitor\DeserializationVisitorInterface;
 use JMS\Serializer\Visitor\Factory\DeserializationVisitorFactory;
 use JMS\Serializer\Visitor\Factory\JsonDeserializationVisitorFactory;
 use JMS\Serializer\Visitor\Factory\XmlDeserializationVisitorFactory;
@@ -18,6 +19,11 @@ class TestDeserializationContextFactory extends AbstractTestContextFactory imple
 {
     public readonly DeserializationContext $context;
 
+    /**
+     * @var array<DeserializationVisitorFactory>
+     */
+    protected array $visitorFactories = [];
+
     public function __construct()
     {
         parent::__construct(new TestDeserializationGraphNavigatorFactory());
@@ -28,7 +34,10 @@ class TestDeserializationContextFactory extends AbstractTestContextFactory imple
 
     public function createDeserializationContext(): DeserializationContext
     {
-        return $this->createContext();
+        $context = clone $this->context;
+        $this->createContext($context);
+
+        return $context;
     }
 
     public function getVisitorFactory(string $format): DeserializationVisitorFactory
@@ -41,9 +50,9 @@ class TestDeserializationContextFactory extends AbstractTestContextFactory imple
         $this->visitorFactories[$format] = $factory;
     }
 
-    protected function getContext(): Context
+    protected function getVisitor(): DeserializationVisitorInterface
     {
-        return $this->context;
+        return $this->getVisitorFactory($this->format)->getVisitor();
     }
 
     protected function getNavigator(): GraphNavigatorInterface
@@ -57,6 +66,10 @@ class TestDeserializationContextFactory extends AbstractTestContextFactory imple
 
     protected function startInitialVisiting(Context $context, object $object): void
     {
+        if (!$context instanceof DeserializationContext) {
+            throw new \RuntimeException('The context factory expects a DeserializationContext instance.');
+        }
+
         $context->increaseDepth();
     }
 }

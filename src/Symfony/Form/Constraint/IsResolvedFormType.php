@@ -22,7 +22,7 @@ final class IsResolvedFormType extends Constraint
     /**
      * @inheritDoc
      */
-    public function evaluate($other, string $description = '', bool $returnResult = false): ?bool
+    public function evaluate(mixed $other, string $description = '', bool $returnResult = false): ?bool
     {
         $other = $this->resolveType($other);
 
@@ -32,7 +32,7 @@ final class IsResolvedFormType extends Constraint
     /**
      * @inheritDoc
      */
-    public function matches($other): bool
+    public function matches(mixed $other): bool
     {
         $other = $this->resolveType($other);
 
@@ -44,7 +44,7 @@ final class IsResolvedFormType extends Constraint
         return sprintf('form type is an instance of %s', $this->type);
     }
 
-    private function resolveType($other): mixed
+    private function resolveType(mixed $other): mixed
     {
         if ($other instanceof ResolvedFormType) {
             $other = $other->getInnerType();

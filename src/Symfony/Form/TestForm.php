@@ -168,7 +168,7 @@ final class TestForm extends AbstractTest
             throw new \RuntimeException('Cannot redefine child ' . $child);
         }
 
-        if (!$this->form->has($child) && is_callable($expect)) {
+        if (is_callable($expect) && !$this->form->has($child)) {
             $expect = true;
         }
         if (is_callable($expect)) {
@@ -204,7 +204,7 @@ final class TestForm extends AbstractTest
         $visited = [];
         $name    = $this->form->getName();
 
-        if (!$this->childAssertion && !empty($this->children)) {
+        if (!$this->childAssertion && 0 !== count($this->children)) {
             throw new \RuntimeException('Cannot disable child assertions when declaring children expectations.');
         }
 
@@ -247,11 +247,11 @@ final class TestForm extends AbstractTest
             );
         }
 
-        if (!empty($errors)) {
+        if (0 !== count($errors)) {
             throw new TestFailedException($errors);
         }
 
-        Assert::assertEmpty($errors);
+        Assert::assertCount(0, $errors);
     }
 
     protected function getValue(): FormInterface
@@ -259,7 +259,7 @@ final class TestForm extends AbstractTest
         return $this->form;
     }
 
-    protected function failureDescription(): ?string
+    protected function failureDescription(): string
     {
         $form = $this->form;
         $name = $form->getName();

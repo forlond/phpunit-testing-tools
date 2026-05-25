@@ -2,8 +2,6 @@
 
 namespace Forlond\TestTools\Doctrine\DBAL;
 
-use Doctrine\DBAL\Cache\ArrayResult;
-use Doctrine\DBAL\Driver\Result;
 use Doctrine\DBAL\Driver\Statement;
 use Doctrine\DBAL\ParameterType;
 
@@ -12,34 +10,48 @@ use Doctrine\DBAL\ParameterType;
  */
 final class TestStatement implements Statement
 {
-    public array $bindings = [];
+    /** @var array<int,mixed>|array<string,mixed> */
+    public array $params = [];
 
+    /** @var array<int,int>|array<string,int> */
+    public array $types = [];
+
+    /**
+     * @param list<array<string,mixed>> $results
+     */
     public function __construct(
-        private readonly array $results,
+        public readonly string $sql,
+        public readonly array  $results,
     ) {
     }
 
     /**
      * @inheritDoc
      */
-    public function bindValue($param, $value, $type = ParameterType::STRING)
+    public function bindValue($param, $value, $type = ParameterType::STRING): bool
     {
-        $this->bindings[] = func_get_args();
+        $this->params[$param] = &$value;
+        $this->types[$param]  = $type;
+
+        return true;
     }
 
     /**
      * @inheritDoc
      */
-    public function bindParam($param, &$variable, $type = ParameterType::STRING, $length = null)
+    public function bindParam($param, &$variable, $type = ParameterType::STRING, $length = null): bool
     {
-        $this->bindings[] = func_get_args();
+        $this->params[$param] = &$variable;
+        $this->types[$param]  = $type;
+
+        return true;
     }
 
     /**
      * @inheritDoc
      */
-    public function execute($params = null): Result
+    public function execute($params = null): TestResult
     {
-        return new ArrayResult($this->results);
+        return new TestResult($this->results, $this->sql, $params ?? $this->params);
     }
 }

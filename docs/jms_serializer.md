@@ -389,7 +389,9 @@ final class MyTestEvent extends AbstractEventSubscriberTestCase
     {
         $service = $this->createMock(ServiceInterface::class);
 
-        $configure && $configure($service);
+        if (null !== $configure) {
+            $configure($service);
+        }
 
         return new MyEventSubscriber($service);
     }
@@ -434,7 +436,9 @@ final class MyTestEvent extends AbstractSubscribingHandlerTestCase
     {
         $service = $this->createMock(ServiceInterface::class);
 
-        $configure && $configure($service);
+        if (null !== $configure) {
+            $configure($service);
+        }
 
         return new MySubscribingHandler($service);
     }
@@ -484,7 +488,9 @@ final class MyTestEvent extends AbstractObjectConstructorTestCase
     {
         $service = $this->createMock(ServiceInterface::class);
 
-        $configure && $configure($service);
+        if (null !== $configure) {
+            $configure($service);
+        }
 
         return new MyObjectConstructor($service);
     }

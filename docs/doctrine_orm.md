@@ -4,24 +4,24 @@
 
 Use one of the following abstract test cases:
 
-- `AbstractDBALTestCase` for general DBAL purposes.
 - `AbstractEntityManagerTestCase` for general ORM purposes.
 - `AbstractEventSubscriberTestCase` for `EventSubscriber` implementations.
 
-## AbstractDBALTestCase
+## AbstractEntityManagerTestCase
 
-Provides a base for any test that uses a DBAL connection.
+Provides a base for any test that uses `Doctrine\ORM\EntityManagerInterface`. It extends `AbstractDBALTestCase` to be
+able to create DBAL connections.
 
 ```php
-final protected function createConnection(
-    ?Configuration $configuration = null,
+final protected function createEntityManager(
+    ?Configuration    $configuration = null,
     ?AbstractPlatform $platform = null,
-): TestDBALConnection;
+): TestEntityManager;
 ```
 
-Creates a new `TestDBALConnection` instance which extends from `Doctrine\DBAL\Connection`.
+Creates a new `TestEntityManager` which decorates `Doctrine\ORM\EntityManager`
 
-It is possible to pass a custom `Doctrine\DBAL\Configuration`, otherwise the `createConfiguration` method will be used.
+It is possible to pass a custom `Doctrine\ORM\Configuration`, otherwise the `createConnection` method will be used.
 
 It is possible to pass a custom `Doctrine\DBAL\Platforms\AbstractPlatform`, otherwise the `createPlatform` method will
 be used.
@@ -29,10 +29,21 @@ be used.
 ---
 
 ```php
-protected function createConfiguration(): AbstractPlatform
+protected function createConfiguration(): Configuration
 ```
 
 Override this method if the class test needs the same configuration for all the test cases.
+
+> [!NOTE]
+> The default configuration uses the attribute driver.
+
+> [!NOTE]
+> The default configuration uses the native lazy objects if the enableNativeLazyObjects is available.
+> Otherwise, the system temp dir is used as proxy dir and DoctrineTest as proxy namespace.
+
+> [!IMPORTANT]
+> If your test suite requires a different setup, it is recommended to create a custom TestCase class and override this
+> method based on your needs. Ensure your tests extend the custom test case instead of AbstractEntityManagerTestCase.
 
 ---
 
@@ -42,46 +53,8 @@ protected function createPlatform(): AbstractPlatform
 
 Override this method if the class test needs the same platform for all the test cases.
 
-> [!IMPORTANT]
-> The `TestDBALConnection` has limited functionalities, but it is possible to configure the result of any statement.
-> Use `TestDBALConnection::setResult` before using any other method that returns results.
-
-Example:
-
-```php
-final class MyClassTest extends AbstractDBALTestCase
-{
-    public function testStatement(): void
-    {
-        $connection = $this->createConnection();
-
-        $connection->setResults(['first', 'second'], ['other_first', 'other_second']);
-        $value = $connection->fetchFirstColumn('SELECT * FROM foobar');
-
-        self::assertSame(['first', 'other_first'], $value);
-    }
-}
-```
-
-## AbstractEntityManagerTestCase
-
-Provides a base for any test that uses `Doctrine\ORM\EntityManagerInterface`. It extends `AbstractDBALTestCase` to be
-able to create
-DBAL connections.
-
-```php
-final protected function createEntityManager(
-    ?Configuration    $configuration = null,
-    ?AbstractPlatform $platform = null,
-): TestEntityManager;
-```
-
-Creates a new `TestEntityManager` which extends from `Doctrine\ORM\EntityManager`.
-
-It is possible to pass a custom `Doctrine\ORM\Configuration`, otherwise the `createConnection` method will be used.
-
-It is possible to pass a custom `Doctrine\DBAL\Platforms\AbstractPlatform`, otherwise the `createPlatform` method will
-be used.
+> [!NOTE]
+> By default, the `TestPlatform` is used as platform.
 
 Example:
 
@@ -138,7 +111,8 @@ abstract protected function createSubscriber(?callable $configure): EventSubscri
 The class test must implement this method and return the subscriber instance. The `configure` closure can be used to
 configure any mocked service the subscriber may use.
 
-Depending on the subscriber, it is necessary to create the right event, use one of the following methods:
+Depending on the subscriber, it is necessary to create the right event, use one of the methods provided by the
+`TestORMEventsTrait`.
 
 ```php
 final protected function createPostLoadEvent(TestEntityManager $manager, object $object): Event\PostLoadEventArgs;
@@ -170,7 +144,7 @@ final class MyClassTest extends AbstractEventSubscriberTestCase
     {
         $subscriber = $this->createSubscriber(function(MockObject $service) {
             $service
-                ->expects(self::never())
+                ->expects($this->never())
                 ->method('calculate')
             ;
         });
@@ -186,7 +160,9 @@ final class MyClassTest extends AbstractEventSubscriberTestCase
     {
         $service = $this->createMock(MyService::class);
 
-        $configure && $configure($service);
+        if (null !== $configure) {
+            $configure($service);
+        }
 
         return new MySubscriber($service);
     }

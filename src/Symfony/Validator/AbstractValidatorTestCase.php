@@ -23,10 +23,10 @@ abstract class AbstractValidatorTestCase extends TestCase
         mixed                           $value,
         Constraint|array|null           $constraints = null,
         GroupSequence|array|string|null $groups = null,
-        ?callable                       $configure = null,
+        ?\Closure                       $configure = null,
     ): TestConstraintViolationList {
         $builder = $this->configureBuilder();
-        if ($configure) {
+        if (null !== $configure) {
             $configure = \Closure::bind($configure, $this);
             $configure($builder);
         }
@@ -43,10 +43,10 @@ abstract class AbstractValidatorTestCase extends TestCase
         object                          $object,
         string                          $propertyName,
         GroupSequence|array|string|null $groups = null,
-        ?callable                       $configure = null,
+        ?\Closure                       $configure = null,
     ): TestConstraintViolationList {
         $builder = $this->configureBuilder();
-        if ($configure) {
+        if (null !== $configure) {
             $configure = \Closure::bind($configure, $this);
             $configure($builder);
         }
@@ -64,10 +64,10 @@ abstract class AbstractValidatorTestCase extends TestCase
         string                          $propertyName,
         mixed                           $value,
         GroupSequence|array|string|null $groups = null,
-        ?callable                       $configure = null,
+        ?\Closure                       $configure = null,
     ): TestConstraintViolationList {
         $builder = $this->configureBuilder();
-        if ($configure) {
+        if (null !== $configure) {
             $configure = \Closure::bind($configure, $this);
             $configure($builder);
         }
@@ -82,11 +82,11 @@ abstract class AbstractValidatorTestCase extends TestCase
 
     final protected function createExecutionContext(
         mixed     $root,
-        ?callable $configure = null,
+        ?\Closure $configure = null,
     ): ExecutionContextInterface {
         $builder = $this->configureBuilder();
         $factory = new TestExecutionContextFactory();
-        if ($configure) {
+        if (null !== $configure) {
             $configure = \Closure::bind($configure, $this);
             $configure($factory, $builder);
         }

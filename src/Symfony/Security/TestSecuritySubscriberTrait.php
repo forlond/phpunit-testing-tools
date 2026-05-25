@@ -26,7 +26,9 @@ trait TestSecuritySubscriberTrait
     {
         $authenticator = new TestAuthenticator();
 
-        $configure && $configure($authenticator);
+        if (null !== $configure) {
+            $configure($authenticator);
+        }
 
         $request  = $authenticator->request ?? Request::create('');
         $passport = $authenticator->authenticate($request);
@@ -39,7 +41,9 @@ trait TestSecuritySubscriberTrait
     {
         $authenticator = new TestAuthenticator();
 
-        $configure && $configure($authenticator);
+        if (null !== $configure) {
+            $configure($authenticator);
+        }
 
         $request  = $authenticator->request ?? Request::create('');
         $passport = $authenticator->authenticate($request);
@@ -51,7 +55,9 @@ trait TestSecuritySubscriberTrait
     {
         $authenticator = new TestAuthenticator();
 
-        $configure && $configure($authenticator);
+        if (null !== $configure) {
+            $configure($authenticator);
+        }
 
         $request  = $authenticator->request ?? Request::create('');
         $passport = $authenticator->authenticate($request);
@@ -64,7 +70,9 @@ trait TestSecuritySubscriberTrait
     {
         $authenticator = new TestAuthenticator();
 
-        $configure && $configure($authenticator);
+        if (null !== $configure) {
+            $configure($authenticator);
+        }
 
         $request  = $authenticator->request ?? Request::create('');
         $passport = $authenticator->authenticate($request);
@@ -77,7 +85,9 @@ trait TestSecuritySubscriberTrait
     {
         $authenticator = new TestAuthenticator();
 
-        $configure && $configure($authenticator);
+        if (null !== $configure) {
+            $configure($authenticator);
+        }
 
         $request  = $authenticator->request ?? Request::create('');
         $passport = $authenticator->authenticate($request);
@@ -99,7 +109,9 @@ trait TestSecuritySubscriberTrait
     ): LoginFailureEvent {
         $authenticator = new TestAuthenticator();
 
-        $configure && $configure($authenticator);
+        if (null !== $configure) {
+            $configure($authenticator);
+        }
 
         $request  = $authenticator->request ?? Request::create('');
         $passport = $authenticator->authenticate($request);
@@ -122,7 +134,9 @@ trait TestSecuritySubscriberTrait
     {
         $authenticator = new TestAuthenticator();
 
-        $configure && $configure($authenticator);
+        if (null !== $configure) {
+            $configure($authenticator);
+        }
 
         $request  = $authenticator->request ?? Request::create('');
         $passport = $authenticator->authenticate($request);
@@ -135,7 +149,9 @@ trait TestSecuritySubscriberTrait
     {
         $authenticator = new TestAuthenticator();
 
-        $configure && $configure($authenticator);
+        if (null !== $configure) {
+            $configure($authenticator);
+        }
 
         $request      = $authenticator->request ?? Request::create('');
         $passport     = $authenticator->authenticate($request);
@@ -151,7 +167,9 @@ trait TestSecuritySubscriberTrait
     {
         $authenticator = new TestAuthenticator();
 
-        $configure && $configure($authenticator);
+        if (null !== $configure) {
+            $configure($authenticator);
+        }
 
         $request      = $authenticator->request ?? Request::create('');
         $impersonator = new InMemoryUser('impersonator', null);

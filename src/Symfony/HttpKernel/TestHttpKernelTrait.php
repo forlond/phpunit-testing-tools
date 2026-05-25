@@ -24,7 +24,9 @@ trait TestHttpKernelTrait
     {
         $kernel = new TestHttpKernel();
 
-        $configure && $configure($kernel);
+        if (null !== $configure) {
+            $configure($kernel);
+        }
 
         return new RequestEvent($kernel, $kernel->request ?? Request::create(''), $kernel->type);
     }
@@ -38,7 +40,9 @@ trait TestHttpKernelTrait
     {
         $kernel = new TestHttpKernel();
 
-        $configure && $configure($kernel);
+        if (null !== $configure) {
+            $configure($kernel);
+        }
 
         return new ControllerEvent(
             $kernel,
@@ -73,7 +77,9 @@ trait TestHttpKernelTrait
     {
         $kernel = new TestHttpKernel();
 
-        $configure && $configure($kernel);
+        if (null !== $configure) {
+            $configure($kernel);
+        }
 
         return new ResponseEvent(
             $kernel,
@@ -90,7 +96,9 @@ trait TestHttpKernelTrait
     ): ViewEvent {
         $kernel = new TestHttpKernel();
 
-        $configure && $configure($kernel);
+        if (null !== $configure) {
+            $configure($kernel);
+        }
 
         return new ViewEvent(
             $kernel,
@@ -105,7 +113,9 @@ trait TestHttpKernelTrait
     {
         $kernel = new TestHttpKernel();
 
-        $configure && $configure($kernel);
+        if (null !== $configure) {
+            $configure($kernel);
+        }
 
         return new FinishRequestEvent($kernel, $kernel->request ?? Request::create(''), $kernel->type);
     }
@@ -114,7 +124,9 @@ trait TestHttpKernelTrait
     {
         $kernel = new TestHttpKernel();
 
-        $configure && $configure($kernel);
+        if (null !== $configure) {
+            $configure($kernel);
+        }
 
         return new TerminateEvent(
             $kernel,
@@ -127,7 +139,9 @@ trait TestHttpKernelTrait
     {
         $kernel = new TestHttpKernel();
 
-        $configure && $configure($kernel);
+        if (null !== $configure) {
+            $configure($kernel);
+        }
 
         return new ExceptionEvent(
             $kernel,
