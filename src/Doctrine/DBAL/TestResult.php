@@ -11,7 +11,7 @@ final class TestResult implements Result
 {
     private int $pointer = 0;
 
-    private bool $free = false;
+    private bool $freed = false;
 
     /**
      * @param list<array<string,mixed>> $data
@@ -72,7 +72,7 @@ final class TestResult implements Result
      */
     public function fetchAllAssociative(): array
     {
-        if (true === $this->free) {
+        if (true === $this->freed) {
             return [];
         }
 
@@ -111,6 +111,6 @@ final class TestResult implements Result
      */
     public function free(): void
     {
-        $this->free = true;
+        $this->freed = true;
     }
 }
