@@ -16,6 +16,9 @@ final class TestSchemaManager extends AbstractSchemaManager
 {
     public ?Column $column = null;
 
+    /**
+     * @phpcs:disable PSR2.Methods.MethodDeclaration.Underscore
+     */
     protected function _getPortableTableColumnDefinition($tableColumn): Column
     {
         return $this->column ?? new Column('test_column', new StringType());

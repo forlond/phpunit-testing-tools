@@ -30,6 +30,9 @@ final class TestPlatform extends AbstractPlatform
         return Types::SMALLINT;
     }
 
+    /**
+     * @phpcs:disable PSR2.Methods.MethodDeclaration.Underscore
+     */
     protected function _getCommonIntegerTypeDeclarationSQL(array $column): string
     {
         return '';

@@ -7,8 +7,8 @@ on:
             - "main"
 
 jobs:
-    build:
-        name: Code Quality
+    phpstan:
+        name: PhpStan
         runs-on: ubuntu-latest
 
         steps:
@@ -36,3 +36,34 @@ jobs:
                 run: |
                     php vendor/bin/phpstan analyse --memory-limit 1G --error-format=raw |
                     reviewdog -name=PHPStan -f=phpstan -reporter=github-pr-check -fail-on-error=true -level=error -diff='git diff'
+
+
+    phpcs:
+        name: PhpCodeSniffer
+        runs-on: ubuntu-latest
+
+        steps:
+            -   name: Checkout Code
+                uses: actions/checkout@v6
+
+            -   name: Setup PHP
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: 8.4
+                    ini-values: "zend.assertions=1"
+                    tools: composer:v2
+                    coverage: none
+
+            -   name: Install Dependencies
+                run: composer install --no-interaction --prefer-dist --no-scripts
+
+            -   name: Setup Reviewdog
+                uses: reviewdog/action-setup@v1
+
+            -   name: Run Reviewdog with PHPCSFixer
+                continue-on-error: true
+                env:
+                    REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                run: |
+                    php vendor/bin/phpcs --report=checkstyle |
+                    reviewdog -name=PHPCodeSniffer -f=checkstyle -reporter=github-pr-check -fail-on-error=true -level=error -diff='git diff'

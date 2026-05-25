@@ -18,7 +18,7 @@ final protected function validate(
     mixed                      $value,
     Constraint|array           $constraints = null,
     GroupSequence|array|string $groups = null,
-    ?\Closure                  $configure = null,
+    ?callable                  $configure = null,
 ): TestConstraintViolationList;
 ```
 
@@ -103,7 +103,7 @@ final protected function validatePropertyValue(
     string                     $propertyName,
     mixed                      $value,
     GroupSequence|array|string $groups = null,
-    ?\Closure                  $configure = null,
+    ?callable                  $configure = null,
 ): TestConstraintViolationList
 ```
 
@@ -145,7 +145,7 @@ final class MyTestValidation extends AbstractValidatorTestCase
 ```php
 final protected function createExecutionContext(
     mixed     $root,
-    ?\Closure $configure = null,
+    ?callable $configure = null,
 ): ExecutionContextInterface
 ```
 

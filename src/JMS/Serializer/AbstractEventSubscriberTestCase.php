@@ -21,7 +21,7 @@ use JMS\Serializer\Visitor\SerializationVisitorInterface;
  */
 abstract class AbstractEventSubscriberTestCase extends AbstractSerializerTestCase
 {
-    abstract protected function createSubscriber(?\Closure $configure): EventSubscriberInterface;
+    abstract protected function createSubscriber(?callable $configure): EventSubscriberInterface;
 
     protected function createPreSerializeEvent(
         SerializationContext $context,

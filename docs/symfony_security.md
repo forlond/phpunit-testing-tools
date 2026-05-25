@@ -49,7 +49,7 @@ $authenticator->failureResponse = new Response('KO');
 ## TestSecuritySubscriberTrait
 
 ```php
-protected function createAuthenticationTokenCreatedEvent(?\Closure $configure): AuthenticationTokenCreatedEvent
+protected function createAuthenticationTokenCreatedEvent(?callable $configure): AuthenticationTokenCreatedEvent
 ```
 
 Creates an `AuthenticationTokenCreatedEvent` object. The event can be configured by using the `$configure` closure.
@@ -66,7 +66,7 @@ $event = $this->createAuthenticationTokenCreatedEvent(static function(TestAuthen
 ---
 
 ```php
-protected function createCheckPassportEvent(?\Closure $configure): CheckPassportEvent
+protected function createCheckPassportEvent(?callable $configure): CheckPassportEvent
 ```
 
 Creates a `CheckPassportEvent` object. The event can be configured by using the `$configure` closure.
@@ -82,7 +82,7 @@ $event = $this->createCheckPassportEvent(static function(TestAuthenticator $auth
 ---
 
 ```php
-protected function createAuthenticationSuccessEvent(?\Closure $configure): AuthenticationSuccessEvent
+protected function createAuthenticationSuccessEvent(?callable $configure): AuthenticationSuccessEvent
 ```
 
 Creates an `AuthenticationSuccessEvent` object. The event can be configured by using the `$configure` closure.
@@ -98,7 +98,7 @@ $event = $this->createAuthenticationSuccessEvent(static function(TestAuthenticat
 ---
 
 ```php
-protected function createInteractiveLoginEvent(?\Closure $configure): InteractiveLoginEvent
+protected function createInteractiveLoginEvent(?callable $configure): InteractiveLoginEvent
 ```
 
 Creates an `InteractiveLoginEvent` object. The event can be configured by using the `$configure` closure.
@@ -115,7 +115,7 @@ $event = $this->createInteractiveLoginEvent(static function(TestAuthenticator $a
 ---
 
 ```php
-protected function createLoginSuccessEvent(?\Closure $configure): LoginSuccessEvent
+protected function createLoginSuccessEvent(?callable $configure): LoginSuccessEvent
 ```
 
 Creates a `LoginSuccessEvent` object. The event can be configured by using the `$configure` closure.
@@ -137,7 +137,7 @@ $event = $this->createInteractiveLoginEvent(static function(TestAuthenticator $a
 
 ```php
 protected function createLoginFailureEvent(
-    ?\Closure                $configure,
+    ?callable                $configure,
     ?AuthenticationException $exception = null,
 ): LoginFailureEvent
 ```
@@ -174,7 +174,7 @@ $event = $this->createLoginFailureEvent(
 ---
 
 ```php
-protected function createLogoutEvent(?\Closure $configure): LogoutEvent
+protected function createLogoutEvent(?callable $configure): LogoutEvent
 ```
 
 Creates a `LogoutEvent` object. The event can be configured by using the `$configure` closure.
@@ -191,7 +191,7 @@ $event = $this->createLogoutEvent(static function(TestAuthenticator $authenticat
 ---
 
 ```php
-protected function createSwitchUserEvent(?\Closure $configure): SwitchUserEvent
+protected function createSwitchUserEvent(?callable $configure): SwitchUserEvent
 ```
 
 Creates a `SwitchUserEvent` object. The event can be configured by using the `$configure` closure.
@@ -215,7 +215,7 @@ $event = $this->createSwitchUserEvent(static function(TestAuthenticator $authent
 ---
 
 ```php
-protected function createExitSwitchUserEvent(?\Closure $configure): SwitchUserEvent
+protected function createExitSwitchUserEvent(?callable $configure): SwitchUserEvent
 ```
 
 Creates a `SwitchUserEvent` object. The event can be configured by using the `$configure` closure.

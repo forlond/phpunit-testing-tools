@@ -16,7 +16,7 @@ Provides a base for any test that uses the serializer.
 ### Methods
 
 ```php
-protected function createSerializer(?\Closure $configure): Serializer;
+protected function createSerializer(?callable $configure): Serializer;
 ```
 
 Allows to create a new `Serializer` instance. The instance can be configured by passing a closure.
@@ -61,8 +61,8 @@ final class MyTestEvent extends AbstractSerializerTestCase
 ---
 
 ```php
-protected function createSerializationContext(?\Closure $configure): SerializationContext;
-protected function createDeserializationContext(?\Closure $configure): DeserializationContext
+protected function createSerializationContext(?callable $configure): SerializationContext;
+protected function createDeserializationContext(?callable $configure): DeserializationContext
 ```
 
 Allows to create a new `SerializationContext` or `DeserializationContext` instance. The context can be decorated before
@@ -335,7 +335,7 @@ Allows to unit test `EventSubscriberInterface` instances. It extends `AbstractSe
 contexts instances. The test must implement the following method.
 
 ```php
-abstract protected function createSubscriber(?\Closure $configure): EventSubscriberInterface;
+abstract protected function createSubscriber(?callable $configure): EventSubscriberInterface;
 ```
 
 The `configure` closure can be used to configure any mocked service the event subscriber may use.
@@ -385,7 +385,7 @@ final class MyTestEvent extends AbstractEventSubscriberTestCase
         self::assertSame(['foo' => 'bar'], $data);
     }
 
-    protected function createSubscriber(?\Closure $configure): MyEventSubscriber
+    protected function createSubscriber(?callable $configure): MyEventSubscriber
     {
         $service = $this->createMock(ServiceInterface::class);
 
@@ -404,7 +404,7 @@ Allows to unit test `SubscribingHandlerInterface` instances. It extends `Abstrac
 create contexts instances. The test must implement the following method.
 
 ```php
-abstract protected function createHandler(?\Closure $configure): SubscribingHandlerInterface;
+abstract protected function createHandler(?callable $configure): SubscribingHandlerInterface;
 ```
 
 The `configure` closure can be used to configure any mocked service the event subscriber may use.
@@ -432,7 +432,7 @@ final class MyTestEvent extends AbstractSubscribingHandlerTestCase
         self::assertSame(['id' => null], $result);
     }
 
-    protected function createHandler(?\Closure $configure): MySubscribingHandler
+    protected function createHandler(?callable $configure): MySubscribingHandler
     {
         $service = $this->createMock(ServiceInterface::class);
 
@@ -451,7 +451,7 @@ Allows to unit test `ObjectConstructorInterface` instances. It extends `Abstract
 create contexts instances. The test must implement the following method.
 
 ```php
-abstract protected function createConstructor(?\Closure $configure): ObjectConstructorInterface;
+abstract protected function createConstructor(?callable $configure): ObjectConstructorInterface;
 ```
 
 The `configure` closure can be used to configure any mocked service the event subscriber may use.
@@ -484,7 +484,7 @@ final class MyTestEvent extends AbstractObjectConstructorTestCase
         self::assertInstanceOf(\stdClass::class, $result);
     }
 
-    protected function createConstructor(?\Closure $configure): ObjectConstructorInterface
+    protected function createConstructor(?callable $configure): ObjectConstructorInterface
     {
         $service = $this->createMock(ServiceInterface::class);
 

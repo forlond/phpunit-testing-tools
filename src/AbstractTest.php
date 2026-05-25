@@ -43,7 +43,7 @@ abstract class AbstractTest implements TestInterface
 
     abstract protected function getValue(): mixed;
 
-    protected function set(string $name, mixed $expected, \Closure $actual): void
+    protected function set(string $name, mixed $expected, callable $actual): void
     {
         if (isset($this->constraints[$name])) {
             throw new \RuntimeException('Cannot redefine ' . $name);

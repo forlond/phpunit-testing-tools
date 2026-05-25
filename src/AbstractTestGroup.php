@@ -62,6 +62,7 @@ abstract class AbstractTestGroup extends AbstractTest
                     } catch (ExpectationFailedException $e) {
                         $failed[] = new ExpectationFailedException(
                             sprintf(
+                                // @phpcs:disable Generic.Files.LineLength.TooLong
                                 "Failed asserting that the %s contains an element at index %d that matches the following constraint(s):\n%s",
                                 static::GROUP_NAME,
                                 $i,
@@ -106,7 +107,7 @@ abstract class AbstractTestGroup extends AbstractTest
 
     abstract protected function getValue(): array;
 
-    protected function set(string $name, mixed $expected, \Closure $actual): void
+    protected function set(string $name, mixed $expected, callable $actual): void
     {
         parent::set(sprintf('%d.%s', $this->current, $name), $expected, $actual);
     }

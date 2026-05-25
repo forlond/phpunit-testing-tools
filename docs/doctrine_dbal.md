@@ -19,6 +19,10 @@ final protected function createConnection(
 
 Creates a new `TestDBALConnection` instance which extends from `Doctrine\DBAL\Connection`.
 
+> [!IMPORTANT]
+> The `TestDBALConnection` has limited functionalities, but it is possible to configure the result of any statement.
+> Use `TestDBALConnection::setResult` before using any other method that returns results.
+
 It is possible to pass a custom `Doctrine\DBAL\Configuration`, otherwise the `createConfiguration` method will be used.
 
 It is possible to pass a custom `Doctrine\DBAL\Platforms\AbstractPlatform`, otherwise the `createPlatform` method will
@@ -40,9 +44,8 @@ protected function createPlatform(): AbstractPlatform
 
 Override this method if the class test needs the same platform for all the test cases.
 
-> [!IMPORTANT]
-> The `TestDBALConnection` has limited functionalities, but it is possible to configure the result of any statement.
-> Use `TestDBALConnection::setResult` before using any other method that returns results.
+> [!NOTE]
+> By default, the `TestPlatform` is used as platform.
 
 Example:
 
@@ -53,10 +56,10 @@ final class MyClassTest extends AbstractDBALTestCase
     {
         $connection = $this->createConnection();
 
-        $connection->setResult(['first', 'second'], ['other_first', 'other_second']);
+        $connection->setResult(['id' => 1, 'name' => 'John'], ['id' => 2, 'name' => 'Jane']);
         $value = $connection->fetchFirstColumn('SELECT * FROM foobar');
 
-        self::assertSame(['first', 'other_first'], $value);
+        self::assertSame([1, 2], $value);
     }
 }
 ```

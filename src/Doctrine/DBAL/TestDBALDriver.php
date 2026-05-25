@@ -15,7 +15,7 @@ final class TestDBALDriver implements Driver
 
     public readonly TestExceptionConverter $exceptionConverter;
 
-    private readonly AbstractPlatform $platform;
+    public readonly AbstractPlatform $platform;
 
     public function __construct(AbstractPlatform $platform)
     {

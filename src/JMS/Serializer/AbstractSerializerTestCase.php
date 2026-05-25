@@ -19,7 +19,7 @@ abstract class AbstractSerializerTestCase extends TestCase
 {
     private static ?Parser $typeParser = null;
 
-    protected function createSerializer(?\Closure $configure): Serializer
+    protected function createSerializer(?callable $configure): Serializer
     {
         $builder = new SerializerBuilder();
 
@@ -37,7 +37,7 @@ abstract class AbstractSerializerTestCase extends TestCase
         return $builder->build();
     }
 
-    protected function createSerializationContext(?\Closure $configure): SerializationContext
+    protected function createSerializationContext(?callable $configure): SerializationContext
     {
         $factory = new TestSerializationContextFactory();
 
@@ -48,7 +48,7 @@ abstract class AbstractSerializerTestCase extends TestCase
         return $factory->createSerializationContext();
     }
 
-    protected function createDeserializationContext(?\Closure $configure): DeserializationContext
+    protected function createDeserializationContext(?callable $configure): DeserializationContext
     {
         $factory = new TestDeserializationContextFactory();
 

@@ -17,7 +17,7 @@ use Symfony\Component\Workflow\Transition;
  */
 trait TestWorkflowTrait
 {
-    protected function createWorkflow(?\Closure $configure): TestWorkflow
+    protected function createWorkflow(?callable $configure): TestWorkflow
     {
         $builder = new TestWorkflowBuilder();
 
@@ -50,7 +50,7 @@ trait TestWorkflowTrait
     protected function createGuardEvent(
         object     $object,
         Transition $transition,
-        ?\Closure  $configure = null,
+        ?callable  $configure = null,
     ): GuardEvent {
         $workflow = $this->createWorkflow(static function(TestWorkflowBuilder $builder) use ($configure, $transition) {
             if (null !== $configure) {
@@ -73,7 +73,7 @@ trait TestWorkflowTrait
         object     $object,
         Transition $transition,
         array      $context = [],
-        ?\Closure  $configure = null,
+        ?callable  $configure = null,
     ): AnnounceEvent {
         $workflow = $this->createWorkflow(static function(TestWorkflowBuilder $builder) use ($configure, $transition) {
             if (null !== $configure) {
@@ -96,7 +96,7 @@ trait TestWorkflowTrait
         object     $object,
         Transition $transition,
         array      $context = [],
-        ?\Closure  $configure = null,
+        ?callable  $configure = null,
     ): CompletedEvent {
         $workflow = $this->createWorkflow(static function(TestWorkflowBuilder $builder) use ($configure, $transition) {
             if (null !== $configure) {
@@ -119,7 +119,7 @@ trait TestWorkflowTrait
         object      $object,
         ?Transition $transition,
         array       $context = [],
-        ?\Closure   $configure = null,
+        ?callable   $configure = null,
     ): EnteredEvent {
         $workflow = $this->createWorkflow(
             static function(TestWorkflowBuilder $builder) use ($configure, $transition) {
@@ -146,7 +146,7 @@ trait TestWorkflowTrait
         object     $object,
         Transition $transition,
         array      $context = [],
-        ?\Closure  $configure = null,
+        ?callable  $configure = null,
     ): EnterEvent {
         $workflow = $this->createWorkflow(static function(TestWorkflowBuilder $builder) use ($configure, $transition) {
             if (null !== $configure) {
@@ -169,7 +169,7 @@ trait TestWorkflowTrait
         object     $object,
         Transition $transition,
         array      $context = [],
-        ?\Closure  $configure = null,
+        ?callable  $configure = null,
     ): LeaveEvent {
         $workflow = $this->createWorkflow(static function(TestWorkflowBuilder $builder) use ($configure, $transition) {
             if (null !== $configure) {
@@ -192,7 +192,7 @@ trait TestWorkflowTrait
         object     $object,
         Transition $transition,
         array      $context = [],
-        ?\Closure  $configure = null,
+        ?callable  $configure = null,
     ): TransitionEvent {
         $workflow = $this->createWorkflow(static function(TestWorkflowBuilder $builder) use ($configure, $transition) {
             if (null !== $configure) {

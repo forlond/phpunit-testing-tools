@@ -17,7 +17,7 @@
   ],
   "require": {
     "php": ">=8.1",
-    "phpunit/phpunit": "^9 || ^10 || ^11 || ^12"
+    "phpunit/phpunit": "^9.5 || ^10 || ^11 || ^12"
   },
   "require-dev": {
     "doctrine/orm": "^2.10 || ^3.0",
@@ -27,6 +27,7 @@
     "phpstan/phpstan-strict-rules": "^2.0",
     "psr/log": "^2.0 || ^3.0",
     "roave/security-advisories": "dev-latest",
+    "squizlabs/php_codesniffer": "^4.0",
     "symfony/event-dispatcher": "^6.4 || ^7.4",
     "symfony/expression-language": "^6.4 || ^7.4",
     "symfony/form": "^6.4 || ^7.4",

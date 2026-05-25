@@ -9,7 +9,7 @@
 ### Workflow
 
 ```php
-protected function createWorkflow(?\Closure $configure): TestWorkflow
+protected function createWorkflow(?callable $configure): TestWorkflow
 ```
 
 Creates a `TestWorkflow` object. This instance extends the built-in `Workflow`.
@@ -71,7 +71,7 @@ Some other events accept a context array.
 protected function createGuardEvent(
     object     $object,
     Transition $transition,
-    ?\Closure  $configure = null,
+    ?callable  $configure = null,
 ): GuardEvent
 ```
 
@@ -82,7 +82,7 @@ protected function createAnnounceEvent(
     object     $object,
     Transition $transition,
     array      $context = [],
-    ?\Closure  $configure = null,
+    ?callable  $configure = null,
 ): AnnounceEvent
 ```
 
@@ -93,7 +93,7 @@ protected function createCompletedEvent(
     object     $object,
     Transition $transition,
     array      $context = [],
-    ?\Closure  $configure = null,
+    ?callable  $configure = null,
 ): CompletedEvent
 ```
 
@@ -104,7 +104,7 @@ protected function createEnteredEvent(
     object      $object,
     ?Transition $transition,
     array       $context = [],
-    ?\Closure   $configure = null,
+    ?callable   $configure = null,
 ): EnteredEvent
 ```
 
@@ -115,7 +115,7 @@ protected function createEnterEvent(
     object     $object,
     Transition $transition,
     array      $context = [],
-    ?\Closure  $configure = null,
+    ?callable  $configure = null,
 ): EnterEvent
 ```
 
@@ -126,7 +126,7 @@ protected function createLeaveEvent(
     object     $object,
     Transition $transition,
     array      $context = [],
-    ?\Closure  $configure = null,
+    ?callable  $configure = null,
 ): LeaveEvent
 ```
 
@@ -137,6 +137,6 @@ protected function createTransitionEvent(
     object     $object,
     Transition $transition,
     array      $context = [],
-    ?\Closure  $configure = null,
+    ?callable  $configure = null,
 ): TransitionEvent
 ```

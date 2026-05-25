@@ -2,7 +2,6 @@
 
 namespace Forlond\TestTools\Doctrine\DBAL;
 
-use Doctrine\DBAL\Driver\Result;
 use Doctrine\DBAL\Driver\Statement;
 use Doctrine\DBAL\ParameterType;
 
@@ -51,7 +50,7 @@ final class TestStatement implements Statement
     /**
      * @inheritDoc
      */
-    public function execute($params = null): Result
+    public function execute($params = null): TestResult
     {
         return new TestResult($this->results, $this->sql, $params ?? $this->params);
     }

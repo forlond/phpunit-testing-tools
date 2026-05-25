@@ -102,7 +102,7 @@ final class TestForm extends AbstractTest
         return $this;
     }
 
-    public function errors(\Closure $expect): self
+    public function errors(callable $expect): self
     {
         if (null !== $this->errors) {
             throw new \RuntimeException('Cannot redefine errors');
@@ -162,7 +162,7 @@ final class TestForm extends AbstractTest
         return $this;
     }
 
-    public function child(string $child, \Closure|bool $expect): self
+    public function child(string $child, callable|bool $expect): self
     {
         if (isset($this->children[$child])) {
             throw new \RuntimeException('Cannot redefine child ' . $child);

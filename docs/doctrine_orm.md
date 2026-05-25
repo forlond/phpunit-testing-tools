@@ -34,6 +34,17 @@ protected function createConfiguration(): Configuration
 
 Override this method if the class test needs the same configuration for all the test cases.
 
+> [!NOTE]
+> The default configuration uses the attribute driver.
+
+> [!NOTE]
+> The default configuration uses the native lazy objects if the enableNativeLazyObjects is available.
+> Otherwise, the system temp dir is used as proxy dir and DoctrineTest as proxy namespace.
+
+> [!IMPORTANT]
+> If your test suite requires a different setup, it is recommended to create a custom TestCase class and override this
+> method based on your needs. Ensure your tests extend the custom test case instead of AbstractEntityManagerTestCase.
+
 ---
 
 ```php
@@ -41,6 +52,9 @@ protected function createPlatform(): AbstractPlatform
 ```
 
 Override this method if the class test needs the same platform for all the test cases.
+
+> [!NOTE]
+> By default, the `TestPlatform` is used as platform.
 
 Example:
 
@@ -91,7 +105,7 @@ Provides a base for any test that uses `Doctrine\Common\EventSubscriber;`. It ex
 be able to create entity managers.
 
 ```php
-abstract protected function createSubscriber(?\Closure $configure): EventSubscriber;
+abstract protected function createSubscriber(?callable $configure): EventSubscriber;
 ```
 
 The class test must implement this method and return the subscriber instance. The `configure` closure can be used to
@@ -130,7 +144,7 @@ final class MyClassTest extends AbstractEventSubscriberTestCase
     {
         $subscriber = $this->createSubscriber(function(MockObject $service) {
             $service
-                ->expects(self::never())
+                ->expects($this->never())
                 ->method('calculate')
             ;
         });
@@ -142,7 +156,7 @@ final class MyClassTest extends AbstractEventSubscriberTestCase
         // ... assertions ...
     }
 
-    protected function createSubscriber(?\Closure $configure): MySubscriber
+    protected function createSubscriber(?callable $configure): MySubscriber
     {
         $service = $this->createMock(MyService::class);
 

@@ -9,5 +9,5 @@ use JMS\Serializer\Handler\SubscribingHandlerInterface;
  */
 abstract class AbstractSubscribingHandlerTestCase extends AbstractSerializerTestCase
 {
-    abstract protected function createHandler(?\Closure $configure): SubscribingHandlerInterface;
+    abstract protected function createHandler(?callable $configure): SubscribingHandlerInterface;
 }

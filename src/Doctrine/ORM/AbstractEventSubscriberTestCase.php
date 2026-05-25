@@ -11,5 +11,5 @@ abstract class AbstractEventSubscriberTestCase extends AbstractEntityManagerTest
 {
     use TestORMEventsTrait;
 
-    abstract protected function createSubscriber(?\Closure $configure): EventSubscriber;
+    abstract protected function createSubscriber(?callable $configure): EventSubscriber;
 }

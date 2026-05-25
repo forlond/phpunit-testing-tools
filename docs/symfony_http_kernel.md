@@ -27,7 +27,7 @@ returned instead.
 ---
 
 ```php
-protected function createRequestEvent(?\Closure $configure): RequestEvent
+protected function createRequestEvent(?callable $configure): RequestEvent
 ```
 
 Creates a `RequestEvent` object. The event can be configured by using the `$configure` closure.
@@ -60,7 +60,7 @@ $event = $this->createLazyResponseEvent(
 ---
 
 ```php
-protected function createControllerEvent(?\Closure $configure, ?\Closure $controller = null): ControllerEvent
+protected function createControllerEvent(?callable $configure, ?callable $controller = null): ControllerEvent
 ```
 
 Creates a `ControllerEvent` object. The event can be configured by using the `$configure` closure.
@@ -115,7 +115,7 @@ $event = $this->createControllerArgumentsEvent(
 ---
 
 ```php
-protected function createResponseEvent(?\Closure $configure): ResponseEvent
+protected function createResponseEvent(?callable $configure): ResponseEvent
 ```
 
 Creates a `ResponseEvent` object. The event can be configured by using the `$configure` closure.
@@ -133,7 +133,7 @@ $event = $this->createResponseEvent(static function(TestHttpKernel $kernel) {
 
 ```php
 protected function createViewEvent(
-    ?\Closure $configure,
+    ?callable $configure,
     mixed $controllerResult = null,
     ?ControllerArgumentsEvent $event = null,
 ): ViewEvent
@@ -178,7 +178,7 @@ $event = $this->createViewEvent(
 ---
 
 ```php
-protected function createFinishRequest(?\Closure $configure): FinishRequestEvent
+protected function createFinishRequest(?callable $configure): FinishRequestEvent
 ```
 
 Creates a `FinishRequestEvent` object. The event can be configured by using the `$configure` closure.
@@ -194,7 +194,7 @@ $event = $this->createFinishRequest(static function(TestHttpKernel $kernel) use 
 ---
 
 ```php
-protected function createTerminateEvent(?\Closure $configure): TerminateEvent
+protected function createTerminateEvent(?callable $configure): TerminateEvent
 ```
 
 Creates a `TerminateEvent` object. The event can be configured by using the `$configure` closure.
@@ -211,7 +211,7 @@ $event = $this->createTerminateEvent(static function(TestHttpKernel $kernel) use
 ---
 
 ```php
-protected function createExceptionEvent(?\Closure $configure, ?\Throwable $exception = null): ExceptionEvent
+protected function createExceptionEvent(?callable $configure, ?\Throwable $exception = null): ExceptionEvent
 ```
 
 Creates an `ExceptionEvent` object. The event can be configured by using the `$configure` closure.

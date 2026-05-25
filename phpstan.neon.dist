@@ -9,6 +9,7 @@ parameters:
     excludePaths:
         - tests/Fixtures/*
     reportUnmatchedIgnoredErrors: false
+    treatPhpDocTypesAsCertain: false
 # https://github.com/phpstan/phpstan-strict-rules
     strictRules:
         allRules: true

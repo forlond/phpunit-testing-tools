@@ -20,7 +20,7 @@ use Symfony\Component\Security\Http\Event\LazyResponseEvent;
  */
 trait TestHttpKernelTrait
 {
-    protected function createRequestEvent(?\Closure $configure): RequestEvent
+    protected function createRequestEvent(?callable $configure): RequestEvent
     {
         $kernel = new TestHttpKernel();
 
@@ -36,7 +36,7 @@ trait TestHttpKernelTrait
         return new LazyResponseEvent($event);
     }
 
-    protected function createControllerEvent(?\Closure $configure, ?callable $controller = null): ControllerEvent
+    protected function createControllerEvent(?callable $configure, ?callable $controller = null): ControllerEvent
     {
         $kernel = new TestHttpKernel();
 
@@ -73,7 +73,7 @@ trait TestHttpKernelTrait
         );
     }
 
-    protected function createResponseEvent(?\Closure $configure): ResponseEvent
+    protected function createResponseEvent(?callable $configure): ResponseEvent
     {
         $kernel = new TestHttpKernel();
 
@@ -90,7 +90,7 @@ trait TestHttpKernelTrait
     }
 
     protected function createViewEvent(
-        ?\Closure                 $configure,
+        ?callable                 $configure,
         mixed                     $controllerResult = null,
         ?ControllerArgumentsEvent $event = null,
     ): ViewEvent {
@@ -109,7 +109,7 @@ trait TestHttpKernelTrait
         );
     }
 
-    protected function createFinishRequest(?\Closure $configure): FinishRequestEvent
+    protected function createFinishRequest(?callable $configure): FinishRequestEvent
     {
         $kernel = new TestHttpKernel();
 
@@ -120,7 +120,7 @@ trait TestHttpKernelTrait
         return new FinishRequestEvent($kernel, $kernel->request ?? Request::create(''), $kernel->type);
     }
 
-    protected function createTerminateEvent(?\Closure $configure): TerminateEvent
+    protected function createTerminateEvent(?callable $configure): TerminateEvent
     {
         $kernel = new TestHttpKernel();
 
@@ -135,7 +135,7 @@ trait TestHttpKernelTrait
         );
     }
 
-    protected function createExceptionEvent(?\Closure $configure, ?\Throwable $exception = null): ExceptionEvent
+    protected function createExceptionEvent(?callable $configure, ?\Throwable $exception = null): ExceptionEvent
     {
         $kernel = new TestHttpKernel();
 
