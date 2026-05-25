@@ -23,7 +23,7 @@ final class TestEntityManagerTest extends TestCase
             $delegated
                 ->expects($this->once())
                 ->method('getRepository')
-                ->with('Class')
+                ->with(DoctrineEntity::class)
             ;
         });
 
